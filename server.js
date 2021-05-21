@@ -2,7 +2,7 @@ const express=require("express")
 const path=require("path")
 const session=require("express-session")
 const app=express()
-
+const Socket=require("socket.io")
 // 引入路由
 const UserLogin=require("./router/user/userLogin")
 const WuliuRouter=require("./router/wuliu/wuliuRouter")
@@ -23,7 +23,7 @@ app.use(session({
 }))
 
 
-app.listen(3008,(err)=>{
+const SocketIo= app.listen(3008,(err)=>{
     if(!err){
         console.log("监听3008端口成功：http://localhost:3008")
         app.use(UserLogin)
@@ -33,3 +33,8 @@ app.listen(3008,(err)=>{
 
     }
 })
+
+
+// Socket
+
+module.exports=SocketIo

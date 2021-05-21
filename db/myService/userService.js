@@ -112,7 +112,7 @@ function selectWord(){
                     message:'恭喜你，查询成功！',
                    list:data.length>0?data.map((item,index)=>{
                     item['key']=index;
-                    return {...item}
+                    return {...item} 
                    }):[]
                 })
                 
