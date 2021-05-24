@@ -352,6 +352,137 @@ function addUserDepart(data) {
     });
   });
 }
+/**
+ * 查询不需要授权的地址
+ */
+
+
+function selectNoneOath() {
+  return new Promise(function (reslove, reject) {
+    connect.query("select * from y_autho where contro=0", function (err, data) {
+      if (!err) {
+        reslove({
+          status: 1,
+          message: "恭喜你，查询成功！",
+          list: data.length ? data.map(function (item) {
+            return _objectSpread({}, item);
+          }) : []
+        });
+      } else {
+        reject({
+          status: 0,
+          message: "抱歉，查询失败"
+        });
+      }
+    });
+  });
+}
+/**
+ * 查询所有地址权限
+ */
+
+
+function selectAllOath() {
+  return new Promise(function (reslove, reject) {
+    connect.query("select * from y_autho order by sort", function (err, data) {
+      if (!err) {
+        reslove({
+          status: 1,
+          message: "恭喜你，查询成功！",
+          list: data.length ? data.map(function (item, index) {
+            item['key'] = index;
+            return _objectSpread({}, item);
+          }) : []
+        });
+      } else {
+        reject({
+          status: 0,
+          message: "抱歉，查询数据失败！"
+        });
+      }
+    });
+  });
+}
+/**
+ * 根据id更改权限
+ */
+
+
+function alterOath(id, contro) {
+  return new Promise(function (reslove, reject) {
+    connect.query("update y_autho set contro=? where id=?", [contro, id], function (err, data) {
+      if (!err) {
+        reslove({
+          status: 1,
+          message: "恭喜你，更新成功！"
+        });
+      } else {
+        console.log(err);
+        reject({
+          status: 0,
+          message: "抱歉，更新失败！"
+        });
+      }
+    });
+  });
+}
+/**
+ * 加入一条新的路由权限
+ */
+
+
+function addOnePath(data) {
+  var name = data.name,
+      path = data.path,
+      biaoshi = data.biaoshi,
+      sort = data.sort,
+      contro = data.contro;
+  return new Promise(function (reslove, reject) {
+    connect.query("insert into y_autho(name,path,biaoshi,sort,contro) values(?,?,?,?,?)", [name, path, biaoshi, sort, contro], function (err, data) {
+      if (!err) {
+        reslove({
+          status: 1,
+          message: "恭喜你，添加成功！"
+        });
+      } else {
+        console.log(err);
+        reject({
+          status: 0,
+          message: "抱歉，添加失败！"
+        });
+      }
+    });
+  });
+}
+/**
+ * 添加日历提醒
+ */
+
+
+function addTixing(data) {
+  var year = data.year,
+      month = data.month,
+      date = data.date,
+      uid = data.uid,
+      content = data.content,
+      status = data.status,
+      start = data.start;
+  return new Promise(function (reslove, reject) {
+    connect.query("insert into s_tixing(content,status,start,year,month,date,uid) values(?,?,?,?,?,?,?)", [content, status, start, year, month, date, uid], function (err, data) {
+      if (!err) {
+        reslove({
+          'status': 1,
+          message: "加入成功！"
+        });
+      } else {
+        reject({
+          'status': 0,
+          message: "抱歉，加入失败！"
+        });
+      }
+    });
+  });
+}
 
 module.exports = {
   addDepart: addDepart,
@@ -365,5 +496,10 @@ module.exports = {
   selectCaidan2User: selectCaidan2User,
   updateUserOuthor: updateUserOuthor,
   deleteOuthor: deleteOuthor,
-  addUserDepart: addUserDepart
+  addUserDepart: addUserDepart,
+  selectNoneOath: selectNoneOath,
+  selectAllOath: selectAllOath,
+  alterOath: alterOath,
+  addOnePath: addOnePath,
+  addTixing: addTixing
 };

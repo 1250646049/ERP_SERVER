@@ -35,7 +35,7 @@ app.use(session({
   resave: false,
   saveUninitialized: true
 }));
-var SocketIo = app.listen(3008, function (err) {
+app.listen(3008, function (err) {
   if (!err) {
     console.log("监听3008端口成功：http://localhost:3008");
     app.use(UserLogin);
@@ -43,6 +43,4 @@ var SocketIo = app.listen(3008, function (err) {
     app.use(CommonRouter);
     app.use(PriceRouter);
   }
-}); // Socket
-
-module.exports = SocketIo;
+});

@@ -370,6 +370,145 @@ function addUserDepart(data){
 
 }
 
+/**
+ * 查询不需要授权的地址
+ */
+
+function selectNoneOath(){
+    return new Promise((reslove,reject)=>{
+        connect.query("select * from y_autho where contro=0",(err,data)=>{
+            if(!err){
+                reslove({
+                    status:1,
+                    message:"恭喜你，查询成功！",
+                    list:data.length?data.map((item)=>{
+
+                        return {...item}
+                    }):[]
+                })
+            }else {
+                    reject({
+                        status:0,
+                        message:"抱歉，查询失败"
+                    })      
+            }
+        })
+    })
+}
+
+/**
+ * 查询所有地址权限
+ */
+
+function selectAllOath(){
+    return new Promise((reslove,reject)=>{
+
+        connect.query("select * from y_autho order by sort",(err,data)=>{
+            if(!err){
+                reslove({
+                    status:1,
+                    message:"恭喜你，查询成功！",
+                    list:data.length?data.map((item,index)=>{
+                        item['key']=index
+                        return {...item}
+                    }):[]
+                })
+            }else {
+                reject({
+                    status:0,
+                    message:"抱歉，查询数据失败！"
+                })
+            }
+
+
+        })
+
+
+    })
+}
+
+/**
+ * 根据id更改权限
+ */
+
+function alterOath(id,contro){
+
+    return new Promise((reslove,reject)=>{
+
+        connect.query("update y_autho set contro=? where id=?",[contro,id],(err,data)=>{
+            if(!err){
+                reslove({
+                    status:1,
+                    message:"恭喜你，更新成功！"
+                })
+            }else {
+                console.log(err);
+                reject({
+                    status:0,
+                    message:"抱歉，更新失败！"
+                })
+            }
+
+
+        })
+
+    })
+
+
+}
+/**
+ * 加入一条新的路由权限
+ */
+
+function addOnePath(data){
+    
+    const {name, path, biaoshi, sort, contro}=data
+    return new Promise((reslove,reject)=>{
+        connect.query("insert into y_autho(name,path,biaoshi,sort,contro) values(?,?,?,?,?)",[name,path,biaoshi,sort,contro],(err,data)=>{
+            if(!err){
+                reslove({
+                    status:1,
+                    message:"恭喜你，添加成功！"
+                })
+            }else {
+                console.log(err);
+                reject({
+                    status:0,
+                    message:"抱歉，添加失败！"
+                })
+            }
+        })
+
+
+    })
+}
+/**
+ * 添加日历提醒
+ */
+function addTixing(data){
+    const {year,month,date,uid,content,status,start}=data
+
+    return new Promise((reslove,reject)=>{
+        connect.query("insert into s_tixing(content,status,start,year,month,date,uid) values(?,?,?,?,?,?,?)",[content,status,start,year,month,date,uid],(err,data)=>{
+
+            if(!err){
+                reslove({
+                    'status':1,
+                    message:"加入成功！"
+                })
+            }else {
+                reject({
+                    'status':0,
+                    message:"抱歉，加入失败！"
+                })
+            }
+
+        })
+
+
+    })
+
+}
 module.exports={
     addDepart,
     addUser,
@@ -382,5 +521,10 @@ module.exports={
     selectCaidan2User,
     updateUserOuthor,
     deleteOuthor,
-    addUserDepart
-}
+    addUserDepart,
+    selectNoneOath,
+    selectAllOath,
+    alterOath,
+    addOnePath,
+    addTixing
+} 

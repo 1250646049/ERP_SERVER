@@ -20,13 +20,18 @@ var _require2 = require("../../db/myService/userService"),
     selectUser = _require2.selectUser,
     selectWord = _require2.selectWord,
     selectDepartOrder = _require2.selectDepartOrder,
+    selectAllOath = _require2.selectAllOath,
+    alterOath = _require2.alterOath,
     selectUser2Order = _require2.selectUser2Order,
     selectShior = _require2.selectShior,
+    selectNoneOath = _require2.selectNoneOath,
     getAllCaidan = _require2.getAllCaidan,
     selectCaidan2User = _require2.selectCaidan2User,
     updateUserOuthor = _require2.updateUserOuthor,
     deleteOuthor = _require2.deleteOuthor,
-    addUserDepart = _require2.addUserDepart;
+    addUserDepart = _require2.addUserDepart,
+    addOnePath = _require2.addOnePath,
+    addTixing = _require2.addTixing;
 
 var _require3 = require("../../utils/jwt"),
     devjwt = _require3.devjwt;
@@ -404,6 +409,168 @@ router.post("/addUserDepart", function _callee11(req, resp) {
         case 10:
         case "end":
           return _context11.stop();
+      }
+    }
+  }, null, null, [[0, 7]]);
+}); // 查询不需要授权的地址
+
+router.get("/selectNoneOauth", function _callee12(req, resp) {
+  var result;
+  return regeneratorRuntime.async(function _callee12$(_context12) {
+    while (1) {
+      switch (_context12.prev = _context12.next) {
+        case 0:
+          _context12.prev = 0;
+          _context12.next = 3;
+          return regeneratorRuntime.awrap(selectNoneOath());
+
+        case 3:
+          result = _context12.sent;
+          resp.json(result);
+          _context12.next = 10;
+          break;
+
+        case 7:
+          _context12.prev = 7;
+          _context12.t0 = _context12["catch"](0);
+          resp.json({
+            status: 0,
+            message: "查询失败"
+          });
+
+        case 10:
+        case "end":
+          return _context12.stop();
+      }
+    }
+  }, null, null, [[0, 7]]);
+}); // 查询所有权限列表
+
+router.get("/selectAllOath", function _callee13(req, resp) {
+  var result;
+  return regeneratorRuntime.async(function _callee13$(_context13) {
+    while (1) {
+      switch (_context13.prev = _context13.next) {
+        case 0:
+          _context13.prev = 0;
+          _context13.next = 3;
+          return regeneratorRuntime.awrap(selectAllOath());
+
+        case 3:
+          result = _context13.sent;
+          resp.json(result);
+          _context13.next = 10;
+          break;
+
+        case 7:
+          _context13.prev = 7;
+          _context13.t0 = _context13["catch"](0);
+          resp.json({
+            status: 0,
+            message: "抱歉，查询失败！"
+          });
+
+        case 10:
+        case "end":
+          return _context13.stop();
+      }
+    }
+  }, null, null, [[0, 7]]);
+}); // 更新是否受控url
+
+router.get("/alterOath", function _callee14(req, resp) {
+  var _req$query3, id, contro, result;
+
+  return regeneratorRuntime.async(function _callee14$(_context14) {
+    while (1) {
+      switch (_context14.prev = _context14.next) {
+        case 0:
+          _req$query3 = req.query, id = _req$query3.id, contro = _req$query3.contro;
+          _context14.prev = 1;
+          _context14.next = 4;
+          return regeneratorRuntime.awrap(alterOath(id, contro));
+
+        case 4:
+          result = _context14.sent;
+          resp.json(result);
+          _context14.next = 11;
+          break;
+
+        case 8:
+          _context14.prev = 8;
+          _context14.t0 = _context14["catch"](1);
+          resp.json({
+            status: 0,
+            message: "抱歉，更新失败！"
+          });
+
+        case 11:
+        case "end":
+          return _context14.stop();
+      }
+    }
+  }, null, null, [[1, 8]]);
+}); // 添加一条路由信息
+
+router.post("/addOnePath", function _callee15(req, resp) {
+  var result;
+  return regeneratorRuntime.async(function _callee15$(_context15) {
+    while (1) {
+      switch (_context15.prev = _context15.next) {
+        case 0:
+          _context15.prev = 0;
+          _context15.next = 3;
+          return regeneratorRuntime.awrap(addOnePath(req.body));
+
+        case 3:
+          result = _context15.sent;
+          resp.json(result);
+          _context15.next = 10;
+          break;
+
+        case 7:
+          _context15.prev = 7;
+          _context15.t0 = _context15["catch"](0);
+          resp.json({
+            status: 0,
+            message: "抱歉，添加失败！"
+          });
+
+        case 10:
+        case "end":
+          return _context15.stop();
+      }
+    }
+  }, null, null, [[0, 7]]);
+}); // 添加一条日程提醒
+
+router.post("/addTixing", function _callee16(req, resp) {
+  var result;
+  return regeneratorRuntime.async(function _callee16$(_context16) {
+    while (1) {
+      switch (_context16.prev = _context16.next) {
+        case 0:
+          _context16.prev = 0;
+          _context16.next = 3;
+          return regeneratorRuntime.awrap(addTixing(req.body));
+
+        case 3:
+          result = _context16.sent;
+          resp.json(result);
+          _context16.next = 10;
+          break;
+
+        case 7:
+          _context16.prev = 7;
+          _context16.t0 = _context16["catch"](0);
+          resp.json({
+            status: 0,
+            message: "抱歉，操作失败！"
+          });
+
+        case 10:
+        case "end":
+          return _context16.stop();
       }
     }
   }, null, null, [[0, 7]]);

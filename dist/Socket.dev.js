@@ -1,6 +1,17 @@
 "use strict";
 
-var SocketIo = require("./server");
+var express = require("express");
+
+var fs = require("fs");
+
+var path = require("path");
+
+var app = express();
+var SocketIo = app.listen(3009, function (err, data) {
+  if (!err) {
+    console.log("连接 socketIo success");
+  }
+});
 
 var Socket = require("socket.io");
 
@@ -14,7 +25,6 @@ var person = 0; // socket连接
 io.on("connection", function (socket) {
   //    设置在线用户
   socket.on("disconnect", function () {
-    console.log("dis", socket.name);
     delete User[socket.name];
     io.emit("userList", User);
     person--;

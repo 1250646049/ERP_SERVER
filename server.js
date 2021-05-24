@@ -23,7 +23,7 @@ app.use(session({
 }))
 
 
-const SocketIo= app.listen(3008,(err)=>{
+app.listen(3008,(err)=>{
     if(!err){
         console.log("监听3008端口成功：http://localhost:3008")
         app.use(UserLogin)
@@ -35,6 +35,4 @@ const SocketIo= app.listen(3008,(err)=>{
 })
 
 
-// Socket
 
-module.exports=SocketIo
