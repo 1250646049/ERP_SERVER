@@ -31,12 +31,19 @@ var _require2 = require("../../db/myService/userService"),
     deleteOuthor = _require2.deleteOuthor,
     addUserDepart = _require2.addUserDepart,
     addOnePath = _require2.addOnePath,
-    addTixing = _require2.addTixing;
+    addTixing = _require2.addTixing,
+    selectTixing = _require2.selectTixing,
+    selectTodayBobao = _require2.selectTodayBobao,
+    addBobao = _require2.addBobao;
 
 var _require3 = require("../../utils/jwt"),
     devjwt = _require3.devjwt;
 
-var path = require("path"); // 生成验证码
+var path = require("path"); // 引入爬虫程序
+
+
+var _require4 = require("../../spider/spider_index"),
+    UserPosition = _require4.UserPosition; // 生成验证码
 
 
 router.get("/yzm", function (req, resp) {
@@ -574,5 +581,136 @@ router.post("/addTixing", function _callee16(req, resp) {
       }
     }
   }, null, null, [[0, 7]]);
+}); // 查询提醒
+
+router.get("/selectTixing", function _callee17(req, resp) {
+  var username, result;
+  return regeneratorRuntime.async(function _callee17$(_context17) {
+    while (1) {
+      switch (_context17.prev = _context17.next) {
+        case 0:
+          username = req.query.username;
+          _context17.prev = 1;
+          _context17.next = 4;
+          return regeneratorRuntime.awrap(selectTixing(username));
+
+        case 4:
+          result = _context17.sent;
+          resp.json(result);
+          _context17.next = 11;
+          break;
+
+        case 8:
+          _context17.prev = 8;
+          _context17.t0 = _context17["catch"](1);
+          resp.json({
+            status: 0,
+            message: "抱歉，查询失败！"
+          });
+
+        case 11:
+        case "end":
+          return _context17.stop();
+      }
+    }
+  }, null, null, [[1, 8]]);
+}); // 获取今日资讯
+
+router.get("/getZixun", function _callee18(req, resp) {
+  var result;
+  return regeneratorRuntime.async(function _callee18$(_context18) {
+    while (1) {
+      switch (_context18.prev = _context18.next) {
+        case 0:
+          _context18.prev = 0;
+          _context18.next = 3;
+          return regeneratorRuntime.awrap(new UserPosition().init());
+
+        case 3:
+          result = _context18.sent;
+          resp.json(result);
+          _context18.next = 10;
+          break;
+
+        case 7:
+          _context18.prev = 7;
+          _context18.t0 = _context18["catch"](0);
+          resp.json({
+            status: 0,
+            message: "抱歉，操作失败！"
+          });
+
+        case 10:
+        case "end":
+          return _context18.stop();
+      }
+    }
+  }, null, null, [[0, 7]]);
+}); // 查询是否显示播报
+
+router.get("/selectBobao", function _callee19(req, resp) {
+  var username, result;
+  return regeneratorRuntime.async(function _callee19$(_context19) {
+    while (1) {
+      switch (_context19.prev = _context19.next) {
+        case 0:
+          username = req.query.username;
+          _context19.prev = 1;
+          _context19.next = 4;
+          return regeneratorRuntime.awrap(selectTodayBobao(username));
+
+        case 4:
+          result = _context19.sent;
+          resp.json(result);
+          _context19.next = 11;
+          break;
+
+        case 8:
+          _context19.prev = 8;
+          _context19.t0 = _context19["catch"](1);
+          resp.json({
+            status: 0,
+            message: "查询失败"
+          });
+
+        case 11:
+        case "end":
+          return _context19.stop();
+      }
+    }
+  }, null, null, [[1, 8]]);
+}); // 添加播报信息
+
+router.post("/addBobao", function _callee20(req, resp) {
+  var username, result;
+  return regeneratorRuntime.async(function _callee20$(_context20) {
+    while (1) {
+      switch (_context20.prev = _context20.next) {
+        case 0:
+          username = req.body.username;
+          _context20.prev = 1;
+          _context20.next = 4;
+          return regeneratorRuntime.awrap(addBobao(username));
+
+        case 4:
+          result = _context20.sent;
+          resp.json(result);
+          _context20.next = 11;
+          break;
+
+        case 8:
+          _context20.prev = 8;
+          _context20.t0 = _context20["catch"](1);
+          resp.json({
+            status: 0,
+            message: "抱歉，查询失败！"
+          });
+
+        case 11:
+        case "end":
+          return _context20.stop();
+      }
+    }
+  }, null, null, [[1, 8]]);
 });
 module.exports = router;

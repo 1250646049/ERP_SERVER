@@ -1,5 +1,5 @@
 const connect=require("../mysqlDb")
-const {addPassword}=require("../../utils/utils")
+const {addPassword,getDate}=require("../../utils/utils")
 const {addjwt}=require("../../utils/jwt")
 
 /**
@@ -509,6 +509,92 @@ function addTixing(data){
     })
 
 }
+/**
+ * 根据用户名查询所添加的日程提醒
+ */
+
+function selectTixing(username){
+    return new Promise((reslove,reject)=>{
+        connect.query("select * from s_tixing where uid=?",[username],(err,data)=>{
+            if(!err){
+                reslove({
+                    status:1,
+                    message:"恭喜你，查询成功！",
+                    list:data.length?data.map((item,index)=>{
+                            item['key']=index;
+                        return {...item}
+                    }):[]
+                })
+            }else {
+                reject({
+                    status:0,
+                    message:"抱歉，查询失败！"
+                })
+            }
+
+        })
+
+
+    })
+}
+/**
+ * 查询是否显示今日播报
+ */
+
+function selectTodayBobao(username){
+return new Promise((reslove,reject)=>{
+    connect.query("select * from s_zixun where uid=? and times=? limit 1",[username,getDate()],(err,data)=>{
+        if(!err){
+            reslove({
+                status:1,
+                message:"恭喜你，查询成功！",
+                list:{...data[0]}
+            })
+        }else {
+            reject({
+                status:0,
+                message:"抱歉，查询失败！"
+            })
+        }
+
+
+
+    })
+
+
+})
+
+
+}
+
+/**
+ * 添加一条今日播报
+ */
+
+function addBobao(username){
+
+    return new Promise((reslove,reject)=>{
+
+        connect.query("insert into s_zixun(uid,times) values(?,?)",[username,getDate()],(err,data)=>{
+            if(!err){
+                reslove({
+                    status:1,
+                    message:"恭喜你，添加成功！"
+                })
+            }else {
+                reject({
+                    status:0,
+                    message:"抱歉，添加失败！"
+                })
+            }
+
+
+        })
+
+
+    })
+}
+
 module.exports={
     addDepart,
     addUser,
@@ -526,5 +612,8 @@ module.exports={
     selectAllOath,
     alterOath,
     addOnePath,
-    addTixing
+    addTixing,
+    selectTixing,
+    selectTodayBobao,
+    addBobao
 } 

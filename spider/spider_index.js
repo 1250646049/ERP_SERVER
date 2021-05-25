@@ -1,57 +1,143 @@
-const request=require("request")
-const axios=require("axios")
-const cheerio=require("cheerio")
-
+const request = require("request")
+const axios = require("axios")
+const cheerio = require("cheerio")
+const {getDate}=require("../utils/utils")
 
 /**
  * 获取用户地理位置
  */
 
-class UserPosition{
+class UserPosition {
 
-    url="http://apimobile.meituan.com/locate/v2/sdk/loc?ci=mars-webloc&uuid=dadf2cf3aba74d2fa8e4.1621559307.1.0.0"
-    headers={
-        "User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36",
-        'Host': 'apimobile.meituan.com',
-        'Origin': 'http://i.meituan.com',
-        'Referer': 'http://i.meituan.com/',
-        ci: 'mars-webloc',
-        uuid: 'dadf2cf3aba74d2fa8e4.1621559307.1.0.0'
-    }
-    constructor(){
-
-        this.init()
+    url = "https://mars.meituan.com/locate/v3/sdk/loc"
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36",
 
     }
+    constructor() {
 
-    init(){
+  
+
+    }
+    async init() {
+        try{
+            let result= await this.initPosition()
+           
+            let weather= await this.initWether(result['address'])
+            let news= await this.initNews()
+            
+            return {
+                status:1,
+                message:"操作成功！",
+                address:result['address'],
+                weather:weather['weather'],
+                news:news['news'],
+                time:getDate()
+            }
+             
+        }catch{
+
+            return {
+                status:0,
+                message:"操作失败！"
+            }
+        }
+      
+
+    }
+
+
+    initPosition() {
+        return new Promise((reslove, reject) => {
+            axios.post(this.url, {
+                    coord_type: "GCJ02",
+                    need_address: true,
+                    need_openCity: 1,
+                })
+                .then(r => reslove({
+                    status: 1,
+                    message: "获取成功",
+                    address: r.data['data']['address']
+                }))
+                .catch(e => reject(e))
+        })
+    }
+
+    initWether({province,city,district}){
+        
+        return new Promise((reslove,reject)=>{
             request({
-                uri:this.url,
-                method:"POST",
+                method:"GET",
+                url:`https://wis.qq.com/weather/common?source=pc&weather_type=observe`,
                 headers:this.headers,
-                formD:{
-                    reqid: 1,
-                    request_address: true,
-                    version: "2.1.0",
-                    refer: "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Mobile Safari/537.36",
-                    model: "h5",
-                    nettype: "Mobile",
-                    loc_duration: 157,
-                    loc_status: 200,
-                    address_language: "",
-                    appname: "mars-webloc",
-                    auth_key: "mQMvWzZ31G1woVJ9Wx17SBkOyhDoIZA3"
+                formData:{
+                    province,
+                    city,
+                    county:district
                 }
-            },(err,body,data)=>{
+            },(err,resp,body)=>{
 
                 if(!err){
-                    console.log(data);
+                    reslove({
+                        status:1,
+                        message:"查询成功！",
+                        weather:JSON.parse(body)['data']['observe']
+                    })
+                }else {
+                   reject({
+                       status:0,
+                       message:"抱歉，操作失败！"
+                   })
                 }
 
             })
 
+
+        })
+
+
+    }
+
+    initNews(){
+        return new Promise((reslove,reject)=>{
+            request({
+                method:"GET",
+                headers:this.headers,
+                url:"https://top.baidu.com/board?tab=realtime&sa=search_31065"
+            },(err,resp,body)=>{
+                if(!err){
+                    const $=cheerio.load(body)
+
+                    const list=$(".container-bg_lQ801>div:last-child>div")
+                    let d=[]
+                    $(list).each((index,item)=>{
+                        const content=$(item).find(".content_1YWBm>a").text().split(" ")[1]
+                        d.push(content)
+                    })
+
+                    if(d.length===list.length){
+                        reslove({
+                            status:1,
+                            message:"查询新闻成功",
+                            news:d
+                        })
+                    }
+                }else {
+                    reject({
+                        status:0,
+                        message:"抱歉，操作失败！"
+                    })
+                }
+
+            })
+
+
+
+        })
+
     }
 }
 
-new UserPosition()
-
+module.exports={
+    UserPosition
+}

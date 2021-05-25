@@ -9,7 +9,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 var connect = require("../mysqlDb");
 
 var _require = require("../../utils/utils"),
-    addPassword = _require.addPassword;
+    addPassword = _require.addPassword,
+    getDate = _require.getDate;
 
 var _require2 = require("../../utils/jwt"),
     addjwt = _require2.addjwt;
@@ -483,6 +484,77 @@ function addTixing(data) {
     });
   });
 }
+/**
+ * 根据用户名查询所添加的日程提醒
+ */
+
+
+function selectTixing(username) {
+  return new Promise(function (reslove, reject) {
+    connect.query("select * from s_tixing where uid=?", [username], function (err, data) {
+      if (!err) {
+        reslove({
+          status: 1,
+          message: "恭喜你，查询成功！",
+          list: data.length ? data.map(function (item, index) {
+            item['key'] = index;
+            return _objectSpread({}, item);
+          }) : []
+        });
+      } else {
+        reject({
+          status: 0,
+          message: "抱歉，查询失败！"
+        });
+      }
+    });
+  });
+}
+/**
+ * 查询是否显示今日播报
+ */
+
+
+function selectTodayBobao(username) {
+  return new Promise(function (reslove, reject) {
+    connect.query("select * from s_zixun where uid=? and times=? limit 1", [username, getDate()], function (err, data) {
+      if (!err) {
+        reslove({
+          status: 1,
+          message: "恭喜你，查询成功！",
+          list: _objectSpread({}, data[0])
+        });
+      } else {
+        reject({
+          status: 0,
+          message: "抱歉，查询失败！"
+        });
+      }
+    });
+  });
+}
+/**
+ * 添加一条今日播报
+ */
+
+
+function addBobao(username) {
+  return new Promise(function (reslove, reject) {
+    connect.query("insert into s_zixun(uid,times) values(?,?)", [username, getDate()], function (err, data) {
+      if (!err) {
+        reslove({
+          status: 1,
+          message: "恭喜你，添加成功！"
+        });
+      } else {
+        reject({
+          status: 0,
+          message: "抱歉，添加失败！"
+        });
+      }
+    });
+  });
+}
 
 module.exports = {
   addDepart: addDepart,
@@ -501,5 +573,8 @@ module.exports = {
   selectAllOath: selectAllOath,
   alterOath: alterOath,
   addOnePath: addOnePath,
-  addTixing: addTixing
+  addTixing: addTixing,
+  selectTixing: selectTixing,
+  selectTodayBobao: selectTodayBobao,
+  addBobao: addBobao
 };

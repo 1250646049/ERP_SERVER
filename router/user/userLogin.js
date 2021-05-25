@@ -21,12 +21,18 @@ const {
     deleteOuthor,
     addUserDepart,
     addOnePath,
-    addTixing
+    addTixing,
+    selectTixing,
+    selectTodayBobao,
+    addBobao
 } = require("../../db/myService/userService")
 const {
     devjwt
 } = require("../../utils/jwt")
 const path = require("path")
+
+// 引入爬虫程序
+const {UserPosition}=require("../../spider/spider_index")
 // 生成验证码
 router.get("/yzm", (req, resp) => {
     let data = captcha.create({
@@ -336,6 +342,70 @@ router.post("/addTixing",async(req,resp)=>{
             message:"抱歉，操作失败！"
         })
     }
+
+})
+
+// 查询提醒
+router.get("/selectTixing",async(req,resp)=>{
+    const {username}=req.query
+    try{
+      let result=  await selectTixing(username)
+      resp.json(result)
+    }catch{
+        resp.json({
+            status:0,
+            message:"抱歉，查询失败！"
+        })
+    }
+
+
+})
+
+// 获取今日资讯
+
+router.get("/getZixun",async(req,resp)=>{
+
+   try{
+    let result= await new UserPosition().init()
+    resp.json(result)
+   }catch{
+       resp.json({
+           status:0,
+           message:"抱歉，操作失败！"
+       })
+   }
+
+})
+
+// 查询是否显示播报
+
+router.get("/selectBobao",async(req,resp)=>{
+    const {username}=req.query
+    try{
+        let result=await selectTodayBobao(username)
+        resp.json(result)
+    }catch{
+        resp.json({
+            status:0,
+            message:"查询失败"
+        })
+    }
+
+
+
+})
+
+// 添加播报信息
+
+router.post("/addBobao",async(req,resp)=>{
+    const {username}=req.body
+    try{
+        let result=await addBobao(username)
+        resp.json(result)
+    }catch{
+        resp.json({status:0,message:"抱歉，查询失败！"})
+    }
+
 
 })
 module.exports = router

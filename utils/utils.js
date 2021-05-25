@@ -16,6 +16,10 @@ function getCurrentTimes(){
     return monent().format("YYYY-MM-DD HH:mm:ss")
 }
 
+function getDate(){
+
+    return monent().format("YYYY-MM-DD");
+}
 // 物流上传保存
 
  async function uploadWuliu(file){
@@ -48,5 +52,6 @@ module.exports={
     addPassword,
     uploadWuliu,
     getCurrentTimes,
-    sqlTime2times
+    sqlTime2times,
+    getDate
 }
