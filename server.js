@@ -8,11 +8,12 @@ const UserLogin=require("./router/user/userLogin")
 const WuliuRouter=require("./router/wuliu/wuliuRouter")
 const CommonRouter=require("./router/common/commonRouter")
 const PriceRouter=require("./router/price/bijiaRouter")
+const WanglaiRouter=require("./router/wanglai/wanglai")
 // 解析 body
 app.use(express.urlencoded({extended:true}))
 // 设置静态文件目录
 app.use(express.static(path.join(__dirname,"public")))
-
+ 
 // 设置session 
 app.use(session({
     secret: 'erpsystem',
@@ -30,7 +31,7 @@ app.listen(3008,(err)=>{
         app.use(WuliuRouter) 
         app.use(CommonRouter) 
         app.use(PriceRouter)
-
+        app.use(WanglaiRouter)
     }
 })
 

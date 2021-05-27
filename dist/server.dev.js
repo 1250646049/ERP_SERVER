@@ -17,7 +17,9 @@ var WuliuRouter = require("./router/wuliu/wuliuRouter");
 
 var CommonRouter = require("./router/common/commonRouter");
 
-var PriceRouter = require("./router/price/bijiaRouter"); // 解析 body
+var PriceRouter = require("./router/price/bijiaRouter");
+
+var WanglaiRouter = require("./router/wanglai/wanglai"); // 解析 body
 
 
 app.use(express.urlencoded({
@@ -42,5 +44,6 @@ app.listen(3008, function (err) {
     app.use(WuliuRouter);
     app.use(CommonRouter);
     app.use(PriceRouter);
+    app.use(WanglaiRouter);
   }
 });
