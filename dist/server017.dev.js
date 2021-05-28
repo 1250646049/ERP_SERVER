@@ -7,11 +7,16 @@ var app = express();
 var _require = require("./db/sqlService/wanglaiService"),
     selectGyshangYingFu = _require.selectGyshangYingFu,
     selectKehuKemu = _require.selectKehuKemu,
-    selectGyshangYufu = _require.selectGyshangYufu; // 查询 and 导出
+    selectGyshangYufu = _require.selectGyshangYufu,
+    selectOther = _require.selectOther; // 引入导出工具类
+
+
+var _require2 = require("./utils/wanglaiExport"),
+    exportDatas = _require2.exportDatas; // 查询 and 导出
 
 
 app.get("/wanglai", function _callee(req, resp) {
-  var _req$query, type, time, gysYF, gysyf, data;
+  var _req$query, type, time, gysYF, gysyf, data, other, _gysYF, _gysyf, _data, _other, exportData, result;
 
   return regeneratorRuntime.async(function _callee$(_context) {
     while (1) {
@@ -20,7 +25,7 @@ app.get("/wanglai", function _callee(req, resp) {
           _req$query = req.query, type = _req$query.type, time = _req$query.time;
 
           if (!(type === 'select')) {
-            _context.next = 21;
+            _context.next = 23;
             break;
           }
 
@@ -40,36 +45,89 @@ app.get("/wanglai", function _callee(req, resp) {
 
         case 11:
           data = _context.sent;
-          console.log(gysYF, gysyf, data);
+          _context.next = 14;
+          return regeneratorRuntime.awrap(selectOther(time));
+
+        case 14:
+          other = _context.sent;
           resp.json({
             status: 1,
             message: "物流数据操作成功！",
             GYSYF: gysYF['list'],
             GYSYINFU: gysyf['list'],
             yinshou: data['yinshou'],
-            yushou: data['yushou']
+            yushou: data['yushou'],
+            other: other['list']
           });
-          _context.next = 19;
+          _context.next = 21;
           break;
 
-        case 16:
-          _context.prev = 16;
+        case 18:
+          _context.prev = 18;
           _context.t0 = _context["catch"](2);
           resp.json({
             status: 0,
             message: "物流数据操作失败"
           });
 
-        case 19:
-          _context.next = 21;
+        case 21:
+          _context.next = 46;
           break;
 
-        case 21:
+        case 23:
+          _context.prev = 23;
+          _context.next = 26;
+          return regeneratorRuntime.awrap(selectGyshangYufu(time));
+
+        case 26:
+          _gysYF = _context.sent;
+          _context.next = 29;
+          return regeneratorRuntime.awrap(selectGyshangYingFu(time));
+
+        case 29:
+          _gysyf = _context.sent;
+          _context.next = 32;
+          return regeneratorRuntime.awrap(selectKehuKemu(time));
+
+        case 32:
+          _data = _context.sent;
+          _context.next = 35;
+          return regeneratorRuntime.awrap(selectOther(time));
+
+        case 35:
+          _other = _context.sent;
+          exportData = {
+            times: time,
+            deparent: "上海乐迈地板有限公司",
+            GYSYF: _gysYF['list'],
+            GYSYINFU: _gysyf['list'],
+            yinshou: _data['yinshou'],
+            yushou: _data['yushou'],
+            other: _other['list']
+          };
+          _context.next = 39;
+          return regeneratorRuntime.awrap(exportDatas(exportData));
+
+        case 39:
+          result = _context.sent;
+          resp.json(result);
+          _context.next = 46;
+          break;
+
+        case 43:
+          _context.prev = 43;
+          _context.t1 = _context["catch"](23);
+          resp.json({
+            status: 0,
+            message: "导出失败！"
+          });
+
+        case 46:
         case "end":
           return _context.stop();
       }
     }
-  }, null, null, [[2, 16]]);
+  }, null, null, [[2, 18], [23, 43]]);
 });
 app.listen(3017, function (err, data) {
   if (!err) {

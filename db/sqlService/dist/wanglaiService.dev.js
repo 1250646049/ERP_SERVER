@@ -114,7 +114,7 @@ function selectGyshangYufu(iYPeriod) {
 
   return new Promise(function (reslove, reject) {
     connect.then(function (resp) {
-      resp.query("select i_id,ccode,mb,cVenName,dModifyDate,me,cendd_c,iyear from  dbo.GL_accass ass left join dbo.Vendor c on ass.csup_id=c.cVenCode where ccode='115101' and iYPeriod='".concat(iYPeriod, "' and cendd_c='\u501F'")).then(function (r) {
+      resp.query("select i_id,ccode,mb,cVenName,dModifyDate,me,cendd_c,iyear,iperiod from  dbo.GL_accass ass left join dbo.Vendor c on ass.csup_id=c.cVenCode where ccode='115101' and iYPeriod='".concat(iYPeriod, "' and cendd_c='\u501F'")).then(function (r) {
         return reslove({
           status: 1,
           message: "预付数据查询成功",
@@ -153,7 +153,7 @@ function selectGyshangYingFu(iYPeriod) {
 
   return new Promise(function (reslove, reject) {
     connect.then(function (resp) {
-      resp.query("select i_id,ccode,mb,cVenName,dModifyDate,me,cendd_c,iyear from  dbo.GL_accass ass left join dbo.Vendor c on ass.csup_id=c.cVenCode where ccode in (212101,115101) and iYPeriod='".concat(iYPeriod, "' and cendd_c='\u8D37'")).then(function (r) {
+      resp.query("select i_id,ccode,mb,cVenName,dModifyDate,me,cendd_c,iyear,iperiod from  dbo.GL_accass ass left join dbo.Vendor c on ass.csup_id=c.cVenCode where ccode in (212101,115101) and iYPeriod='".concat(iYPeriod, "' and cendd_c='\u8D37'")).then(function (r) {
         return reslove({
           status: 1,
           message: "应付数据查询成功",
@@ -188,17 +188,18 @@ function selectOther(iYPeriod) {
     var d = new Date();
     var month = d.getMonth() + 1 < 10 ? '0' + (d.getMonth() + 1) : d.getMonth() + 1;
     iYPeriod = d.getFullYear() + "" + month;
-  }
+  } //i_id,ccode,cdept_id,cperson_id,cPersonName,iperiod,cendd_c,mb,csup_id,iyear,cVenName,cCusName 
+
 
   return new Promise(function (reslove, reject) {
     connect.then(function (resp) {
-      resp.query("select * from dbo.GL_accass ass left join dbo.Person p on ass.cperson_id=p.cPersonCode where ccode in (113302,113301,11330301) and iYPeriod=".concat(iYPeriod)).then(function (r) {
+      resp.query("select i_id,ccode,cdept_id,cperson_id,cPersonName,iperiod,cendd_c,mb,me,csup_id,iyear,cVenName,cCusName,cDepName  \n            from dbo.GL_accass ass \n            left join dbo.Person p on ass.cperson_id=p.cPersonCode \n            left join dbo.Vendor c on ass.csup_id=c.cVenCode \n            left join dbo.Customer d on ass.ccus_id=d.cCusCode \n            left join dbo.Department e on e.cDepCode=ass.cdept_id\n            where ccode in (113302,113301,11330301) and iYPeriod=".concat(iYPeriod)).then(function (r) {
         reslove({
           status: 1,
           message: "查询其他内容成功！",
           list: r['recordset'].length ? r['recordset'].map(function (item, index) {
             item['key'] = index;
-            item['qimo'] = item['cendd_c'] === '贷' ? -item['mb'] : item['mb'];
+            item['qimo'] = item['cendd_c'] === '贷' ? -item['me'] : item['me'];
             return _objectSpread({}, item);
           }) : []
         });
@@ -217,11 +218,9 @@ function selectOther(iYPeriod) {
   });
 }
 
-selectOther().then(function (r) {
-  return console.log(r);
-});
 module.exports = {
   selectKehuKemu: selectKehuKemu,
   selectGyshangYingFu: selectGyshangYingFu,
-  selectGyshangYufu: selectGyshangYufu
+  selectGyshangYufu: selectGyshangYufu,
+  selectOther: selectOther
 };

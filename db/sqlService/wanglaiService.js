@@ -112,7 +112,7 @@ function selectGyshangYufu(iYPeriod){
     }
     return new Promise((reslove,reject)=>{
         connect.then(resp=>{
-            resp.query(`select i_id,ccode,mb,cVenName,dModifyDate,me,cendd_c,iyear from  dbo.GL_accass ass left join dbo.Vendor c on ass.csup_id=c.cVenCode where ccode='115101' and iYPeriod='${iYPeriod}' and cendd_c='借'`)
+            resp.query(`select i_id,ccode,mb,cVenName,dModifyDate,me,cendd_c,iyear,iperiod from  dbo.GL_accass ass left join dbo.Vendor c on ass.csup_id=c.cVenCode where ccode='115101' and iYPeriod='${iYPeriod}' and cendd_c='借'`)
             .then(r=>reslove({
                 status:1,
                 message:"预付数据查询成功",
@@ -154,7 +154,7 @@ function selectGyshangYufu(iYPeriod){
     }
     return new Promise((reslove,reject)=>{
         connect.then(resp=>{
-            resp.query(`select i_id,ccode,mb,cVenName,dModifyDate,me,cendd_c,iyear from  dbo.GL_accass ass left join dbo.Vendor c on ass.csup_id=c.cVenCode where ccode in (212101,115101) and iYPeriod='${iYPeriod}' and cendd_c='贷'`)
+            resp.query(`select i_id,ccode,mb,cVenName,dModifyDate,me,cendd_c,iyear,iperiod from  dbo.GL_accass ass left join dbo.Vendor c on ass.csup_id=c.cVenCode where ccode in (212101,115101) and iYPeriod='${iYPeriod}' and cendd_c='贷'`)
             .then(r=>reslove({
                 status:1,
                 message:"应付数据查询成功",
@@ -197,16 +197,23 @@ function selectOther(iYPeriod){
         let month=d.getMonth()+1<10?'0'+(d.getMonth()+1):(d.getMonth()+1)
         iYPeriod=d.getFullYear()+""+month
     }
+    //i_id,ccode,cdept_id,cperson_id,cPersonName,iperiod,cendd_c,mb,csup_id,iyear,cVenName,cCusName 
     return new Promise((reslove,reject)=>{
         connect.then(resp=>{
-            resp.query(`select * from dbo.GL_accass ass left join dbo.Person p on ass.cperson_id=p.cPersonCode where ccode in (113302,113301,11330301) and iYPeriod=${iYPeriod}`)
-            .then(r=>{
+            resp.query(`select i_id,ccode,cdept_id,cperson_id,cPersonName,iperiod,cendd_c,mb,me,csup_id,iyear,cVenName,cCusName,cDepName  
+            from dbo.GL_accass ass 
+            left join dbo.Person p on ass.cperson_id=p.cPersonCode 
+            left join dbo.Vendor c on ass.csup_id=c.cVenCode 
+            left join dbo.Customer d on ass.ccus_id=d.cCusCode 
+            left join dbo.Department e on e.cDepCode=ass.cdept_id
+            where ccode in (113302,113301,11330301) and iYPeriod=${iYPeriod}`)
+            .then(r=>{ 
                 reslove({
                     status:1,
                     message:"查询其他内容成功！",
                     list:r['recordset'].length?r['recordset'].map((item,index)=>{
                         item['key']=index;
-                        item['qimo']=item['cendd_c']==='贷'?-item['mb']:item['mb']
+                        item['qimo']=item['cendd_c']==='贷'?-item['me']:item['me']
                         return {...item}
                     }):[]
                 })
@@ -229,11 +236,11 @@ function selectOther(iYPeriod){
 
 }
 
-selectOther()
-.then(r=>console.log(r))
+
 
 module.exports={
     selectKehuKemu,
     selectGyshangYingFu, 
     selectGyshangYufu,
+    selectOther
 }

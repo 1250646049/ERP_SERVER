@@ -7,6 +7,7 @@ const {getWanglai}=require("./wanglai_service")
 
 router.get("/getWanglai",async(req,resp)=>{
     const {type,time}=req.query
+  
     try{
         let result=await getWanglai(type,time)
         resp.json(result)

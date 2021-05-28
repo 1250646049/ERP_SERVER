@@ -17,9 +17,9 @@ function devjwt(datas){
     var data=""
    try{
     data={
-        data:{...jwt.verify(datas,"lhy")}
+        data:{...jwt.verify(datas,"lhy") }
     }
-   }catch{
+   }catch{ 
         data={
             error:1,
             message:"token过期"
