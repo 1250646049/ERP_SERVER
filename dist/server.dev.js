@@ -19,7 +19,10 @@ var CommonRouter = require("./router/common/commonRouter");
 
 var PriceRouter = require("./router/price/bijiaRouter");
 
-var WanglaiRouter = require("./router/wanglai/wanglai"); // 解析 body
+var WanglaiRouter = require("./router/wanglai/wanglai"); // 引入应收款路由
+
+
+var YinshouRouter = require("./router/price/yinshouRouter"); // 解析 body
 
 
 app.use(express.urlencoded({
@@ -45,5 +48,6 @@ app.listen(3008, function (err) {
     app.use(CommonRouter);
     app.use(PriceRouter);
     app.use(WanglaiRouter);
+    app.use(YinshouRouter);
   }
 });

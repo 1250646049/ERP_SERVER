@@ -9,6 +9,8 @@ const WuliuRouter=require("./router/wuliu/wuliuRouter")
 const CommonRouter=require("./router/common/commonRouter")
 const PriceRouter=require("./router/price/bijiaRouter")
 const WanglaiRouter=require("./router/wanglai/wanglai")
+// 引入应收款路由
+const YinshouRouter=require("./router/price/yinshouRouter")
 // 解析 body
 app.use(express.urlencoded({extended:true}))
 // 设置静态文件目录
@@ -32,6 +34,7 @@ app.listen(3008,(err)=>{
         app.use(CommonRouter) 
         app.use(PriceRouter)
         app.use(WanglaiRouter)
+        app.use(YinshouRouter)
     }
 })
 
