@@ -1,5 +1,5 @@
 const connect=require("../mysqlDb")
-
+const {getCurrentTimes} =require("../../utils/utils")
 
 
 
@@ -8,7 +8,7 @@ const connect=require("../mysqlDb")
 function alterYinshou(data){
     const {id,email,type,jiean,jilu,riqi,price,beizhu,status,shoujianren,jiedian,edu,quyu}=data
     return new Promise((reslove,reject)=>{
-        connect.query("select * from w_yinshou where id=?",[id],(err,data)=>{
+        connect.query("select * from w_yinshou where AutoId=?",[id],(err,data)=>{
             if(!err){
                 if(data.length){
 
@@ -61,7 +61,127 @@ function alterYinshou(data){
 
 }
 
+// 添加一条收款项
+
+function addYinshou(data){
+    const {AutoId,email,type,jiean,jilu,riqi,price,beizhu,status,shoujianren,jiedian,edu,quyu}=data
+    
+    return new Promise((reslove,reject)=>{
+        select2AutoId(AutoId)
+        .then(d=>{
+            const {data}=d
+            if(JSON.stringify(data)==='{}'){
+                // 为空 要添加number
+                connect.query("insert into w_yinshou(email,type,jiean,jilu,riqi,price,beizhu,status,shoujianren,jiedian,edu,quyu,AutoId,number,uptime) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                [email,type,jiean,jilu,riqi,price,beizhu,status,shoujianren,jiedian,edu,quyu,AutoId,1,getCurrentTimes()],(err,data)=>{
+                    if(!err){
+                        reslove({
+                            status:1,
+                            message:"添加应收款成功！"
+                        })
+                    }else {
+                        reject({
+                            status:0,
+                            message:"抱歉，添加失败！"
+                        })
+                    }
+                }
+                )
+            }else {
+                // 不为空 获取number
+                const {number}=data
+                connect.query("insert into w_yinshou(email,type,jiean,jilu,riqi,price,beizhu,status,shoujianren,jiedian,edu,quyu,AutoId,number,uptime) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                [email,type,jiean,jilu,riqi,price,beizhu,status,shoujianren,jiedian,edu,quyu,AutoId,number+1,getCurrentTimes()],(err,data)=>{
+                    if(!err){
+                        reslove({
+                            status:1,
+                            message:"添加应收款成功！"
+                        })
+                    }else {
+                        reject({
+                            status:0,
+                            message:"抱歉，添加失败！"
+                        })
+                    }
+                }
+                )
+
+            }
+
+        })
+        .catch(r=>{
+            reject(r)
+        })
+
+
+
+    })
+
+
+
+
+}
+
+// 根据AutoId查询任意一条记录 判断次数
+
+function select2AutoId(id){
+
+    return new Promise((reslove,reject)=>{
+        connect.query("select * from w_yinshou where AutoId=? order by number desc limit 1",[id],(err,data)=>{
+            if(!err){
+                reslove({
+                    status:1,
+                    message:"查询成功",
+                    data:{...data[0]}
+                })
+            }else {
+                reject({
+                    status:0,
+                    message:"查询失败！"
+                })
+
+            }
+
+
+        })
+
+
+
+    })
+
+}
+
+// 查询收款记录
+
+function selectShoukuan2AutoId(id){
+    return new Promise((reslove,reject)=>{
+        connect.query("select * from w_yinshou where AutoId=? order by number asc",[id],(err,data)=>{
+            if(!err){
+                reslove({
+                    status:1,
+                    message:"查询成功！",
+                    list:data.map((item,index)=>{
+                        item['key']=index;
+                        return {...item};
+                    })
+                })
+            }else {
+                reject({
+                    status:0,
+                    message:"查询失败！"
+                })
+            }
+        })
+
+
+    })
+
+
+}
+
 
 module.exports={
-    alterYinshou
+    alterYinshou,
+    addYinshou,
+    selectShoukuan2AutoId
 }

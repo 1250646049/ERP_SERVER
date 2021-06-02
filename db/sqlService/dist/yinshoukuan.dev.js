@@ -30,14 +30,27 @@ function selectOrders(number) {
             case 2:
               count = _context.sent;
               resp.query("select top ".concat(number, " zi.AutoID ,zi.SBVID,per.cPersonName, cu.cCusAbbName,zhu.cSOCode,zhu.cPersonCode,zhu.dDate,zhu.cChecker,zi.iQuantity,zi.iTaxUnitPrice,zi.iSum,zi.iMoney,zhu.cCusName,zhu.cCusCode\n         from dbo.SaleBillVouch zhu\n         right join dbo.SaleBillVouchs zi on zhu.SBVID=zi.SBVID\n         left join dbo.Person per on zhu.cPersonCode=per.cPersonCode\n         left join dbo.Customer cu on cu.cCusCode=zhu.cCusCode \n         order by dDate desc")).then(function (r) {
-                var data = r['recordset'];
+                var data = r['recordset']; // reslove({
+                //     status: 1,
+                //     message: "查询成功！",
+                //     list: data.map((item,index)=>{
+                //         item['key']=index;    
+                //         return {...item};
+                //     }),
+                //     size: data.length,
+                //     total: count.data
+                // })
+
                 var flag = false;
                 data.forEach(function (item, index) {
                   (function (item) {
-                    Myconnect.query("select * from w_yinshou where id=?", [item['AutoID']], function (err, d) {
+                    Myconnect.query("select * from w_yinshou where AutoId=? order by number asc", [item['AutoID']], function (err, d) {
                       if (!err) {
                         flag = true;
-                        item['mysql'] = _objectSpread({}, d[0]);
+                        item['mysql'] = d.map(function (item, index) {
+                          item['key'] = index;
+                          return _objectSpread({}, item);
+                        });
                         item['key'] = item['AutoID'];
 
                         if (data.length - 1 == index) {
