@@ -10,7 +10,7 @@ const Myconnect = require("../mysqlDb")
  */
 
 function selectOrders(number) {
-    if (!number) number = 10
+    if (!number) number = 10 
 
     return new Promise((reslove, reject) => {
         connect.then(async (resp) => {
