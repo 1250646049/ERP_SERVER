@@ -1,4 +1,4 @@
-const connect = require("../sqlDb10")
+const connect = require("../sqlDb17")
 const Myconnect = require("../mysqlDb")
 
 
@@ -13,10 +13,11 @@ function selectOrders(number) {
     if (!number) number = 10 
 
     return new Promise((reslove, reject) => {
-        connect.then(async (resp) => {
+        connect.then(async (resp) => { 
             // 查询总个数
+            
             let count = await selectCount()
-            resp.query(`select top ${number} zi.AutoID ,zi.SBVID,per.cPersonName, cu.cCusAbbName,zhu.cSOCode,zhu.cPersonCode,zhu.dDate,zhu.cChecker,zi.iQuantity,zi.iTaxUnitPrice,zi.iSum,zi.iMoney,zhu.cCusName,zhu.cCusCode
+            resp.query(`select top ${number} zi.AutoID ,zi.SBVID,zi.cbdlcode,per.cPersonName, cu.cCusAbbName,zhu.cSOCode,zhu.cPersonCode,zhu.dDate,zhu.cChecker,zi.iQuantity,zi.iTaxUnitPrice,zi.iSum,zi.iMoney,zhu.cCusName,zhu.cCusCode
          from dbo.SaleBillVouch zhu
          right join dbo.SaleBillVouchs zi on zhu.SBVID=zi.SBVID
          left join dbo.Person per on zhu.cPersonCode=per.cPersonCode
@@ -31,18 +32,18 @@ function selectOrders(number) {
                     //         item['key']=index;    
                     //         return {...item};
                     //     }),
-                    //     size: data.length,
+                    //     size: data.length, 
                     //     total: count.data
-                    // })
-                    let flag=false;
+                    // }) 
+                    let flag=false; 
                     data.forEach((item,index)=>{
                        (function(item){
                         Myconnect.query("select * from w_yinshou where AutoId=? order by number asc",[item['AutoID']],(err,d)=>{
                             if(!err){ 
                                 flag=true
                                 item['mysql']=d.map((item,index)=>{
-
                                     item['key']=index;
+                                  
                                     return {...item};
                                 })
                                 item['key']=item['AutoID']
@@ -60,13 +61,10 @@ function selectOrders(number) {
                                     status:0,
                                     message:"抱歉，查询失败！",
                                     list:[],
-
                                 })
                             }
                         })
                        }(item))
-
-
                     })
 
 

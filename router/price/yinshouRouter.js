@@ -2,7 +2,7 @@ const express=require("express")
 const router=express.Router()
 
 const {getYingshoukuan}=require("./yinshouService")
-const {alterYinshou,addYinshou,selectShoukuan2AutoId}=require("../../db/myService/yinshouServer")
+const {addYinshou,selectShoukuan2AutoId,alterYinshou}=require("../../db/myService/yinshouServer")
 // 远程调用查询应收款到期
 
 
@@ -67,6 +67,23 @@ router.get("/selectShoukuan2AutoId",async(req,resp)=>{
             message:"查询失败！"
         })
     }
+
+
+})
+
+// 修改一条记录
+
+router.post("/alterYinshou",async(req,resp)=>{
+    try{
+        let result=await alterYinshou(req.body)
+        resp.json(result)
+    }catch{
+        resp.json({
+            status:0,
+            message:"抱歉，修改失败！" 
+        })
+    }
+
 
 
 })

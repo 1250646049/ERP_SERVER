@@ -1,5 +1,5 @@
 const axios=require("axios")
-const {sql010}=require("../../utils/serverConfig")
+const {sql017}=require("../../utils/serverConfig")
 
 
 // 远程调用获取资源
@@ -7,7 +7,7 @@ const {sql010}=require("../../utils/serverConfig")
 function getYingshoukuan(number){
 
     return new Promise((reslove,reject)=>{
-        axios.get(sql010+"/selectYinshou",{params:{number}})
+        axios.get(sql017+"/selectYinshou",{params:{number}})
         .then(r=>reslove({
             ...r.data
         }))

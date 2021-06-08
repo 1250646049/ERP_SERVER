@@ -9,12 +9,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 var axios = require("axios");
 
 var _require = require("../../utils/serverConfig"),
-    sql010 = _require.sql010; // 远程调用获取资源
+    sql017 = _require.sql017; // 远程调用获取资源
 
 
 function getYingshoukuan(number) {
   return new Promise(function (reslove, reject) {
-    axios.get(sql010 + "/selectYinshou", {
+    axios.get(sql017 + "/selectYinshou", {
       params: {
         number: number
       }

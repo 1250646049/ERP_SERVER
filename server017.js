@@ -3,6 +3,7 @@ const app=express()
 
 
 const {selectGyshangYingFu,selectKehuKemu,selectGyshangYufu,selectOther}=require("./db/sqlService/wanglaiService")
+const {selectOrders}=require("./db/sqlService/yinshoukuan")
 // 引入导出工具类
 const {exportDatas}=require("./utils/wanglaiExport")
 
@@ -63,6 +64,28 @@ app.get("/wanglai",async(req,resp)=>{
 })
 
 
+
+
+// 查询订单数量 应收账款超期自动提醒
+
+app.get("/selectYinshou", async (req, resp) => {
+    const {
+        number
+    } = req.query
+
+    try {
+        let result = await selectOrders(number)
+        resp.json(result)
+    } catch {
+        resp.json({
+            status: 0,
+            message: "抱歉，查询失败！"
+        })
+    }
+
+
+
+})
 
 
 

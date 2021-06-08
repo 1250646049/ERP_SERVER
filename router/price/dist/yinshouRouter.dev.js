@@ -8,9 +8,9 @@ var _require = require("./yinshouService"),
     getYingshoukuan = _require.getYingshoukuan;
 
 var _require2 = require("../../db/myService/yinshouServer"),
-    alterYinshou = _require2.alterYinshou,
     addYinshou = _require2.addYinshou,
-    selectShoukuan2AutoId = _require2.selectShoukuan2AutoId; // 远程调用查询应收款到期
+    selectShoukuan2AutoId = _require2.selectShoukuan2AutoId,
+    alterYinshou = _require2.alterYinshou; // 远程调用查询应收款到期
 
 
 router.get("/selectYsk", function _callee(req, resp) {
@@ -141,5 +141,37 @@ router.get("/selectShoukuan2AutoId", function _callee4(req, resp) {
       }
     }
   }, null, null, [[1, 8]]);
+}); // 修改一条记录
+
+router.post("/alterYinshou", function _callee5(req, resp) {
+  var result;
+  return regeneratorRuntime.async(function _callee5$(_context5) {
+    while (1) {
+      switch (_context5.prev = _context5.next) {
+        case 0:
+          _context5.prev = 0;
+          _context5.next = 3;
+          return regeneratorRuntime.awrap(alterYinshou(req.body));
+
+        case 3:
+          result = _context5.sent;
+          resp.json(result);
+          _context5.next = 10;
+          break;
+
+        case 7:
+          _context5.prev = 7;
+          _context5.t0 = _context5["catch"](0);
+          resp.json({
+            status: 0,
+            message: "抱歉，修改失败！"
+          });
+
+        case 10:
+        case "end":
+          return _context5.stop();
+      }
+    }
+  }, null, null, [[0, 7]]);
 });
 module.exports = router;

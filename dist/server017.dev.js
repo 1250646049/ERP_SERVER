@@ -8,11 +8,14 @@ var _require = require("./db/sqlService/wanglaiService"),
     selectGyshangYingFu = _require.selectGyshangYingFu,
     selectKehuKemu = _require.selectKehuKemu,
     selectGyshangYufu = _require.selectGyshangYufu,
-    selectOther = _require.selectOther; // 引入导出工具类
+    selectOther = _require.selectOther;
+
+var _require2 = require("./db/sqlService/yinshoukuan"),
+    selectOrders = _require2.selectOrders; // 引入导出工具类
 
 
-var _require2 = require("./utils/wanglaiExport"),
-    exportDatas = _require2.exportDatas; // 查询 and 导出
+var _require3 = require("./utils/wanglaiExport"),
+    exportDatas = _require3.exportDatas; // 查询 and 导出
 
 
 app.get("/wanglai", function _callee(req, resp) {
@@ -128,6 +131,39 @@ app.get("/wanglai", function _callee(req, resp) {
       }
     }
   }, null, null, [[2, 18], [23, 43]]);
+}); // 查询订单数量 应收账款超期自动提醒
+
+app.get("/selectYinshou", function _callee2(req, resp) {
+  var number, result;
+  return regeneratorRuntime.async(function _callee2$(_context2) {
+    while (1) {
+      switch (_context2.prev = _context2.next) {
+        case 0:
+          number = req.query.number;
+          _context2.prev = 1;
+          _context2.next = 4;
+          return regeneratorRuntime.awrap(selectOrders(number));
+
+        case 4:
+          result = _context2.sent;
+          resp.json(result);
+          _context2.next = 11;
+          break;
+
+        case 8:
+          _context2.prev = 8;
+          _context2.t0 = _context2["catch"](1);
+          resp.json({
+            status: 0,
+            message: "抱歉，查询失败！"
+          });
+
+        case 11:
+        case "end":
+          return _context2.stop();
+      }
+    }
+  }, null, null, [[1, 8]]);
 });
 app.listen(3017, function (err, data) {
   if (!err) {

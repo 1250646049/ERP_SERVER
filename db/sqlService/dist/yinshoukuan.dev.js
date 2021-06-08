@@ -6,7 +6,7 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-var connect = require("../sqlDb10");
+var connect = require("../sqlDb17");
 
 var Myconnect = require("../mysqlDb");
 /**
@@ -29,7 +29,7 @@ function selectOrders(number) {
 
             case 2:
               count = _context.sent;
-              resp.query("select top ".concat(number, " zi.AutoID ,zi.SBVID,per.cPersonName, cu.cCusAbbName,zhu.cSOCode,zhu.cPersonCode,zhu.dDate,zhu.cChecker,zi.iQuantity,zi.iTaxUnitPrice,zi.iSum,zi.iMoney,zhu.cCusName,zhu.cCusCode\n         from dbo.SaleBillVouch zhu\n         right join dbo.SaleBillVouchs zi on zhu.SBVID=zi.SBVID\n         left join dbo.Person per on zhu.cPersonCode=per.cPersonCode\n         left join dbo.Customer cu on cu.cCusCode=zhu.cCusCode \n         order by dDate desc")).then(function (r) {
+              resp.query("select top ".concat(number, " zi.AutoID ,zi.SBVID,zi.cbdlcode,per.cPersonName, cu.cCusAbbName,zhu.cSOCode,zhu.cPersonCode,zhu.dDate,zhu.cChecker,zi.iQuantity,zi.iTaxUnitPrice,zi.iSum,zi.iMoney,zhu.cCusName,zhu.cCusCode\n         from dbo.SaleBillVouch zhu\n         right join dbo.SaleBillVouchs zi on zhu.SBVID=zi.SBVID\n         left join dbo.Person per on zhu.cPersonCode=per.cPersonCode\n         left join dbo.Customer cu on cu.cCusCode=zhu.cCusCode \n         order by dDate desc")).then(function (r) {
                 var data = r['recordset']; // reslove({
                 //     status: 1,
                 //     message: "查询成功！",
@@ -37,9 +37,9 @@ function selectOrders(number) {
                 //         item['key']=index;    
                 //         return {...item};
                 //     }),
-                //     size: data.length,
+                //     size: data.length, 
                 //     total: count.data
-                // })
+                // }) 
 
                 var flag = false;
                 data.forEach(function (item, index) {

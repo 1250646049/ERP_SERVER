@@ -5,7 +5,7 @@ const {getCurrentTimes} =require("../../utils/utils")
 
 // 查询是否含有收款项
 
-function alterYinshou(data){
+function altersYinshou(data){
     const {id,email,type,jiean,jilu,riqi,price,beizhu,status,shoujianren,jiedian,edu,quyu}=data
     return new Promise((reslove,reject)=>{
         connect.query("select * from w_yinshou where AutoId=?",[id],(err,data)=>{
@@ -64,16 +64,16 @@ function alterYinshou(data){
 // 添加一条收款项
 
 function addYinshou(data){
-    const {AutoId,email,type,jiean,jilu,riqi,price,beizhu,status,shoujianren,jiedian,edu,quyu}=data
-    
+    const {AutoId,email,type,jiean,jilu,riqi,price,beizhu,status,shoujianren,jiedian,edu,quyu,username,name}=data
+        
     return new Promise((reslove,reject)=>{
         select2AutoId(AutoId)
         .then(d=>{
             const {data}=d
             if(JSON.stringify(data)==='{}'){
                 // 为空 要添加number
-                connect.query("insert into w_yinshou(email,type,jiean,jilu,riqi,price,beizhu,status,shoujianren,jiedian,edu,quyu,AutoId,number,uptime) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-                [email,type,jiean,jilu,riqi,price,beizhu,status,shoujianren,jiedian,edu,quyu,AutoId,1,getCurrentTimes()],(err,data)=>{
+                connect.query("insert into w_yinshou(email,type,jiean,jilu,riqi,price,beizhu,status,shoujianren,jiedian,edu,quyu,AutoId,number,uptime,name,username) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                [email,type,jiean,jilu,riqi,price,beizhu,status,shoujianren,jiedian,edu,quyu,AutoId,1,getCurrentTimes(),name,username],(err,data)=>{
                     if(!err){
                         reslove({
                             status:1,
@@ -90,8 +90,8 @@ function addYinshou(data){
             }else {
                 // 不为空 获取number
                 const {number}=data
-                connect.query("insert into w_yinshou(email,type,jiean,jilu,riqi,price,beizhu,status,shoujianren,jiedian,edu,quyu,AutoId,number,uptime) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-                [email,type,jiean,jilu,riqi,price,beizhu,status,shoujianren,jiedian,edu,quyu,AutoId,number+1,getCurrentTimes()],(err,data)=>{
+                connect.query("insert into w_yinshou(email,type,jiean,jilu,riqi,price,beizhu,status,shoujianren,jiedian,edu,quyu,AutoId,number,uptime,name,username) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                [email,type,jiean,jilu,riqi,price,beizhu,status,shoujianren,jiedian,edu,quyu,AutoId,number+1,getCurrentTimes(),name,username],(err,data)=>{
                     if(!err){
                         reslove({
                             status:1,
@@ -179,9 +179,37 @@ function selectShoukuan2AutoId(id){
 
 }
 
+// 修改一条收款项 mysql
+function alterYinshou(data){
+    const {email,type,jiean,jilu,riqi,price,beizhu,status,shoujianren,jiedian,edu,quyu,id,name,username}=data
+    return new Promise((reslove,reject)=>{
+        connect.query("update w_yinshou set email=?,type=?,jiean=?,jilu=?,riqi=?,price=?,beizhu=?,status=?,shoujianren=?,jiedian=?,edu=?,quyu=?,name=?,username=? where id=?",
+        [email,type,jiean,jilu,riqi,price,beizhu,status,shoujianren,jiedian,edu,quyu,id,name,username],(err,data)=>{
+            if(!err){
+                reslove({
+                    status:1,
+                    message:"恭喜你，成功成功！"
+                })
+            }else {
+                reject({
+                    status:0,
+                    message:"抱歉，修改失败！"
+                })
+            }
 
+
+        }
+        )
+
+
+
+    })
+
+
+}
 module.exports={
-    alterYinshou,
+
     addYinshou,
-    selectShoukuan2AutoId
+    selectShoukuan2AutoId,
+    alterYinshou
 }
