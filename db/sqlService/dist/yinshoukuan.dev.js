@@ -29,7 +29,7 @@ function selectOrders(number) {
 
             case 2:
               count = _context.sent;
-              resp.query("select top ".concat(number, " zi.AutoID ,zi.SBVID,zi.cbdlcode,per.cPersonName, cu.cCusAbbName,zhu.cSOCode,zhu.cPersonCode,zhu.dDate,zhu.cChecker,zi.iQuantity,zi.iTaxUnitPrice,zi.iSum,zi.iMoney,zhu.cCusName,zhu.cCusCode\n         from dbo.SaleBillVouch zhu\n         right join dbo.SaleBillVouchs zi on zhu.SBVID=zi.SBVID\n         left join dbo.Person per on zhu.cPersonCode=per.cPersonCode\n         left join dbo.Customer cu on cu.cCusCode=zhu.cCusCode \n         order by dDate desc")).then(function (r) {
+              resp.query("select top ".concat(number, " zi.AutoID ,zi.SBVID,zi.cbdlcode,per.cPersonName,cu.cCusAbbName,zhu.cSOCode,zhu.cPersonCode,zhu.dDate,zhu.cChecker,zi.iQuantity,zi.iTaxUnitPrice,zi.iSum,zi.iMoney,zhu.cCusName,zhu.cCusCode\n         from dbo.SaleBillVouch zhu\n         right join dbo.SaleBillVouchs zi on zhu.SBVID=zi.SBVID\n         left join dbo.Person per on zhu.cPersonCode=per.cPersonCode\n         left join dbo.Customer cu on cu.cCusCode=zhu.cCusCode \n         order by dDate desc")).then(function (r) {
                 var data = r['recordset']; // reslove({
                 //     status: 1,
                 //     message: "查询成功！",
@@ -41,15 +41,14 @@ function selectOrders(number) {
                 //     total: count.data
                 // }) 
 
-                var flag = false;
                 data.forEach(function (item, index) {
                   (function (item) {
                     Myconnect.query("select * from w_yinshou where AutoId=? order by number asc", [item['AutoID']], function (err, d) {
                       if (!err) {
-                        flag = true;
-                        item['mysql'] = d.map(function (item, index) {
-                          item['key'] = index;
-                          return _objectSpread({}, item);
+                        item['mysql'] = d.map(function (items, indexs) {
+                          items['key'] = indexs;
+                          items['keys'] = index;
+                          return _objectSpread({}, items);
                         });
                         item['key'] = item['AutoID'];
 
@@ -112,7 +111,97 @@ function selectCount() {
     });
   });
 }
+/**
+ * 模糊查询
+ */
+
+
+function selectOrdersLike(type, search) {
+  if (type === 'cbdlcode') {
+    type = 'zi.cbdlcode';
+  } else if (type === 'cPersonName') {
+    type = 'per.cPersonName';
+  } else {
+    type = "cu.cCusName";
+  }
+
+  return new Promise(function (reslove, reject) {
+    connect.then(function _callee2(resp) {
+      return regeneratorRuntime.async(function _callee2$(_context2) {
+        while (1) {
+          switch (_context2.prev = _context2.next) {
+            case 0:
+              // 查询总个数
+              resp.query("select  zi.AutoID ,zi.SBVID,zi.cbdlcode,per.cPersonName,cu.cCusAbbName,zhu.cSOCode,zhu.cPersonCode,zhu.dDate,zhu.cChecker,zi.iQuantity,zi.iTaxUnitPrice,zi.iSum,zi.iMoney,zhu.cCusName,zhu.cCusCode\n         from dbo.SaleBillVouch zhu\n         right join dbo.SaleBillVouchs zi on zhu.SBVID=zi.SBVID\n         left join dbo.Person per on zhu.cPersonCode=per.cPersonCode\n         left join dbo.Customer cu on cu.cCusCode=zhu.cCusCode where ".concat(type, "='").concat(search, "'\n         order by dDate desc")).then(function (r) {
+                var data = r['recordset'];
+
+                if (!data.length) {
+                  return reslove({
+                    status: 1,
+                    message: "查询成功！",
+                    list: []
+                  });
+                } // reslove({
+                //     status: 1,
+                //     message: "查询成功！",
+                //     list: data.map((item,index)=>{
+                //         item['key']=index;    
+                //         return {...item};
+                //     }),
+                //     size: data.length, 
+                //     total: count.data
+                // }) 
+
+
+                data.forEach(function (item, index) {
+                  (function (item) {
+                    Myconnect.query("select * from w_yinshou where AutoId=? order by number asc", [item['AutoID']], function (err, d) {
+                      if (!err) {
+                        flag = true;
+                        item['mysql'] = d.map(function (items, indexs) {
+                          items['key'] = indexs;
+                          items['keys'] = index;
+                          return _objectSpread({}, items);
+                        });
+                        item['key'] = item['AutoID'];
+
+                        if (data.length - 1 == index) {
+                          reslove({
+                            status: 1,
+                            message: "查询成功！",
+                            list: data,
+                            size: data.length
+                          });
+                        }
+                      } else {
+                        reject({
+                          status: 0,
+                          message: "抱歉，查询失败！",
+                          list: []
+                        });
+                      }
+                    });
+                  })(item);
+                });
+              })["catch"](function (e) {
+                reject({
+                  status: 0,
+                  message: "抱歉，查询失败！",
+                  list: []
+                });
+              });
+
+            case 1:
+            case "end":
+              return _context2.stop();
+          }
+        }
+      });
+    });
+  });
+}
 
 module.exports = {
-  selectOrders: selectOrders
+  selectOrders: selectOrders,
+  selectOrdersLike: selectOrdersLike
 };

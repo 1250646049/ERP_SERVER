@@ -27,8 +27,28 @@ function getYingshoukuan(number) {
       });
     });
   });
+} // 远程调用获取资源 搜索
+
+
+function searchYingshoukuan(type, search) {
+  return new Promise(function (reslove, reject) {
+    axios.get(sql017 + "/searchYinshou", {
+      params: {
+        type: type,
+        search: search
+      }
+    }).then(function (r) {
+      return reslove(_objectSpread({}, r.data));
+    })["catch"](function (e) {
+      return reject({
+        status: 0,
+        message: "抱歉，查询失败！"
+      });
+    });
+  });
 }
 
 module.exports = {
-  getYingshoukuan: getYingshoukuan
+  getYingshoukuan: getYingshoukuan,
+  searchYingshoukuan: searchYingshoukuan
 };

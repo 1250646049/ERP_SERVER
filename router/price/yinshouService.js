@@ -21,6 +21,30 @@ function getYingshoukuan(number){
 
 
 }
+
+
+
+
+// 远程调用获取资源 搜索
+
+function searchYingshoukuan(type,search){
+ 
+    return new Promise((reslove,reject)=>{
+        axios.get(sql017+"/searchYinshou",{params:{type,search}})
+        .then(r=>reslove({
+            ...r.data
+        }))
+        .catch(e=>reject({
+            status:0,
+            message:"抱歉，查询失败！"
+        }))
+
+
+    })
+
+
+}
 module.exports={
-    getYingshoukuan
+    getYingshoukuan,
+    searchYingshoukuan
 }

@@ -175,7 +175,6 @@ function selectShoukuan2AutoId(id) {
 function alterYinshou(data) {
   var email = data.email,
       type = data.type,
-      jiean = data.jiean,
       jilu = data.jilu,
       riqi = data.riqi,
       price = data.price,
@@ -189,7 +188,7 @@ function alterYinshou(data) {
       name = data.name,
       username = data.username;
   return new Promise(function (reslove, reject) {
-    connect.query("update w_yinshou set email=?,type=?,jiean=?,jilu=?,riqi=?,price=?,beizhu=?,status=?,shoujianren=?,jiedian=?,edu=?,quyu=?,name=?,username=? where id=?", [email, type, jiean, jilu, riqi, price, beizhu, status, shoujianren, jiedian, edu, quyu, id, name, username], function (err, data) {
+    connect.query("update w_yinshou set email=?,type=?,jilu=?,riqi=?,price=?,beizhu=?,status=?,shoujianren=?,jiedian=?,edu=?,quyu=?,name=?,username=? where id=?", [email, type, jilu, riqi, price, beizhu, status, shoujianren, jiedian, edu, quyu, name, username, id], function (err, data) {
       if (!err) {
         reslove({
           status: 1,
@@ -203,10 +202,74 @@ function alterYinshou(data) {
       }
     });
   });
+} // 修改是否结案
+
+
+function alterJiean(jiean, id) {
+  return new Promise(function (reslove, reject) {
+    connect.query("update w_yinshou set jiean=? where id=?", [jiean, id], function (err, data) {
+      if (!err) {
+        reslove({
+          status: 1,
+          message: "更新成功！"
+        });
+      } else {
+        reject({
+          status: 0,
+          message: "更新失败！"
+        });
+      }
+    });
+  });
+} // 删除订单
+
+
+function deleteOrder(id) {
+  return new Promise(function (reslove, reject) {
+    connect.query("delete from w_yinshou where id=?", [id], function (err, data) {
+      if (!err) {
+        reslove({
+          status: 1,
+          message: "删除成功！"
+        });
+      } else {
+        reject({
+          status: 0,
+          message: "删除失败！"
+        });
+      }
+    });
+  });
+} // 根据Auti id 排序查询
+
+
+function select2autoId(AutoId) {
+  return new Promise(function (reslove, reject) {
+    connect.query("select * from w_yinshou where AutoId=? order by number asc", [AutoId], function (err, data) {
+      if (!err) {
+        reslove({
+          status: 1,
+          message: "查询成功！",
+          list: data.length ? data.map(function (item) {
+            return _objectSpread({}, item);
+          }) : []
+        });
+      } else {
+        reject({
+          status: 0,
+          message: "查询失败！",
+          list: []
+        });
+      }
+    });
+  });
 }
 
 module.exports = {
   addYinshou: addYinshou,
   selectShoukuan2AutoId: selectShoukuan2AutoId,
-  alterYinshou: alterYinshou
+  alterYinshou: alterYinshou,
+  alterJiean: alterJiean,
+  deleteOrder: deleteOrder,
+  select2autoId: select2autoId
 };

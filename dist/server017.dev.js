@@ -11,7 +11,8 @@ var _require = require("./db/sqlService/wanglaiService"),
     selectOther = _require.selectOther;
 
 var _require2 = require("./db/sqlService/yinshoukuan"),
-    selectOrders = _require2.selectOrders; // 引入导出工具类
+    selectOrders = _require2.selectOrders,
+    selectOrdersLike = _require2.selectOrdersLike; // 引入导出工具类
 
 
 var _require3 = require("./utils/wanglaiExport"),
@@ -134,15 +135,16 @@ app.get("/wanglai", function _callee(req, resp) {
 }); // 查询订单数量 应收账款超期自动提醒
 
 app.get("/selectYinshou", function _callee2(req, resp) {
-  var number, result;
+  var _req$query2, number, type, search, result;
+
   return regeneratorRuntime.async(function _callee2$(_context2) {
     while (1) {
       switch (_context2.prev = _context2.next) {
         case 0:
-          number = req.query.number;
+          _req$query2 = req.query, number = _req$query2.number, type = _req$query2.type, search = _req$query2.search;
           _context2.prev = 1;
           _context2.next = 4;
-          return regeneratorRuntime.awrap(selectOrders(number));
+          return regeneratorRuntime.awrap(selectOrders(number, type, search));
 
         case 4:
           result = _context2.sent;
@@ -161,6 +163,39 @@ app.get("/selectYinshou", function _callee2(req, resp) {
         case 11:
         case "end":
           return _context2.stop();
+      }
+    }
+  }, null, null, [[1, 8]]);
+});
+app.get("/searchYinshou", function _callee3(req, resp) {
+  var _req$query3, type, search, result;
+
+  return regeneratorRuntime.async(function _callee3$(_context3) {
+    while (1) {
+      switch (_context3.prev = _context3.next) {
+        case 0:
+          _req$query3 = req.query, type = _req$query3.type, search = _req$query3.search;
+          _context3.prev = 1;
+          _context3.next = 4;
+          return regeneratorRuntime.awrap(selectOrdersLike(type, search));
+
+        case 4:
+          result = _context3.sent;
+          resp.json(result);
+          _context3.next = 11;
+          break;
+
+        case 8:
+          _context3.prev = 8;
+          _context3.t0 = _context3["catch"](1);
+          resp.json({
+            status: 0,
+            message: "抱歉，查询失败！"
+          });
+
+        case 11:
+        case "end":
+          return _context3.stop();
       }
     }
   }, null, null, [[1, 8]]);

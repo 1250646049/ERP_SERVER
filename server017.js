@@ -3,7 +3,8 @@ const app=express()
 
 
 const {selectGyshangYingFu,selectKehuKemu,selectGyshangYufu,selectOther}=require("./db/sqlService/wanglaiService")
-const {selectOrders}=require("./db/sqlService/yinshoukuan")
+const {selectOrders,selectOrdersLike}=require("./db/sqlService/yinshoukuan")
+
 // 引入导出工具类
 const {exportDatas}=require("./utils/wanglaiExport")
 
@@ -70,11 +71,11 @@ app.get("/wanglai",async(req,resp)=>{
 
 app.get("/selectYinshou", async (req, resp) => {
     const {
-        number
+        number,type,search
     } = req.query
 
     try {
-        let result = await selectOrders(number)
+        let result = await selectOrders(number,type,search)
         resp.json(result)
     } catch {
         resp.json({
@@ -90,6 +91,24 @@ app.get("/selectYinshou", async (req, resp) => {
 
 
 
+app.get("/searchYinshou", async (req, resp) => {
+    const {
+        type,search
+    } = req.query
+   
+    try {
+        let result = await selectOrdersLike(type,search)
+        resp.json(result)
+    } catch {
+        resp.json({
+            status: 0,
+            message: "抱歉，查询失败！"
+        }) 
+    }
+
+
+
+})
 
 
 

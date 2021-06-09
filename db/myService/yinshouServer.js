@@ -181,10 +181,10 @@ function selectShoukuan2AutoId(id){
 
 // 修改一条收款项 mysql
 function alterYinshou(data){
-    const {email,type,jiean,jilu,riqi,price,beizhu,status,shoujianren,jiedian,edu,quyu,id,name,username}=data
+    const {email,type,jilu,riqi,price,beizhu,status,shoujianren,jiedian,edu,quyu,id,name,username}=data
     return new Promise((reslove,reject)=>{
-        connect.query("update w_yinshou set email=?,type=?,jiean=?,jilu=?,riqi=?,price=?,beizhu=?,status=?,shoujianren=?,jiedian=?,edu=?,quyu=?,name=?,username=? where id=?",
-        [email,type,jiean,jilu,riqi,price,beizhu,status,shoujianren,jiedian,edu,quyu,id,name,username],(err,data)=>{
+        connect.query("update w_yinshou set email=?,type=?,jilu=?,riqi=?,price=?,beizhu=?,status=?,shoujianren=?,jiedian=?,edu=?,quyu=?,name=?,username=? where id=?",
+        [email,type,jilu,riqi,price,beizhu,status,shoujianren,jiedian,edu,quyu,name,username,id],(err,data)=>{
             if(!err){
                 reslove({
                     status:1,
@@ -207,9 +207,105 @@ function alterYinshou(data){
 
 
 }
+
+// 修改是否结案
+
+function alterJiean(jiean,id){
+return new Promise((reslove,reject)=>{
+
+    connect.query("update w_yinshou set jiean=? where id=?",[jiean,id],(err,data)=>{
+        if(!err){
+            reslove({
+                status:1,
+                message:"更新成功！"
+            })
+        }else {
+            reject({
+                status:0,
+                message:"更新失败！"
+            })
+        }
+
+
+    })
+
+
+})
+
+
+}
+
+
+// 删除订单
+
+function deleteOrder(id){
+    return new Promise((reslove,reject)=>{
+        connect.query("delete from w_yinshou where id=?",[id],(err,data)=>{
+            if(!err){
+                reslove({
+                    status:1,
+                    message:"删除成功！"
+                })
+            }else {
+                reject({
+                    status:0,
+                    message:"删除失败！"
+                })
+            }
+    
+    
+        })
+
+
+        })
+
+
+
+
+
+
+}
+
+// 根据Auti id 排序查询
+
+function select2autoId(AutoId){
+    return new Promise((reslove,reject)=>{
+        connect.query("select * from w_yinshou where AutoId=? order by number asc",[AutoId],(err,data)=>{
+            if(!err){
+                reslove({
+                    status:1,
+                    message:"查询成功！",
+                    list:data.length?data.map(item=>{
+
+
+                        return {...item}
+                    }):[]
+                })
+            }else {
+                reject({
+                    status:0,
+                    message:"查询失败！",
+                    list:[]
+                })
+            }
+
+
+
+        })
+
+
+
+
+    })
+
+
+}
 module.exports={
 
     addYinshou,
     selectShoukuan2AutoId,
-    alterYinshou
+    alterYinshou,
+    alterJiean,
+    deleteOrder,
+    select2autoId
 }
