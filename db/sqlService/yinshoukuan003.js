@@ -1,4 +1,4 @@
-const connect = require("../sqlDb17")
+const connect = require("../sqlDb003")
 const Myconnect = require("../mysqlDb")
 
 
@@ -122,9 +122,9 @@ function selectCount() {
     }else if(type==='cPersonName') {
         type='per.cPersonName'
     }else {
-        type="cu.cCusName"
+        type="cu.cCusAbbName"
     }
-   
+ 
     return new Promise((reslove, reject) => {
         connect.then(async (resp) => { 
             // 查询总个数

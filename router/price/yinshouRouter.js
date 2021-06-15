@@ -1,7 +1,7 @@
 const express=require("express")
 const router=express.Router()
 
-const {getYingshoukuan,searchYingshoukuan}=require("./yinshouService")
+const {getYingshoukuan,searchYingshoukuan,searchYingshoukuan003,getYingshoukuan003}=require("./yinshouService")
 const {addYinshou,selectShoukuan2AutoId,alterYinshou,deleteOrder,alterJiean,select2autoId}=require("../../db/myService/yinshouServer")
 
 // 删除订单
@@ -55,12 +55,12 @@ router.get("/select2autoId",async(req,resp)=>{
 
 })
 
-// 远程调用查询应收款到期
+// 远程调用查询应收款到期 查询所有分页查询 017
 
 
 router.get("/selectYsk",async(req,resp)=>{
     const {number,type,search}=req.query
-    console.log(number);
+    
     try{
         let result=await getYingshoukuan(number)
         resp.json(result)
@@ -74,13 +74,51 @@ router.get("/selectYsk",async(req,resp)=>{
 
 
 })
-// 远程调用搜索收款到期
+// 远程调用查询应收款到期 查询所有分页查询 003
+
+
+router.get("/selectYsk003",async(req,resp)=>{
+    const {number,type,search}=req.query
+    
+    try{
+        let result=await getYingshoukuan003(number)
+        resp.json(result)
+    }catch{
+        resp.json({
+            status:0, 
+            message:"抱歉，查询失败！"
+        })
+    }
+
+
+
+})
+// 远程调用搜索收款到期 017
 
 router.get("/searchYsk",async(req,resp)=>{
     const {type,search}=req.query
    
     try{
         let result=await searchYingshoukuan(type,search)
+        resp.json(result)
+    }catch{
+        resp.json({
+            status:0, 
+            message:"抱歉，查询失败！"
+        })
+    }
+
+
+
+})
+
+// 远程调用搜索收款到期 003
+
+router.get("/searchYsk003",async(req,resp)=>{
+    const {type,search}=req.query
+   
+    try{
+        let result=await searchYingshoukuan003(type,search)
         resp.json(result)
     }catch{
         resp.json({

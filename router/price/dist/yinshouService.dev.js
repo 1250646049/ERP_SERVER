@@ -9,7 +9,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 var axios = require("axios");
 
 var _require = require("../../utils/serverConfig"),
-    sql017 = _require.sql017; // 远程调用获取资源
+    sql017 = _require.sql017,
+    sql003 = _require.sql003; // 远程调用获取资源
 
 
 function getYingshoukuan(number) {
@@ -27,7 +28,7 @@ function getYingshoukuan(number) {
       });
     });
   });
-} // 远程调用获取资源 搜索
+} // 远程调用获取资源 搜索 017账套
 
 
 function searchYingshoukuan(type, search) {
@@ -46,9 +47,48 @@ function searchYingshoukuan(type, search) {
       });
     });
   });
+} // 远程调用获取资源 搜索 003账套
+
+
+function searchYingshoukuan003(type, search) {
+  return new Promise(function (reslove, reject) {
+    axios.get(sql003 + "/searchYinshou", {
+      params: {
+        type: type,
+        search: search
+      }
+    }).then(function (r) {
+      return reslove(_objectSpread({}, r.data));
+    })["catch"](function (e) {
+      return reject({
+        status: 0,
+        message: "抱歉，查询失败！"
+      });
+    });
+  });
+} // 远程调用获取资源 搜索 查询账套
+
+
+function getYingshoukuan003(number) {
+  return new Promise(function (reslove, reject) {
+    axios.get(sql003 + "/selectYinshou", {
+      params: {
+        number: number
+      }
+    }).then(function (r) {
+      return reslove(_objectSpread({}, r.data));
+    })["catch"](function (e) {
+      return reject({
+        status: 0,
+        message: "抱歉，查询失败！"
+      });
+    });
+  });
 }
 
 module.exports = {
   getYingshoukuan: getYingshoukuan,
-  searchYingshoukuan: searchYingshoukuan
+  searchYingshoukuan: searchYingshoukuan,
+  searchYingshoukuan003: searchYingshoukuan003,
+  getYingshoukuan003: getYingshoukuan003
 };
