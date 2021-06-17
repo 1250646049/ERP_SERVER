@@ -1,11 +1,21 @@
 const express=require("express")
 const app=express()
-
+const cors=require("cors")
 const {selectOrders,selectOrdersLike}=require("./db/sqlService/yinshoukuan003")
 
 
 
-
+// app.all("*", function(req, res, next) {
+//     if (!req.get("Origin")) return next();
+//      // use "*" here to accept any origin
+//      res.set("Access-Control-Allow-Origin",req.headers.origin);  
+//      res.set("Access-Control-Allow-Methods", "GET");
+//      res.set("Access-Control-Allow-Headers", "X-Requested-With, Content-Type");
+//      res.header('Access-Control-Allow-Credentials', 'true');
+//      // res.set('Access-Control-Allow-Max-Age', 3600);
+//      if ("OPTIONS" === req.method) return res.sendStatus(200);
+//      next();
+// });
 
 // 查询订单数量 应收账款超期自动提醒
 

@@ -112,7 +112,7 @@ router.get("/user/word", async (req, resp) => {
 
 // 查询用户部门列表
 router.get("/user/departs", async (req, resp) => {
-
+    console.log(555)
     try {
         let result = await selectDepartOrder()
         resp.json(result)

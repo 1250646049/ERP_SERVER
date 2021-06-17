@@ -19,17 +19,32 @@ var CommonRouter = require("./router/common/commonRouter");
 
 var PriceRouter = require("./router/price/bijiaRouter");
 
-var WanglaiRouter = require("./router/wanglai/wanglai"); // 引入应收款路由
+var WanglaiRouter = require("./router/wanglai/wanglai");
+
+var ExamRouter = require("./router/fuzhu/examRouter"); // 引入应收款路由
 
 
-var YinshouRouter = require("./router/price/yinshouRouter"); // 解析 body
+var YinshouRouter = require("./router/price/yinshouRouter");
+
+var cors = require("cors"); // 解析 body
 
 
 app.use(express.urlencoded({
   extended: true
 })); // 设置静态文件目录
 
-app.use(express["static"](path.join(__dirname, "public"))); // 设置session 
+app.use(express["static"](path.join(__dirname, "public"))); //  引入跨域
+// app.all("*", function(req, res, next) {
+//     if (!req.get("Origin")) return next();
+//      // use "*" here to accept any origin
+//      res.set("Access-Control-Allow-Origin",req.headers.origin);  
+//      res.set("Access-Control-Allow-Methods", "GET");
+//      res.set("Access-Control-Allow-Headers", "X-Requested-With, Content-Type");
+//      res.header('Access-Control-Allow-Credentials', 'true');
+//      // res.set('Access-Control-Allow-Max-Age', 3600);
+//      if ("OPTIONS" === req.method) return res.sendStatus(200);
+//      next(); 
+// 设置session    
 
 app.use(session({
   secret: 'erpsystem',
@@ -49,5 +64,6 @@ app.listen(3008, function (err) {
     app.use(PriceRouter);
     app.use(WanglaiRouter);
     app.use(YinshouRouter);
+    app.use(ExamRouter);
   }
 });

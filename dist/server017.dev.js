@@ -4,6 +4,8 @@ var express = require("express");
 
 var app = express();
 
+var cors = require("cors");
+
 var _require = require("./db/sqlService/wanglaiService"),
     selectGyshangYingFu = _require.selectGyshangYingFu,
     selectKehuKemu = _require.selectKehuKemu,
@@ -16,7 +18,19 @@ var _require2 = require("./db/sqlService/yinshoukuan"),
 
 
 var _require3 = require("./utils/wanglaiExport"),
-    exportDatas = _require3.exportDatas; // 查询 and 导出
+    exportDatas = _require3.exportDatas; // 引入跨域
+// app.all("*", function(req, res, next) {
+//     if (!req.get("Origin")) return next();
+//      // use "*" here to accept any origin
+//      res.set("Access-Control-Allow-Origin",req.headers.origin);  
+//      res.set("Access-Control-Allow-Methods", "GET");
+//      res.set("Access-Control-Allow-Headers", "X-Requested-With, Content-Type");
+//      res.header('Access-Control-Allow-Credentials', 'true');
+//      // res.set('Access-Control-Allow-Max-Age', 3600);
+//      if ("OPTIONS" === req.method) return res.sendStatus(200);
+//      next();
+// });
+// 查询 and 导出 
 
 
 app.get("/wanglai", function _callee(req, resp) {

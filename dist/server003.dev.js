@@ -4,9 +4,22 @@ var express = require("express");
 
 var app = express();
 
+var cors = require("cors");
+
 var _require = require("./db/sqlService/yinshoukuan003"),
     selectOrders = _require.selectOrders,
-    selectOrdersLike = _require.selectOrdersLike; // 查询订单数量 应收账款超期自动提醒
+    selectOrdersLike = _require.selectOrdersLike; // app.all("*", function(req, res, next) {
+//     if (!req.get("Origin")) return next();
+//      // use "*" here to accept any origin
+//      res.set("Access-Control-Allow-Origin",req.headers.origin);  
+//      res.set("Access-Control-Allow-Methods", "GET");
+//      res.set("Access-Control-Allow-Headers", "X-Requested-With, Content-Type");
+//      res.header('Access-Control-Allow-Credentials', 'true');
+//      // res.set('Access-Control-Allow-Max-Age', 3600);
+//      if ("OPTIONS" === req.method) return res.sendStatus(200);
+//      next();
+// });
+// 查询订单数量 应收账款超期自动提醒
 
 
 app.get("/selectYinshou", function _callee(req, resp) {

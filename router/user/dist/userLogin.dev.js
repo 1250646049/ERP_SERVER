@@ -149,30 +149,31 @@ router.get("/user/departs", function _callee3(req, resp) {
     while (1) {
       switch (_context3.prev = _context3.next) {
         case 0:
-          _context3.prev = 0;
-          _context3.next = 3;
+          console.log(555);
+          _context3.prev = 1;
+          _context3.next = 4;
           return regeneratorRuntime.awrap(selectDepartOrder());
 
-        case 3:
+        case 4:
           result = _context3.sent;
           resp.json(result);
-          _context3.next = 10;
+          _context3.next = 11;
           break;
 
-        case 7:
-          _context3.prev = 7;
-          _context3.t0 = _context3["catch"](0);
+        case 8:
+          _context3.prev = 8;
+          _context3.t0 = _context3["catch"](1);
           resp.json({
             status: 0,
             message: "抱歉，查询失败！"
           });
 
-        case 10:
+        case 11:
         case "end":
           return _context3.stop();
       }
     }
-  }, null, null, [[0, 7]]);
+  }, null, null, [[1, 8]]);
 }); // 查询用户管理部门
 
 router.get("/depart/user", function _callee4(req, resp) {
