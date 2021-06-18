@@ -21,7 +21,9 @@ var PriceRouter = require("./router/price/bijiaRouter");
 
 var WanglaiRouter = require("./router/wanglai/wanglai");
 
-var ExamRouter = require("./router/fuzhu/examRouter"); // 引入应收款路由
+var ExamRouter = require("./router/fuzhu/examRouter");
+
+var SalaryRouter = require("./router/salary/salaryRouter"); // 引入应收款路由
 
 
 var YinshouRouter = require("./router/price/yinshouRouter");
@@ -65,5 +67,6 @@ app.listen(3008, function (err) {
     app.use(WanglaiRouter);
     app.use(YinshouRouter);
     app.use(ExamRouter);
+    app.use(SalaryRouter);
   }
 });

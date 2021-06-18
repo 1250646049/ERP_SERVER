@@ -10,6 +10,7 @@ const CommonRouter=require("./router/common/commonRouter")
 const PriceRouter=require("./router/price/bijiaRouter")
 const WanglaiRouter=require("./router/wanglai/wanglai")
 const ExamRouter=require("./router/fuzhu/examRouter")
+const SalaryRouter=require("./router/salary/salaryRouter")
 // 引入应收款路由
 const YinshouRouter=require("./router/price/yinshouRouter")
 const cors=require("cors")
@@ -50,6 +51,7 @@ app.listen(3008,(err)=>{
         app.use(WanglaiRouter)
         app.use(YinshouRouter)
         app.use(ExamRouter)
+        app.use(SalaryRouter)
     }
 }) 
 
