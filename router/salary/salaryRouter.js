@@ -1,6 +1,6 @@
 const express = require("express")
 const router = express.Router()
-const {selectAllNews,deleteContent}=require("./salaryService")
+const {selectAllNews,deleteContent,updateWorkshop,insertWorkshop}=require("./salaryService")
 // 查询所有
 
 
@@ -35,5 +35,44 @@ router.get("/deleteContent",async(req,resp)=>{
 
 
 })
+
+// 更新workshop
+
+router.post("/updateWorkshop",async(req,resp)=>{
+    const {WorkshopName,WorkshopCode}=req.body 
+ 
+try{
+    let result=await updateWorkshop(WorkshopName,WorkshopCode)
+    resp.json(result)
+
+}catch{
+    resp.json({
+        status:0, 
+        message:"更新失败！"
+    })
+}
+
+
+
+})
+// 添加一条Workshop
+
+router.post("/insertWorkshop",async(req,resp)=>{
+    const {WorkshopName,bm}=req.body
+
+    try{
+        let result=await insertWorkshop(WorkshopName,bm)
+        resp.json(result)
+    }catch{
+        resp.json({
+            status:0,
+            message:"添加WorkShop数据失败！"
+        })
+    }
+
+
+
+})
+
 
 module.exports=router

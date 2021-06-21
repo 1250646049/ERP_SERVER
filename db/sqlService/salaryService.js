@@ -14,7 +14,7 @@ function selectWorkshop(){
 
    return new Promise((reslove,reject)=>{
     connect.then(resp=>{
-        resp.query("select * from Workshop")
+        resp.query("select * from Workshop order by WorkshopCode asc")
         .then(d=>{
             reslove({
                 status:1,
@@ -22,7 +22,7 @@ function selectWorkshop(){
                 Work:d['recordset'].length?d['recordset'].map((item,index)=>{
                     item['key']=index
                     return {...item}
-                }):[]
+                }):[] 
             })      
         })
         .catch(e=>{
@@ -38,6 +38,75 @@ function selectWorkshop(){
 
 
 }
+
+// 更新车间信息
+
+function updateWorkshop(WorkshopName,workCode){
+    return new Promise((reslove,reject)=>{
+        connect.then(r=>{
+            r.query(`update Workshop set WorkshopName='${WorkshopName}' where WorkshopCode='${workCode}'`)
+            .then(d=>{
+                reslove({
+                    status:1,
+                    message:"更新成功！"
+                })
+            })
+            .catch((e)=>{
+                console.log(e);
+                reject({
+                    status:0,
+                    message:"更新失败！"
+                })
+
+
+            })
+
+
+        })
+
+
+
+    })
+
+
+
+}
+
+// 添加一条车间信息
+
+async function addWorkshop(WorkshopName,bm){
+    let {Work}=await selectWorkshop()
+    let code=123
+    if(Work[Work.length-1]){
+        code=Work[Work.length-1]['WorkshopCode']
+        code=Number(code.split("CJ")[1])
+        code+=1 
+        let type=code<=999?('0'+code):code
+        code="CJ"+type 
+    
+    } 
+    return new Promise((reslove,reject)=>{
+        connect.then(r=>{
+            r.query(`insert into Workshop(WorkshopCode,WorkshopName,bm) values('${code}','${WorkshopName}','${bm}')`)
+            .then(r=>{
+                reslove({
+                    status:1,
+                    message:"插入数据成功！"          
+                })
+            })
+            .catch(e=>{
+                reject({
+                    status:0,
+                    message:"插入数据失败！"
+                })
+            })
+        })
+
+
+
+    })
+}
+
 // 查询班组信息
 function selectTeam(){
 
@@ -281,7 +350,7 @@ function DeleteContent(data,type,code){
             reslove({
                 status:1,
                 message:"删除失败！"
-            })
+            }) 
         })
         .catch(e=>{
             console.log(e);
@@ -302,5 +371,7 @@ function DeleteContent(data,type,code){
 
 module.exports={
     selectAllNews,
-    DeleteContent
+    DeleteContent,
+    updateWorkshop,
+    addWorkshop
 }

@@ -9,8 +9,16 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 var axios = require("axios");
 
 var _require = require("../../utils/serverConfig"),
-    Wage = _require.Wage; // 远程调用资源查询
+    Wage = _require.Wage;
 
+var qs = require("qs"); // 用axios实例化的方式更新post请求
+
+
+var instance = axios.create({});
+instance.interceptors.request.use(function (config) {
+  config['data'] = qs.stringify(config['data']);
+  return config;
+}); // 远程调用资源查询
 
 function selectAllNews() {
   return new Promise(function (reslove, reject) {
@@ -51,9 +59,45 @@ function deleteContent(data, type, code) {
       });
     });
   });
+} // 调用资源更新workShop
+
+
+function updateWorkshop(WorkshopName, workCode) {
+  return new Promise(function (reslove, reject) {
+    instance.post(Wage + "/salary/updateWorkshop", {
+      WorkshopName: WorkshopName,
+      workCode: workCode
+    }).then(function (r) {
+      reslove(_objectSpread({}, r.data));
+    })["catch"](function () {
+      reject({
+        status: 0,
+        message: "更新失败！"
+      });
+    });
+  });
+} // 调用远程资源添加一条workShop
+
+
+function insertWorkshop(WorkshopName, bm) {
+  return new Promise(function (reslove, reject) {
+    instance.post(Wage + "/salary/addContent", {
+      WorkshopName: WorkshopName,
+      bm: bm
+    }).then(function (r) {
+      reslove(_objectSpread({}, r.data));
+    })["catch"](function (e) {
+      reject({
+        status: 0,
+        message: "添加失败"
+      });
+    });
+  });
 }
 
 module.exports = {
   selectAllNews: selectAllNews,
-  deleteContent: deleteContent
+  deleteContent: deleteContent,
+  updateWorkshop: updateWorkshop,
+  insertWorkshop: insertWorkshop
 };

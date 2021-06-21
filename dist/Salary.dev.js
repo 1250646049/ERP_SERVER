@@ -6,8 +6,15 @@ var app = express(); // 导入操作数据库资源
 
 var _require = require("./db/sqlService/salaryService"),
     selectAllNews = _require.selectAllNews,
-    DeleteContent = _require.DeleteContent; // 查询所有基础内容
+    DeleteContent = _require.DeleteContent,
+    updateWorkshop = _require.updateWorkshop,
+    addWorkshop = _require.addWorkshop; // 设置允许解析body
+// 解析 body
 
+
+app.use(express.urlencoded({
+  extended: true
+})); // 查询所有基础内容
 
 app.get("/salary/selectAllNews", function _callee(req, resp) {
   var result;
@@ -70,6 +77,74 @@ app.get("/salary/deleteContent", function _callee2(req, resp) {
         case 11:
         case "end":
           return _context2.stop();
+      }
+    }
+  }, null, null, [[1, 8]]);
+}); // 更新车间信息
+
+app.post("/salary/updateWorkshop", function _callee3(req, resp) {
+  var _req$body, WorkshopName, workCode, result;
+
+  return regeneratorRuntime.async(function _callee3$(_context3) {
+    while (1) {
+      switch (_context3.prev = _context3.next) {
+        case 0:
+          _req$body = req.body, WorkshopName = _req$body.WorkshopName, workCode = _req$body.workCode;
+          _context3.prev = 1;
+          _context3.next = 4;
+          return regeneratorRuntime.awrap(updateWorkshop(WorkshopName, workCode));
+
+        case 4:
+          result = _context3.sent;
+          resp.json(result);
+          _context3.next = 11;
+          break;
+
+        case 8:
+          _context3.prev = 8;
+          _context3.t0 = _context3["catch"](1);
+          resp.json({
+            status: 0,
+            message: "更新失败！"
+          });
+
+        case 11:
+        case "end":
+          return _context3.stop();
+      }
+    }
+  }, null, null, [[1, 8]]);
+}); // 添加一条车间信息
+
+app.post("/salary/addContent", function _callee4(req, resp) {
+  var _req$body2, WorkshopName, bm, result;
+
+  return regeneratorRuntime.async(function _callee4$(_context4) {
+    while (1) {
+      switch (_context4.prev = _context4.next) {
+        case 0:
+          _req$body2 = req.body, WorkshopName = _req$body2.WorkshopName, bm = _req$body2.bm;
+          _context4.prev = 1;
+          _context4.next = 4;
+          return regeneratorRuntime.awrap(addWorkshop(WorkshopName, bm));
+
+        case 4:
+          result = _context4.sent;
+          resp.json(result);
+          _context4.next = 11;
+          break;
+
+        case 8:
+          _context4.prev = 8;
+          _context4.t0 = _context4["catch"](1);
+          resp.json({
+            status: 0,
+            message: "添加失败"
+          });
+
+        case 11:
+        case "end":
+          return _context4.stop();
       }
     }
   }, null, null, [[1, 8]]);

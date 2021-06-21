@@ -1,8 +1,16 @@
 const axios=require("axios")
 const {Wage}=require("../../utils/serverConfig")
+const qs=require("qs")
 
+// 用axios实例化的方式更新post请求
+const instance=axios.create({
 
+})
+instance.interceptors.request.use(config=>{
+    config['data']=qs.stringify(config['data'])
 
+    return config;
+}) 
 
 // 远程调用资源查询
 
@@ -57,7 +65,64 @@ function deleteContent(data,type,code){
 
 
 }
+// 调用资源更新workShop
+
+function updateWorkshop(WorkshopName,workCode){
+   
+  return new Promise((reslove,reject)=>{
+    instance.post(Wage+"/salary/updateWorkshop",{WorkshopName,workCode})
+    .then(r=>{
+        
+        reslove({
+            ...r.data
+        })
+
+    })
+    .catch(()=>{
+
+        reject({
+            status:0,
+            message:"更新失败！"
+        })
+    })
+
+
+
+
+
+  })
+
+
+
+}
+
+// 调用远程资源添加一条workShop
+
+function insertWorkshop(WorkshopName,bm){
+
+    return new Promise((reslove,reject)=>{
+        instance.post(Wage+"/salary/addContent",{WorkshopName,bm})
+        .then(r=>{
+            reslove({
+                ...r.data
+            })
+        })
+        .catch(e=>{
+            reject({
+                status:0,
+                message:"添加失败"
+            })
+        })
+
+
+
+    })
+
+
+}
 module.exports={
     selectAllNews,
-    deleteContent
+    deleteContent,
+    updateWorkshop,
+    insertWorkshop
 }

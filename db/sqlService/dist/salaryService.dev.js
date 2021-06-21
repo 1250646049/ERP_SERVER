@@ -15,7 +15,7 @@ var connect = require("../WageDb"); // 查询车间信息
 function selectWorkshop() {
   return new Promise(function (reslove, reject) {
     connect.then(function (resp) {
-      resp.query("select * from Workshop").then(function (d) {
+      resp.query("select * from Workshop order by WorkshopCode asc").then(function (d) {
         reslove({
           status: 1,
           message: "查询成功！",
@@ -31,6 +31,74 @@ function selectWorkshop() {
         });
       });
     });
+  });
+} // 更新车间信息
+
+
+function updateWorkshop(WorkshopName, workCode) {
+  return new Promise(function (reslove, reject) {
+    connect.then(function (r) {
+      r.query("update Workshop set WorkshopName='".concat(WorkshopName, "' where WorkshopCode='").concat(workCode, "'")).then(function (d) {
+        reslove({
+          status: 1,
+          message: "更新成功！"
+        });
+      })["catch"](function (e) {
+        console.log(e);
+        reject({
+          status: 0,
+          message: "更新失败！"
+        });
+      });
+    });
+  });
+} // 添加一条车间信息
+
+
+function addWorkshop(WorkshopName, bm) {
+  var _ref, Work, code, type;
+
+  return regeneratorRuntime.async(function addWorkshop$(_context) {
+    while (1) {
+      switch (_context.prev = _context.next) {
+        case 0:
+          _context.next = 2;
+          return regeneratorRuntime.awrap(selectWorkshop());
+
+        case 2:
+          _ref = _context.sent;
+          Work = _ref.Work;
+          code = 123;
+
+          if (Work[Work.length - 1]) {
+            code = Work[Work.length - 1]['WorkshopCode'];
+            code = Number(code.split("CJ")[1]);
+            code += 1;
+            type = code <= 999 ? '0' + code : code;
+            code = "CJ" + type;
+          }
+
+          return _context.abrupt("return", new Promise(function (reslove, reject) {
+            connect.then(function (r) {
+              r.query("insert into Workshop(WorkshopCode,WorkshopName,bm) values('".concat(code, "','").concat(WorkshopName, "','").concat(bm, "')")).then(function (r) {
+                reslove({
+                  status: 1,
+                  message: "插入数据成功！"
+                });
+              })["catch"](function (e) {
+                reject({
+                  status: 0,
+                  message: "插入数据失败！"
+                });
+              });
+            });
+          }));
+
+        case 7:
+        case "end":
+          return _context.stop();
+      }
+    }
   });
 } // 查询班组信息
 
@@ -178,47 +246,47 @@ function selectHY_Department() {
 
 function selectAllNews() {
   var work, team, person, process, project, subsidyProject, HY_Department;
-  return regeneratorRuntime.async(function selectAllNews$(_context) {
+  return regeneratorRuntime.async(function selectAllNews$(_context2) {
     while (1) {
-      switch (_context.prev = _context.next) {
+      switch (_context2.prev = _context2.next) {
         case 0:
-          _context.prev = 0;
-          _context.next = 3;
+          _context2.prev = 0;
+          _context2.next = 3;
           return regeneratorRuntime.awrap(selectWorkshop());
 
         case 3:
-          work = _context.sent;
-          _context.next = 6;
+          work = _context2.sent;
+          _context2.next = 6;
           return regeneratorRuntime.awrap(selectTeam());
 
         case 6:
-          team = _context.sent;
-          _context.next = 9;
+          team = _context2.sent;
+          _context2.next = 9;
           return regeneratorRuntime.awrap(selectPerson());
 
         case 9:
-          person = _context.sent;
-          _context.next = 12;
+          person = _context2.sent;
+          _context2.next = 12;
           return regeneratorRuntime.awrap(selectProcess());
 
         case 12:
-          process = _context.sent;
-          _context.next = 15;
+          process = _context2.sent;
+          _context2.next = 15;
           return regeneratorRuntime.awrap(selectProject());
 
         case 15:
-          project = _context.sent;
-          _context.next = 18;
+          project = _context2.sent;
+          _context2.next = 18;
           return regeneratorRuntime.awrap(selectSubsidyProject());
 
         case 18:
-          subsidyProject = _context.sent;
-          _context.next = 21;
+          subsidyProject = _context2.sent;
+          _context2.next = 21;
           return regeneratorRuntime.awrap(selectHY_Department());
 
         case 21:
-          HY_Department = _context.sent;
-          return _context.abrupt("return", {
+          HY_Department = _context2.sent;
+          return _context2.abrupt("return", {
             status: 1,
             message: "查询成功！",
             work: work['Work'],
@@ -231,16 +299,16 @@ function selectAllNews() {
           });
 
         case 25:
-          _context.prev = 25;
-          _context.t0 = _context["catch"](0);
-          return _context.abrupt("return", {
+          _context2.prev = 25;
+          _context2.t0 = _context2["catch"](0);
+          return _context2.abrupt("return", {
             status: 0,
             message: "查询失败！"
           });
 
         case 28:
         case "end":
-          return _context.stop();
+          return _context2.stop();
       }
     }
   }, null, null, [[0, 25]]);
@@ -268,5 +336,7 @@ function DeleteContent(data, type, code) {
 
 module.exports = {
   selectAllNews: selectAllNews,
-  DeleteContent: DeleteContent
+  DeleteContent: DeleteContent,
+  updateWorkshop: updateWorkshop,
+  addWorkshop: addWorkshop
 };
