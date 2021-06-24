@@ -1,7 +1,7 @@
 const express = require("express")
 const app = express()
 // 导入操作数据库资源
-const {selectAllNews,DeleteContent,updateWorkshop,addWorkshop}=require("./db/sqlService/salaryService")
+const {selectAllNews,DeleteContent,updateWorkshop,addWorkshop, addTeam, alterTeam}=require("./db/sqlService/salaryService")
 
 
 // 设置允许解析body
@@ -81,6 +81,38 @@ app.post("/salary/addContent",async(req,resp)=>{
 
 })
 
+// 添加一条班组信息
+
+app.post("/salary/addTeam",async(req,resp)=>{
+    const {WorkshopCode, TeamName, number, bm}=req.body
+    try{
+        let result=await addTeam(WorkshopCode,TeamName,number,bm)
+        resp.json(result)
+    }catch{
+        resp.json({
+            status:0,
+            message:"抱歉，添加班组信息失败！"
+        })
+    }
+
+
+})
+
+// 修改指定的班组信息
+app.post("/salary/alterTeam",async(req,resp)=>{
+    const {TeamCode,WorkshopCode, TeamName, number, bm}=req.body
+
+    try{
+        let result=await alterTeam(TeamCode,WorkshopCode,TeamName,number,bm)
+        resp.json(result)
+    }catch{
+        resp.json({
+            status:0,
+            message:"修改失败！"
+        })
+    }
+
+})
 
 app.listen(3099, (err, data) => {
     if (!err) {

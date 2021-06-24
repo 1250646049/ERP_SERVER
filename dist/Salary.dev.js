@@ -8,7 +8,9 @@ var _require = require("./db/sqlService/salaryService"),
     selectAllNews = _require.selectAllNews,
     DeleteContent = _require.DeleteContent,
     updateWorkshop = _require.updateWorkshop,
-    addWorkshop = _require.addWorkshop; // 设置允许解析body
+    addWorkshop = _require.addWorkshop,
+    addTeam = _require.addTeam,
+    alterTeam = _require.alterTeam; // 设置允许解析body
 // 解析 body
 
 
@@ -145,6 +147,74 @@ app.post("/salary/addContent", function _callee4(req, resp) {
         case 11:
         case "end":
           return _context4.stop();
+      }
+    }
+  }, null, null, [[1, 8]]);
+}); // 添加一条班组信息
+
+app.post("/salary/addTeam", function _callee5(req, resp) {
+  var _req$body3, WorkshopCode, TeamName, number, bm, result;
+
+  return regeneratorRuntime.async(function _callee5$(_context5) {
+    while (1) {
+      switch (_context5.prev = _context5.next) {
+        case 0:
+          _req$body3 = req.body, WorkshopCode = _req$body3.WorkshopCode, TeamName = _req$body3.TeamName, number = _req$body3.number, bm = _req$body3.bm;
+          _context5.prev = 1;
+          _context5.next = 4;
+          return regeneratorRuntime.awrap(addTeam(WorkshopCode, TeamName, number, bm));
+
+        case 4:
+          result = _context5.sent;
+          resp.json(result);
+          _context5.next = 11;
+          break;
+
+        case 8:
+          _context5.prev = 8;
+          _context5.t0 = _context5["catch"](1);
+          resp.json({
+            status: 0,
+            message: "抱歉，添加班组信息失败！"
+          });
+
+        case 11:
+        case "end":
+          return _context5.stop();
+      }
+    }
+  }, null, null, [[1, 8]]);
+}); // 修改指定的班组信息
+
+app.post("/salary/alterTeam", function _callee6(req, resp) {
+  var _req$body4, TeamCode, WorkshopCode, TeamName, number, bm, result;
+
+  return regeneratorRuntime.async(function _callee6$(_context6) {
+    while (1) {
+      switch (_context6.prev = _context6.next) {
+        case 0:
+          _req$body4 = req.body, TeamCode = _req$body4.TeamCode, WorkshopCode = _req$body4.WorkshopCode, TeamName = _req$body4.TeamName, number = _req$body4.number, bm = _req$body4.bm;
+          _context6.prev = 1;
+          _context6.next = 4;
+          return regeneratorRuntime.awrap(alterTeam(TeamCode, WorkshopCode, TeamName, number, bm));
+
+        case 4:
+          result = _context6.sent;
+          resp.json(result);
+          _context6.next = 11;
+          break;
+
+        case 8:
+          _context6.prev = 8;
+          _context6.t0 = _context6["catch"](1);
+          resp.json({
+            status: 0,
+            message: "修改失败！"
+          });
+
+        case 11:
+        case "end":
+          return _context6.stop();
       }
     }
   }, null, null, [[1, 8]]);

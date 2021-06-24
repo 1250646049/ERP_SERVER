@@ -1,10 +1,5 @@
-const { json } = require("express")
+
 const connect=require("../WageDb")
-
-
-
-
-
 
 
 
@@ -112,7 +107,7 @@ function selectTeam(){
 
     return new Promise((reslove,reject)=>{
         connect.then(r=>{
-            r.query("select * from Team t left join Workshop w on t.WorkshopCode=w.WorkshopCode")
+            r.query("select * from Team t left join Workshop w on t.WorkshopCode=w.WorkshopCode order by t.TeamCode asc")
             .then(d=>{
                 reslove({
                     status:1,
@@ -140,7 +135,61 @@ function selectTeam(){
 
 
 }
+// 添加一条班组信息
+async function addTeam(WorkshopCode,TeamName,number,bm){
+    let {Team}=await selectTeam()
+    let code;
+    if(Team[Team.length-1]){
+        code=Team[Team.length-1]['TeamCode']
+        code=Number(code.split("CJ")[1])
+        code+=1 
+        let type=code<=999?('0'+code):code
+        code="CJ"+type 
+    } 
+    return new Promise((reslove,reject)=>{
+        connect.then(r=>{
+            r.query(`insert into Team(TeamCode,WorkshopCode,TeamName,number,bm) values('${code}','${WorkshopCode}','${TeamName}','${number}','${bm}')`)
+            .then(d=>{
+                reslove({
+                    status:1,
+                    message:"恭喜你，添加班组信息成功！"
+                })
+            })
+            .catch(e=>{
+                reject({
+                    status:0,
+                    message:"抱歉，添加班组信息失败！"
+                })
+            })
+        })
 
+
+
+    })
+}
+// 修改一条班组信息
+function alterTeam(TeamCode,WorkshopCode,TeamName,number,bm){
+    return new Promise((reslove,reject)=>{
+        connect.then(r=>{
+            r.query(`update Team set WorkshopCode='${WorkshopCode}',TeamName='${TeamName}',number='${number}',bm='${bm}' where TeamCode='${TeamCode}'`)
+            .then(d=>{
+                reslove({
+                    status:1,
+                    message:"恭喜你，修改班组信息成功！"
+                })
+            })
+            .catch(e=>{
+                reject({
+                    status:0,
+                    message:"抱歉，修改班组信息失败！"
+                })
+            })
+        })
+
+
+
+    })
+}
 // 查询所有员工信息
 
 function selectPerson(){
@@ -373,5 +422,7 @@ module.exports={
     selectAllNews,
     DeleteContent,
     updateWorkshop,
-    addWorkshop
+    addWorkshop,
+    addTeam,
+    alterTeam
 }

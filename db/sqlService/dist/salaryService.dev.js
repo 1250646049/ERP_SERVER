@@ -6,9 +6,6 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-var _require = require("express"),
-    json = _require.json;
-
 var connect = require("../WageDb"); // 查询车间信息
 
 
@@ -106,7 +103,7 @@ function addWorkshop(WorkshopName, bm) {
 function selectTeam() {
   return new Promise(function (reslove, reject) {
     connect.then(function (r) {
-      r.query("select * from Team t left join Workshop w on t.WorkshopCode=w.WorkshopCode").then(function (d) {
+      r.query("select * from Team t left join Workshop w on t.WorkshopCode=w.WorkshopCode order by t.TeamCode asc").then(function (d) {
         reslove({
           status: 1,
           message: "查询成功！",
@@ -119,6 +116,72 @@ function selectTeam() {
         reject({
           status: 0,
           message: "查询失败！"
+        });
+      });
+    });
+  });
+} // 添加一条班组信息
+
+
+function addTeam(WorkshopCode, TeamName, number, bm) {
+  var _ref2, Team, code, type;
+
+  return regeneratorRuntime.async(function addTeam$(_context2) {
+    while (1) {
+      switch (_context2.prev = _context2.next) {
+        case 0:
+          _context2.next = 2;
+          return regeneratorRuntime.awrap(selectTeam());
+
+        case 2:
+          _ref2 = _context2.sent;
+          Team = _ref2.Team;
+
+          if (Team[Team.length - 1]) {
+            code = Team[Team.length - 1]['TeamCode'];
+            code = Number(code.split("CJ")[1]);
+            code += 1;
+            type = code <= 999 ? '0' + code : code;
+            code = "CJ" + type;
+          }
+
+          return _context2.abrupt("return", new Promise(function (reslove, reject) {
+            connect.then(function (r) {
+              r.query("insert into Team(TeamCode,WorkshopCode,TeamName,number,bm) values('".concat(code, "','").concat(WorkshopCode, "','").concat(TeamName, "','").concat(number, "','").concat(bm, "')")).then(function (d) {
+                reslove({
+                  status: 1,
+                  message: "恭喜你，添加班组信息成功！"
+                });
+              })["catch"](function (e) {
+                reject({
+                  status: 0,
+                  message: "抱歉，添加班组信息失败！"
+                });
+              });
+            });
+          }));
+
+        case 6:
+        case "end":
+          return _context2.stop();
+      }
+    }
+  });
+} // 修改一条班组信息
+
+
+function alterTeam(TeamCode, WorkshopCode, TeamName, number, bm) {
+  return new Promise(function (reslove, reject) {
+    connect.then(function (r) {
+      r.query("update Team set WorkshopCode='".concat(WorkshopCode, "',TeamName='").concat(TeamName, "',number='").concat(number, "',bm='").concat(bm, "' where TeamCode='").concat(TeamCode, "'")).then(function (d) {
+        reslove({
+          status: 1,
+          message: "恭喜你，修改班组信息成功！"
+        });
+      })["catch"](function (e) {
+        reject({
+          status: 0,
+          message: "抱歉，修改班组信息失败！"
         });
       });
     });
@@ -246,47 +309,47 @@ function selectHY_Department() {
 
 function selectAllNews() {
   var work, team, person, process, project, subsidyProject, HY_Department;
-  return regeneratorRuntime.async(function selectAllNews$(_context2) {
+  return regeneratorRuntime.async(function selectAllNews$(_context3) {
     while (1) {
-      switch (_context2.prev = _context2.next) {
+      switch (_context3.prev = _context3.next) {
         case 0:
-          _context2.prev = 0;
-          _context2.next = 3;
+          _context3.prev = 0;
+          _context3.next = 3;
           return regeneratorRuntime.awrap(selectWorkshop());
 
         case 3:
-          work = _context2.sent;
-          _context2.next = 6;
+          work = _context3.sent;
+          _context3.next = 6;
           return regeneratorRuntime.awrap(selectTeam());
 
         case 6:
-          team = _context2.sent;
-          _context2.next = 9;
+          team = _context3.sent;
+          _context3.next = 9;
           return regeneratorRuntime.awrap(selectPerson());
 
         case 9:
-          person = _context2.sent;
-          _context2.next = 12;
+          person = _context3.sent;
+          _context3.next = 12;
           return regeneratorRuntime.awrap(selectProcess());
 
         case 12:
-          process = _context2.sent;
-          _context2.next = 15;
+          process = _context3.sent;
+          _context3.next = 15;
           return regeneratorRuntime.awrap(selectProject());
 
         case 15:
-          project = _context2.sent;
-          _context2.next = 18;
+          project = _context3.sent;
+          _context3.next = 18;
           return regeneratorRuntime.awrap(selectSubsidyProject());
 
         case 18:
-          subsidyProject = _context2.sent;
-          _context2.next = 21;
+          subsidyProject = _context3.sent;
+          _context3.next = 21;
           return regeneratorRuntime.awrap(selectHY_Department());
 
         case 21:
-          HY_Department = _context2.sent;
-          return _context2.abrupt("return", {
+          HY_Department = _context3.sent;
+          return _context3.abrupt("return", {
             status: 1,
             message: "查询成功！",
             work: work['Work'],
@@ -299,16 +362,16 @@ function selectAllNews() {
           });
 
         case 25:
-          _context2.prev = 25;
-          _context2.t0 = _context2["catch"](0);
-          return _context2.abrupt("return", {
+          _context3.prev = 25;
+          _context3.t0 = _context3["catch"](0);
+          return _context3.abrupt("return", {
             status: 0,
             message: "查询失败！"
           });
 
         case 28:
         case "end":
-          return _context2.stop();
+          return _context3.stop();
       }
     }
   }, null, null, [[0, 25]]);
@@ -338,5 +401,7 @@ module.exports = {
   selectAllNews: selectAllNews,
   DeleteContent: DeleteContent,
   updateWorkshop: updateWorkshop,
-  addWorkshop: addWorkshop
+  addWorkshop: addWorkshop,
+  addTeam: addTeam,
+  alterTeam: alterTeam
 };

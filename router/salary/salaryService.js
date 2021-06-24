@@ -120,9 +120,57 @@ function insertWorkshop(WorkshopName,bm){
 
 
 }
+
+
+// 调用远程资源添加一条Team
+function insertTeam(WorkshopCode, TeamName, number, bm){
+
+    return new Promise((reslove,reject)=>{
+        instance.post(Wage+"/salary/addTeam",{
+            WorkshopCode, TeamName, number, bm
+         })
+         .then(r=>{
+
+            reslove({...r.data})
+         })
+         .catch(e=>{
+             reject({
+                 status:0,
+                 message:"抱歉，添加item班组信息失败！"
+             })
+      
+         })
+    })
+
+
+}
+// 远程调用资源修改一条Team
+function alterTeam(TeamCode,WorkshopCode, TeamName, number, bm){
+
+    return new Promise((reslove,reject)=>{
+        instance.post(Wage+"/salary/alterTeam",{
+            TeamCode,WorkshopCode, TeamName, number, bm
+        })
+        .then(r=>{
+            reslove({
+                ...r.data
+            })
+        })
+        .catch(e=>{
+            reject({
+                status:0,
+                message:"修改失败！"
+            })
+        })
+    })
+
+
+}
 module.exports={
     selectAllNews,
     deleteContent,
     updateWorkshop,
-    insertWorkshop
+    insertWorkshop,
+    insertTeam,
+    alterTeam
 }

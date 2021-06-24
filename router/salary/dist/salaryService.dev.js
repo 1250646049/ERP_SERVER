@@ -93,11 +93,52 @@ function insertWorkshop(WorkshopName, bm) {
       });
     });
   });
+} // 调用远程资源添加一条Team
+
+
+function insertTeam(WorkshopCode, TeamName, number, bm) {
+  return new Promise(function (reslove, reject) {
+    instance.post(Wage + "/salary/addTeam", {
+      WorkshopCode: WorkshopCode,
+      TeamName: TeamName,
+      number: number,
+      bm: bm
+    }).then(function (r) {
+      reslove(_objectSpread({}, r.data));
+    })["catch"](function (e) {
+      reject({
+        status: 0,
+        message: "抱歉，添加item班组信息失败！"
+      });
+    });
+  });
+} // 远程调用资源修改一条Team
+
+
+function alterTeam(TeamCode, WorkshopCode, TeamName, number, bm) {
+  return new Promise(function (reslove, reject) {
+    instance.post(Wage + "/salary/alterTeam", {
+      TeamCode: TeamCode,
+      WorkshopCode: WorkshopCode,
+      TeamName: TeamName,
+      number: number,
+      bm: bm
+    }).then(function (r) {
+      reslove(_objectSpread({}, r.data));
+    })["catch"](function (e) {
+      reject({
+        status: 0,
+        message: "修改失败！"
+      });
+    });
+  });
 }
 
 module.exports = {
   selectAllNews: selectAllNews,
   deleteContent: deleteContent,
   updateWorkshop: updateWorkshop,
-  insertWorkshop: insertWorkshop
+  insertWorkshop: insertWorkshop,
+  insertTeam: insertTeam,
+  alterTeam: alterTeam
 };
