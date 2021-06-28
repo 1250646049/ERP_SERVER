@@ -192,7 +192,7 @@ function alterTeam(TeamCode, WorkshopCode, TeamName, number, bm) {
 function selectPerson() {
   return new Promise(function (reslove, reject) {
     connect.then(function (r) {
-      r.query("select * from Person p \n            left join Workshop w on p.WorkshopCode=w.WorkshopCode \n            left join Team t on t.TeamCode=p.TeamCode").then(function (d) {
+      r.query("select p.PersonCode,p.PersonName,w.WorkshopCode,w.WorkshopName,t.TeamCode,t.TeamName from Person p \n            left join Workshop w on p.WorkshopCode=w.WorkshopCode \n            left join Team t on t.TeamCode=p.TeamCode\n            order by p.PersonCode asc \n            ").then(function (d) {
         reslove({
           status: 1,
           message: "查询成功！",
@@ -205,6 +205,45 @@ function selectPerson() {
         reject({
           status: 0,
           message: "查询失败！"
+        });
+      });
+    });
+  });
+} // 添加一条员工内容
+
+
+function insertPerson(PersonCode, PersonName, WorkshopCode, Teamcode) {
+  return new Promise(function (reslove, reject) {
+    connect.then(function (r) {
+      r.query("insert into Person(PersonCode,PersonName,WorkshopCode,Teamcode) values('".concat(PersonCode, "','").concat(PersonName, "','").concat(WorkshopCode, "','").concat(Teamcode, "')")).then(function (_) {
+        reslove({
+          status: 1,
+          message: "插入数据成功！"
+        });
+      })["catch"](function (_) {
+        console.log(_);
+        reject({
+          status: 0,
+          message: "插入数据失败！"
+        });
+      });
+    });
+  });
+} // 修改指定的员工
+
+
+function updatePersonById(PersonCode, PersonName, WorkshopCode, Teamcode) {
+  return new Promise(function (reslove, reject) {
+    connect.then(function (r) {
+      r.query("update Person set PersonName='".concat(PersonName, "',WorkshopCode='").concat(WorkshopCode, "',Teamcode='").concat(Teamcode, "' where PersonCode='").concat(PersonCode, "'")).then(function (r) {
+        reslove({
+          status: 1,
+          message: "恭喜你，修改成功！"
+        });
+      })["catch"](function (e) {
+        reject({
+          status: 0,
+          message: "抱歉，修改失败！"
         });
       });
     });
@@ -228,6 +267,44 @@ function selectProcess() {
         reject({
           status: 0,
           message: "查询失败！"
+        });
+      });
+    });
+  });
+} // 添加一条工序内容
+
+
+function insertProcess(cj, Code, Name, UnitPrice, bm) {
+  return new Promise(function (reslove, reject) {
+    connect.then(function (r) {
+      r.query("insert into Process(cj,Code,Name,UnitPrice,bm) values('".concat(cj, "','").concat(Code, "','").concat(Name, "','").concat(UnitPrice, "','").concat(bm, "')")).then(function (r) {
+        reslove({
+          status: 1,
+          message: "插入工序成功"
+        });
+      })["catch"](function (e) {
+        reject({
+          status: 0,
+          message: "插入工序失败！"
+        });
+      });
+    });
+  });
+} // 根据code修改指定工序内容
+
+
+function alterProcess(cj, Code, Name, UnitPrice, bm) {
+  return new Promise(function (reslove, reject) {
+    connect.then(function (r) {
+      r.query("update Process set cj='".concat(cj, "',Name='").concat(Name, "',UnitPrice='").concat(UnitPrice, "',bm='").concat(bm, "' where Code='").concat(Code, "'")).then(function (r) {
+        reslove({
+          status: 1,
+          message: "修改工序成功！"
+        });
+      })["catch"](function (e) {
+        reject({
+          status: 0,
+          message: "修改工序失败！"
         });
       });
     });
@@ -308,7 +385,7 @@ function selectHY_Department() {
 
 
 function selectAllNews() {
-  var work, team, person, process, project, subsidyProject, HY_Department;
+  var work, team, process, project, subsidyProject, HY_Department;
   return regeneratorRuntime.async(function selectAllNews$(_context3) {
     while (1) {
       switch (_context3.prev = _context3.next) {
@@ -325,60 +402,55 @@ function selectAllNews() {
         case 6:
           team = _context3.sent;
           _context3.next = 9;
-          return regeneratorRuntime.awrap(selectPerson());
-
-        case 9:
-          person = _context3.sent;
-          _context3.next = 12;
           return regeneratorRuntime.awrap(selectProcess());
 
-        case 12:
+        case 9:
           process = _context3.sent;
-          _context3.next = 15;
+          _context3.next = 12;
           return regeneratorRuntime.awrap(selectProject());
 
-        case 15:
+        case 12:
           project = _context3.sent;
-          _context3.next = 18;
+          _context3.next = 15;
           return regeneratorRuntime.awrap(selectSubsidyProject());
 
-        case 18:
+        case 15:
           subsidyProject = _context3.sent;
-          _context3.next = 21;
+          _context3.next = 18;
           return regeneratorRuntime.awrap(selectHY_Department());
 
-        case 21:
+        case 18:
           HY_Department = _context3.sent;
           return _context3.abrupt("return", {
             status: 1,
             message: "查询成功！",
             work: work['Work'],
             team: team['Team'],
-            person: person['Person'],
             process: process['Process'],
             project: project['Project'],
             subsidyProject: subsidyProject['SubsidyProject'],
             HY_Department: HY_Department['HY_Department']
           });
 
-        case 25:
-          _context3.prev = 25;
+        case 22:
+          _context3.prev = 22;
           _context3.t0 = _context3["catch"](0);
           return _context3.abrupt("return", {
             status: 0,
             message: "查询失败！"
           });
 
-        case 28:
+        case 25:
         case "end":
           return _context3.stop();
       }
     }
-  }, null, null, [[0, 25]]);
+  }, null, null, [[0, 22]]);
 } // 拼接sql语句删除对应字段
 
 
 function DeleteContent(data, type, code) {
+  console.log(data, type, code);
   return new Promise(function (reslove, reject) {
     connect.then(function (r) {
       r.query("delete from ".concat(data, " where ").concat(type, "='").concat(code, "'")).then(function (d) {
@@ -403,5 +475,10 @@ module.exports = {
   updateWorkshop: updateWorkshop,
   addWorkshop: addWorkshop,
   addTeam: addTeam,
-  alterTeam: alterTeam
+  alterTeam: alterTeam,
+  insertPerson: insertPerson,
+  updatePersonById: updatePersonById,
+  selectPerson: selectPerson,
+  insertProcess: insertProcess,
+  alterProcess: alterProcess
 };

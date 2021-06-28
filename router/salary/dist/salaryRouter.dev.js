@@ -10,7 +10,12 @@ var _require = require("./salaryService"),
     updateWorkshop = _require.updateWorkshop,
     insertWorkshop = _require.insertWorkshop,
     insertTeam = _require.insertTeam,
-    alterTeam = _require.alterTeam; // 查询所有
+    alterTeam = _require.alterTeam,
+    insertPerson = _require.insertPerson,
+    updatePerson = _require.updatePerson,
+    selectPerson = _require.selectPerson,
+    insertProcess = _require.insertProcess,
+    updateProcess = _require.updateProcess; // 查询所有
 
 
 router.get("/selectAllNews", function _callee(req, resp) {
@@ -210,6 +215,174 @@ router.post("/alterTeam", function _callee6(req, resp) {
         case 11:
         case "end":
           return _context6.stop();
+      }
+    }
+  }, null, null, [[1, 8]]);
+}); // 插入一条员工信息
+
+router.post("/insertPerson", function _callee7(req, resp) {
+  var _req$body5, PersonCode, PersonName, WorkshopCode, Teamcode, result;
+
+  return regeneratorRuntime.async(function _callee7$(_context7) {
+    while (1) {
+      switch (_context7.prev = _context7.next) {
+        case 0:
+          _req$body5 = req.body, PersonCode = _req$body5.PersonCode, PersonName = _req$body5.PersonName, WorkshopCode = _req$body5.WorkshopCode, Teamcode = _req$body5.Teamcode;
+          _context7.prev = 1;
+          _context7.next = 4;
+          return regeneratorRuntime.awrap(insertPerson(PersonCode, PersonName, WorkshopCode, Teamcode));
+
+        case 4:
+          result = _context7.sent;
+          resp.json(result);
+          _context7.next = 11;
+          break;
+
+        case 8:
+          _context7.prev = 8;
+          _context7.t0 = _context7["catch"](1);
+          resp.json({
+            status: 0,
+            message: "抱歉，插入失败"
+          });
+
+        case 11:
+        case "end":
+          return _context7.stop();
+      }
+    }
+  }, null, null, [[1, 8]]);
+}); // 更新一条台湾员工
+
+router.post("/updatePerson", function _callee8(req, resp) {
+  var _req$body6, PersonCode, PersonName, WorkshopCode, Teamcode, result;
+
+  return regeneratorRuntime.async(function _callee8$(_context8) {
+    while (1) {
+      switch (_context8.prev = _context8.next) {
+        case 0:
+          _req$body6 = req.body, PersonCode = _req$body6.PersonCode, PersonName = _req$body6.PersonName, WorkshopCode = _req$body6.WorkshopCode, Teamcode = _req$body6.Teamcode;
+          _context8.prev = 1;
+          _context8.next = 4;
+          return regeneratorRuntime.awrap(updatePerson(PersonCode, PersonName, WorkshopCode, Teamcode));
+
+        case 4:
+          result = _context8.sent;
+          resp.json(result);
+          _context8.next = 11;
+          break;
+
+        case 8:
+          _context8.prev = 8;
+          _context8.t0 = _context8["catch"](1);
+          resp.json({
+            status: 0,
+            message: "修改失败！"
+          });
+
+        case 11:
+        case "end":
+          return _context8.stop();
+      }
+    }
+  }, null, null, [[1, 8]]);
+}); // 查询所有员工
+
+router.get("/selectPerson", function _callee9(req, resp) {
+  var result;
+  return regeneratorRuntime.async(function _callee9$(_context9) {
+    while (1) {
+      switch (_context9.prev = _context9.next) {
+        case 0:
+          _context9.prev = 0;
+          _context9.next = 3;
+          return regeneratorRuntime.awrap(selectPerson());
+
+        case 3:
+          result = _context9.sent;
+          resp.json(result);
+          _context9.next = 10;
+          break;
+
+        case 7:
+          _context9.prev = 7;
+          _context9.t0 = _context9["catch"](0);
+          resp.json({
+            status: 0,
+            message: "抱歉，查询失败！"
+          });
+
+        case 10:
+        case "end":
+          return _context9.stop();
+      }
+    }
+  }, null, null, [[0, 7]]);
+}); // 插入一条工序
+
+router.post("/insertProcess", function _callee10(req, resp) {
+  var _req$body7, cj, Code, Name, UnitPrice, bm, result;
+
+  return regeneratorRuntime.async(function _callee10$(_context10) {
+    while (1) {
+      switch (_context10.prev = _context10.next) {
+        case 0:
+          _req$body7 = req.body, cj = _req$body7.cj, Code = _req$body7.Code, Name = _req$body7.Name, UnitPrice = _req$body7.UnitPrice, bm = _req$body7.bm;
+          _context10.prev = 1;
+          _context10.next = 4;
+          return regeneratorRuntime.awrap(insertProcess(cj, Code, Name, UnitPrice, bm));
+
+        case 4:
+          result = _context10.sent;
+          resp.json(result);
+          _context10.next = 11;
+          break;
+
+        case 8:
+          _context10.prev = 8;
+          _context10.t0 = _context10["catch"](1);
+          resp.json({
+            status: 0,
+            message: "插入工序失败！"
+          });
+
+        case 11:
+        case "end":
+          return _context10.stop();
+      }
+    }
+  }, null, null, [[1, 8]]);
+}); // 修改一条工序
+
+router.post("/updateProcess", function _callee11(req, resp) {
+  var _req$body8, cj, Code, Name, UnitPrice, bm, result;
+
+  return regeneratorRuntime.async(function _callee11$(_context11) {
+    while (1) {
+      switch (_context11.prev = _context11.next) {
+        case 0:
+          _req$body8 = req.body, cj = _req$body8.cj, Code = _req$body8.Code, Name = _req$body8.Name, UnitPrice = _req$body8.UnitPrice, bm = _req$body8.bm;
+          _context11.prev = 1;
+          _context11.next = 4;
+          return regeneratorRuntime.awrap(updateProcess(cj, Code, Name, UnitPrice, bm));
+
+        case 4:
+          result = _context11.sent;
+          resp.json(result);
+          _context11.next = 11;
+          break;
+
+        case 8:
+          _context11.prev = 8;
+          _context11.t0 = _context11["catch"](1);
+          resp.json({
+            status: 0,
+            message: "修改工序失败！"
+          });
+
+        case 11:
+        case "end":
+          return _context11.stop();
       }
     }
   }, null, null, [[1, 8]]);

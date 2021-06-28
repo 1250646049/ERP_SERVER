@@ -196,9 +196,11 @@ function selectPerson(){
 
     return new Promise((reslove,reject)=>{
         connect.then(r=>{
-            r.query(`select * from Person p 
+            r.query(`select p.PersonCode,p.PersonName,w.WorkshopCode,w.WorkshopName,t.TeamCode,t.TeamName from Person p 
             left join Workshop w on p.WorkshopCode=w.WorkshopCode 
-            left join Team t on t.TeamCode=p.TeamCode`)
+            left join Team t on t.TeamCode=p.TeamCode
+            order by p.PersonCode asc 
+            `)
             .then(d=>{
                 reslove({
                     status:1,
@@ -223,7 +225,60 @@ function selectPerson(){
 
 
 }
+// 添加一条员工内容
+function insertPerson(PersonCode,PersonName,WorkshopCode,Teamcode){
 
+    return new Promise((reslove,reject)=>{
+        connect.then((r)=>{
+            r.query(`insert into Person(PersonCode,PersonName,WorkshopCode,Teamcode) values('${PersonCode}','${PersonName}','${WorkshopCode}','${Teamcode}')`)
+            .then(_=>{
+                reslove({
+                    status:1,
+                    message:"插入数据成功！"
+                })
+            })
+            .catch(_=>{
+               console.log(_);
+                reject({
+                    status:0,
+                    message:"插入数据失败！"
+                })
+            })
+        })
+
+
+    })
+
+}
+// 修改指定的员工
+function updatePersonById(PersonCode,PersonName,WorkshopCode,Teamcode){
+   
+    return new Promise((reslove,reject)=>{
+        connect.then(r=>{
+            r.query(`update Person set PersonName='${PersonName}',WorkshopCode='${WorkshopCode}',Teamcode='${Teamcode}' where PersonCode='${PersonCode}'`)
+            .then(r=>{
+                reslove({
+                    status:1,
+                    message:"恭喜你，修改成功！"
+                })
+            })
+            .catch(e=>{
+                
+                reject({
+                    status:0,
+                    message:"抱歉，修改失败！"
+                })
+            })
+        })
+
+
+
+
+    })
+
+
+
+}
 // 查询工序工价
 function selectProcess(){
 
@@ -253,6 +308,53 @@ function selectProcess(){
 
 
 
+}
+
+// 添加一条工序内容
+function insertProcess(cj,Code,Name,UnitPrice,bm){
+    return new Promise((reslove,reject)=>{
+        connect.then(r=>{
+            r.query(`insert into Process(cj,Code,Name,UnitPrice,bm) values('${cj}','${Code}','${Name}','${UnitPrice}','${bm}')`)
+            .then(r=>{
+                reslove({
+                    status:1,
+                    message:"插入工序成功"
+                })
+            })
+            .catch(e=>{
+                reject({
+                    status:0,
+                    message:"插入工序失败！"
+                })
+            })
+        })
+
+
+    })
+
+
+}
+
+// 根据code修改指定工序内容
+function alterProcess(cj,Code,Name,UnitPrice,bm){
+    return new Promise((reslove,reject)=>{
+        connect.then(r=>{
+            r.query(`update Process set cj='${cj}',Name='${Name}',UnitPrice='${UnitPrice}',bm='${bm}' where Code='${Code}'`)
+            .then(r=>{
+                reslove({
+                    status:1,
+                    message:"修改工序成功！"
+                })
+            }).catch(e=>{
+                reject({
+                    status:0,
+                    message:"修改工序失败！"
+                })
+            })
+        })
+
+
+    })
 }
 // 查询计时项目
 
@@ -358,7 +460,7 @@ async function selectAllNews(){
     try{
         let work=await selectWorkshop()
         let team=await selectTeam()
-        let person=await selectPerson()
+        
         let process=await selectProcess()
         let project=await selectProject()
         let subsidyProject=await selectSubsidyProject()
@@ -368,7 +470,7 @@ async function selectAllNews(){
             message:"查询成功！",
             work:work['Work'],
             team:team['Team'],
-            person:person['Person'],
+           
             process:process['Process'],
             project:project['Project'],
             subsidyProject:subsidyProject['SubsidyProject'],
@@ -391,11 +493,12 @@ async function selectAllNews(){
 
 // 拼接sql语句删除对应字段
 function DeleteContent(data,type,code){
-   
+   console.log(data,type,code);
   return new Promise((reslove,reject)=>{
     connect.then(r=>{
         r.query(`delete from ${data} where ${type}='${code}'`)
         .then(d=>{
+           
             reslove({
                 status:1,
                 message:"删除失败！"
@@ -424,5 +527,10 @@ module.exports={
     updateWorkshop,
     addWorkshop,
     addTeam,
-    alterTeam
+    alterTeam,
+    insertPerson,
+    updatePersonById,
+    selectPerson,
+    insertProcess,
+    alterProcess
 }

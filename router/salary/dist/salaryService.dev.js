@@ -132,6 +132,84 @@ function alterTeam(TeamCode, WorkshopCode, TeamName, number, bm) {
       });
     });
   });
+} // 远程调用资源插入一条数据
+
+
+function insertPerson(PersonCode, PersonName, WorkshopCode, Teamcode) {
+  return new Promise(function (reslove, reject) {
+    instance.post(Wage + "/salary/insertPerson", {
+      PersonCode: PersonCode,
+      PersonName: PersonName,
+      WorkshopCode: WorkshopCode,
+      Teamcode: Teamcode
+    }).then(function (r) {
+      reslove(_objectSpread({}, r.data));
+    })["catch"](function (e) {
+      reject(_objectSpread({}, e.data));
+    });
+  });
+} // 远程调用资源修改员工信息
+
+
+function updatePerson(PersonCode, PersonName, WorkshopCode, Teamcode) {
+  return new Promise(function (reslove, reject) {
+    instance.post(Wage + "/salary/updatePersonById", {
+      PersonCode: PersonCode,
+      PersonName: PersonName,
+      WorkshopCode: WorkshopCode,
+      Teamcode: Teamcode
+    }).then(function (r) {
+      reslove(_objectSpread({}, r.data));
+    })["catch"](function (e) {
+      reject(_objectSpread({}, e.data));
+    });
+  });
+} // 远程调用查询所有员工信息
+
+
+function selectPerson() {
+  return new Promise(function (reslove, reject) {
+    instance.get(Wage + "/salary/selectPerson").then(function (r) {
+      reslove(_objectSpread({}, r.data));
+    })["catch"](function (e) {
+      console.log(e);
+      reject(_objectSpread({}, e.data));
+    });
+  });
+} // 远程调用资源插入一条工序
+
+
+function insertProcess(cj, Code, Name, UnitPrice, bm) {
+  return new Promise(function (reslove, reject) {
+    instance.post(Wage + "/salary/insertProcess", {
+      cj: cj,
+      Code: Code,
+      Name: Name,
+      UnitPrice: UnitPrice,
+      bm: bm
+    }).then(function (r) {
+      reslove(_objectSpread({}, r.data));
+    })["catch"](function (e) {
+      reject(_objectSpread({}, e.data));
+    });
+  });
+} // 远程调用资源更新一条工序
+
+
+function updateProcess(cj, Code, Name, UnitPrice, bm) {
+  return new Promise(function (reslove, reject) {
+    instance.post(Wage + "/salary/updateProcess", {
+      cj: cj,
+      Code: Code,
+      Name: Name,
+      UnitPrice: UnitPrice,
+      bm: bm
+    }).then(function (r) {
+      reslove(_objectSpread({}, r.data));
+    })["catch"](function (e) {
+      reject(_objectSpread({}, e.data));
+    });
+  });
 }
 
 module.exports = {
@@ -140,5 +218,10 @@ module.exports = {
   updateWorkshop: updateWorkshop,
   insertWorkshop: insertWorkshop,
   insertTeam: insertTeam,
-  alterTeam: alterTeam
+  alterTeam: alterTeam,
+  insertPerson: insertPerson,
+  updatePerson: updatePerson,
+  selectPerson: selectPerson,
+  insertProcess: insertProcess,
+  updateProcess: updateProcess
 };

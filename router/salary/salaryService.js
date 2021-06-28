@@ -1,7 +1,6 @@
 const axios=require("axios")
 const {Wage}=require("../../utils/serverConfig")
 const qs=require("qs")
-
 // 用axios实例化的方式更新post请求
 const instance=axios.create({
 
@@ -166,11 +165,99 @@ function alterTeam(TeamCode,WorkshopCode, TeamName, number, bm){
 
 
 }
+
+// 远程调用资源插入一条数据
+
+function insertPerson(PersonCode,PersonName,WorkshopCode,Teamcode){
+    return new Promise((reslove,reject)=>{
+        instance.post(Wage+"/salary/insertPerson",{PersonCode,PersonName,WorkshopCode,Teamcode})
+        .then(r=>{
+            reslove({...r.data})
+        })
+        .catch(e=>{
+            reject({...e.data})
+        })
+
+
+    })
+
+
+}
+
+// 远程调用资源修改员工信息
+function updatePerson(PersonCode,PersonName,WorkshopCode,Teamcode){
+    return new Promise((reslove,reject)=>{
+        instance.post(Wage+"/salary/updatePersonById",{PersonCode,PersonName,WorkshopCode,Teamcode})
+        .then(r=>{
+            reslove({...r.data})
+        })
+        .catch(e=>{reject({...e.data})})
+    })
+
+
+
+}
+
+// 远程调用查询所有员工信息
+function selectPerson(){
+  
+   return new Promise((reslove,reject)=>{
+    instance.get(Wage+"/salary/selectPerson")
+    .then(r=>{
+        
+        reslove({...r.data})
+    })
+    .catch(e=>{
+        console.log(e);
+        reject({...e.data})
+    })
+
+
+
+   })
+}
+
+// 远程调用资源插入一条工序
+function insertProcess(cj,Code,Name,UnitPrice,bm){
+    return new Promise((reslove,reject)=>{
+        instance.post(Wage+"/salary/insertProcess",{cj,Code,Name,UnitPrice,bm})
+        .then(r=>{
+            reslove({...r.data})
+        })
+        .catch(e=>{
+            reject({...e.data})
+        })
+
+
+    })
+
+
+}
+
+// 远程调用资源更新一条工序
+
+function updateProcess(cj,Code,Name,UnitPrice,bm){
+    return new Promise((reslove,reject)=>{
+        instance.post(Wage+"/salary/updateProcess",{cj,Code,Name,UnitPrice,bm})
+        .then(r=>{
+            reslove({...r.data})
+        })
+        .catch(e=>{
+            reject({...e.data})
+        })
+
+    })
+}
 module.exports={
     selectAllNews,
     deleteContent,
     updateWorkshop,
     insertWorkshop,
     insertTeam,
-    alterTeam
+    alterTeam,
+    insertPerson,
+    updatePerson,
+    selectPerson,
+    insertProcess,
+    updateProcess
 }
