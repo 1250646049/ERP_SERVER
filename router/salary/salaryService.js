@@ -248,6 +248,84 @@ function updateProcess(cj,Code,Name,UnitPrice,bm){
 
     })
 }
+// 计时项目
+// 添加
+function insertProject(ParentCode,ProjectName,Money,bm){
+    return new Promise((reslove,reject)=>{
+        instance.post(Wage+"/salary/insertProject",{ParentCode,ProjectName,Money,bm})
+        .then(r=>{
+            reslove({...r.data})
+        })
+        .catch(e=>{
+            reject({...e.data})
+        })
+
+
+    })
+
+
+}
+// 修改
+function updateProject(ParentCode,ProjectCode,ProjectName,Money,bm){
+    return new Promise((reslove,reject)=>{
+        instance.post(Wage+"/salary/updateProject",{ParentCode,ProjectCode,ProjectName,Money,bm})
+        .then(r=>{
+            reslove({...r.data})
+        })
+        .catch(e=>{
+            reject({...e.data})
+        })
+
+    })
+}
+// 补贴项目
+
+// 添加
+function insertSubsidyProject(SubsidyName,Price,bm){
+    return new Promise((reslove,reject)=>{
+        instance.post(Wage+"/salary/SubsidyProject",{SubsidyName,Price,bm})
+        .then(r=>{
+            reslove({...r.data})
+        })
+        .catch(e=>{
+            reject({...e.data})
+        })
+
+
+    })
+
+
+}
+// 修改
+function updateSubsidyProject(Id,SubsidyName,Price,bm){
+    return new Promise((reslove,reject)=>{
+        instance.post(Wage+"/salary/updateSubsidyProject",{Id,SubsidyName,Price,bm})
+        .then(r=>{
+            reslove({...r.data})
+        })
+        .catch(e=>{
+            reject({...e.data})
+        })
+
+    })
+}
+// 请假类别
+// 添加
+function insertHY_Department(d_Name,bm){
+    return new Promise((reslove,reject)=>{
+        instance.post(Wage+"/salary/insertHY_Department",{d_Name,bm})
+        .then(r=>{
+            reslove({...r.data})
+        })
+        .catch(e=>{
+            reject({...e.data})
+        })
+
+
+    })
+
+
+}
 module.exports={
     selectAllNews,
     deleteContent,
@@ -259,5 +337,10 @@ module.exports={
     updatePerson,
     selectPerson,
     insertProcess,
-    updateProcess
+    updateProcess,
+    insertProject,
+    insertSubsidyProject,
+    insertHY_Department,
+    updateSubsidyProject,
+    updateProject
 }

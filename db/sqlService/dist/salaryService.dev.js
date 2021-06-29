@@ -316,7 +316,7 @@ function alterProcess(cj, Code, Name, UnitPrice, bm) {
 function selectProject() {
   return new Promise(function (reslove, reject) {
     connect.then(function (r) {
-      r.query("select * from Project").then(function (d) {
+      r.query("select * from Project order by ProjectCode asc").then(function (d) {
         reslove({
           status: 1,
           message: "查询成功！",
@@ -329,6 +329,45 @@ function selectProject() {
         reject({
           status: 0,
           message: "查询失败！"
+        });
+      });
+    });
+  });
+} // 添加项目
+
+
+function insertProject(ParentCode, ProjectName, Money, bm) {
+  return new Promise(function (reslove, reject) {
+    connect.then(function (r) {
+      r.query("insert into Project(ParentCode,ProjectName,Money,bm) values('".concat(ParentCode, "','").concat(ProjectName, "','").concat(Money, "','").concat(bm, "')")).then(function (d) {
+        reslove({
+          status: 1,
+          message: "恭喜你，添加成功！"
+        });
+      })["catch"](function (e) {
+        console.log(e);
+        reject({
+          status: 0,
+          message: "抱歉，添加失败！"
+        });
+      });
+    });
+  });
+} // 修改项目
+
+
+function updateProject(ParentCode, ProjectCode, ProjectName, Money, bm) {
+  return new Promise(function (reslove, reject) {
+    connect.then(function (r) {
+      r.query("update Project set ParentCode='".concat(ParentCode, "',ProjectName='").concat(ProjectName, "',Money='").concat(Money, "',bm='").concat(bm, "' where ProjectCode='").concat(ProjectCode, "'")).then(function (r) {
+        reslove({
+          status: 1,
+          message: "修改数据成功！"
+        });
+      })["catch"](function (e) {
+        reject({
+          status: 0,
+          message: "修改数据失败！"
         });
       });
     });
@@ -357,6 +396,46 @@ function selectSubsidyProject() {
       });
     });
   });
+} // 添加补贴项目
+
+
+function insertSubsidyProject(SubsidyName, Price, bm) {
+  return new Promise(function (reslove, reject) {
+    connect.then(function (r) {
+      r.query("insert into SubsidyProject(SubsidyName,Price,bm) values('".concat(SubsidyName, "','").concat(Price, "','").concat(bm, "')")).then(function (d) {
+        reslove({
+          status: 1,
+          message: "恭喜你，添加成功！"
+        });
+      })["catch"](function (e) {
+        console.log(e);
+        reject({
+          status: 0,
+          message: "抱歉，添加失败！"
+        });
+      });
+    });
+  });
+} // 修改补贴项目
+
+
+function updateSubsidyProject(Id, SubsidyName, Price, bm) {
+  return new Promise(function (reslove, reject) {
+    connect.then(function (r) {
+      r.query("update SubsidyProject set SubsidyName='".concat(SubsidyName, "',Price='").concat(Price, "',bm='").concat(bm, "' where Id='").concat(Id, "'")).then(function (d) {
+        reslove({
+          status: 1,
+          message: "恭喜你，添加成功！"
+        });
+      })["catch"](function (e) {
+        console.log(e);
+        reject({
+          status: 0,
+          message: "抱歉，添加失败！"
+        });
+      });
+    });
+  });
 } // 请假类别
 // HY_Department
 
@@ -377,6 +456,26 @@ function selectHY_Department() {
         reject({
           status: 0,
           message: "查询失败！"
+        });
+      });
+    });
+  });
+} // 添加请假类别
+
+
+function insertHY_Department(d_Name, bm) {
+  return new Promise(function (reslove, reject) {
+    connect.then(function (r) {
+      r.query("insert into HY_Department(d_Name,bm) values('".concat(d_Name, "','").concat(bm, "')")).then(function (d) {
+        reslove({
+          status: 1,
+          message: "恭喜你，添加成功！"
+        });
+      })["catch"](function (e) {
+        console.log(e);
+        reject({
+          status: 0,
+          message: "抱歉，添加失败！"
         });
       });
     });
@@ -480,5 +579,10 @@ module.exports = {
   updatePersonById: updatePersonById,
   selectPerson: selectPerson,
   insertProcess: insertProcess,
-  alterProcess: alterProcess
+  alterProcess: alterProcess,
+  insertHY_Department: insertHY_Department,
+  insertProject: insertProject,
+  updateProject: updateProject,
+  insertSubsidyProject: insertSubsidyProject,
+  updateSubsidyProject: updateSubsidyProject
 };

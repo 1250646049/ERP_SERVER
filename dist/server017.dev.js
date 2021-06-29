@@ -14,7 +14,8 @@ var _require = require("./db/sqlService/wanglaiService"),
 
 var _require2 = require("./db/sqlService/yinshoukuan"),
     selectOrders = _require2.selectOrders,
-    selectOrdersLike = _require2.selectOrdersLike; // 引入导出工具类
+    selectOrdersLike = _require2.selectOrdersLike,
+    selectcNewsOrders = _require2.selectcNewsOrders; // 引入导出工具类
 
 
 var _require3 = require("./utils/wanglaiExport"),
@@ -149,46 +150,44 @@ app.get("/wanglai", function _callee(req, resp) {
 }); // 查询订单数量 应收账款超期自动提醒
 
 app.get("/selectYinshou", function _callee2(req, resp) {
-  var _req$query2, number, type, search, result;
-
+  var result;
   return regeneratorRuntime.async(function _callee2$(_context2) {
     while (1) {
       switch (_context2.prev = _context2.next) {
         case 0:
-          _req$query2 = req.query, number = _req$query2.number, type = _req$query2.type, search = _req$query2.search;
-          _context2.prev = 1;
-          _context2.next = 4;
-          return regeneratorRuntime.awrap(selectOrders(number, type, search));
+          _context2.prev = 0;
+          _context2.next = 3;
+          return regeneratorRuntime.awrap(selectcNewsOrders());
 
-        case 4:
+        case 3:
           result = _context2.sent;
           resp.json(result);
-          _context2.next = 11;
+          _context2.next = 10;
           break;
 
-        case 8:
-          _context2.prev = 8;
-          _context2.t0 = _context2["catch"](1);
+        case 7:
+          _context2.prev = 7;
+          _context2.t0 = _context2["catch"](0);
           resp.json({
             status: 0,
             message: "抱歉，查询失败！"
           });
 
-        case 11:
+        case 10:
         case "end":
           return _context2.stop();
       }
     }
-  }, null, null, [[1, 8]]);
+  }, null, null, [[0, 7]]);
 });
 app.get("/searchYinshou", function _callee3(req, resp) {
-  var _req$query3, type, search, result;
+  var _req$query2, type, search, result;
 
   return regeneratorRuntime.async(function _callee3$(_context3) {
     while (1) {
       switch (_context3.prev = _context3.next) {
         case 0:
-          _req$query3 = req.query, type = _req$query3.type, search = _req$query3.search;
+          _req$query2 = req.query, type = _req$query2.type, search = _req$query2.search;
           _context3.prev = 1;
           _context3.next = 4;
           return regeneratorRuntime.awrap(selectOrdersLike(type, search));

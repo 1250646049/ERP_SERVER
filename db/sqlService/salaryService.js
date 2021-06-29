@@ -346,6 +346,7 @@ function alterProcess(cj,Code,Name,UnitPrice,bm){
                     message:"修改工序成功！"
                 })
             }).catch(e=>{
+            
                 reject({
                     status:0,
                     message:"修改工序失败！"
@@ -363,7 +364,7 @@ function selectProject(){
 
     return new Promise((reslove,reject)=>{
         connect.then(r=>{
-            r.query("select * from Project")
+            r.query("select * from Project order by ProjectCode asc")
             .then(d=>{
                 reslove({
                     status:1,
@@ -389,7 +390,56 @@ function selectProject(){
 
 }
 
+// 添加项目
 
+ function insertProject(ParentCode,ProjectName,Money,bm){
+ 
+   
+    return new Promise((reslove,reject)=>{
+        connect.then(r=>{
+            r.query(`insert into Project(ParentCode,ProjectName,Money,bm) values('${ParentCode}','${ProjectName}','${Money}','${bm}')`)
+            .then(d=>{
+                reslove({
+                    status:1,
+                    message:"恭喜你，添加成功！"
+                })
+            }).catch(e=>{
+                console.log(e);
+                reject({
+                    status:0,
+                    message:"抱歉，添加失败！" 
+                })
+            })
+        })
+
+
+    })
+}
+
+// 修改项目
+function updateProject(ParentCode,ProjectCode,ProjectName,Money,bm){
+    return new Promise((reslove,reject)=>{
+        connect.then(r=>{
+            r.query(`update Project set ParentCode='${ParentCode}',ProjectName='${ProjectName}',Money='${Money}',bm='${bm}' where ProjectCode='${ProjectCode}'`)
+            .then(r=>{
+                reslove({
+                    status:1,
+                    message:"修改数据成功！"
+                })
+            }).catch(e=>{
+                reject({
+                    status:0,
+                    message:"修改数据失败！"
+                })
+            })
+        })
+
+
+
+    })
+
+
+}
 // 补贴项目 
 // SubsidyProject
 function selectSubsidyProject(){
@@ -420,6 +470,53 @@ function selectSubsidyProject(){
 
 
 
+}
+// 添加补贴项目
+function insertSubsidyProject(SubsidyName,Price,bm){
+ 
+    return new Promise((reslove,reject)=>{
+        connect.then(r=>{
+            r.query(`insert into SubsidyProject(SubsidyName,Price,bm) values('${SubsidyName}','${Price}','${bm}')`)
+            .then(d=>{
+                reslove({
+                    status:1,
+                    message:"恭喜你，添加成功！"
+                })
+            }).catch(e=>{
+                console.log(e);
+                reject({
+                    status:0,
+                    message:"抱歉，添加失败！" 
+                })
+            })
+        })
+
+
+    })
+}
+
+// 修改补贴项目
+function updateSubsidyProject(Id,SubsidyName,Price,bm){
+ 
+    return new Promise((reslove,reject)=>{
+        connect.then(r=>{
+            r.query(`update SubsidyProject set SubsidyName='${SubsidyName}',Price='${Price}',bm='${bm}' where Id='${Id}'`)
+            .then(d=>{
+                reslove({
+                    status:1,
+                    message:"恭喜你，添加成功！"
+                })
+            }).catch(e=>{
+                console.log(e);
+                reject({
+                    status:0,
+                    message:"抱歉，添加失败！" 
+                })
+            })
+        })
+
+
+    })
 }
 
 // 请假类别
@@ -454,6 +551,29 @@ function selectHY_Department(){
 
 }
 
+// 添加请假类别
+function insertHY_Department(d_Name,bm){
+    return new Promise((reslove,reject)=>{
+        connect.then(r=>{
+            r.query(`insert into HY_Department(d_Name,bm) values('${d_Name}','${bm}')`)
+            .then(d=>{
+                reslove({
+                    status:1,
+                    message:"恭喜你，添加成功！"
+                })
+            }).catch(e=>{
+                console.log(e);
+                reject({
+                    status:0,
+                    message:"抱歉，添加失败！" 
+                })
+            })
+        })
+
+
+    })
+
+}
 // 整合所有内容 信息维护
 
 async function selectAllNews(){
@@ -532,5 +652,10 @@ module.exports={
     updatePersonById,
     selectPerson,
     insertProcess,
-    alterProcess
+    alterProcess,
+    insertHY_Department,
+    insertProject,
+    updateProject,
+    insertSubsidyProject,
+    updateSubsidyProject
 }

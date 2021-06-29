@@ -1,7 +1,7 @@
 const express = require("express")
 const router = express.Router()
 const {selectAllNews,deleteContent,updateWorkshop,insertWorkshop,insertTeam, alterTeam,insertPerson,updatePerson,selectPerson
-,insertProcess,updateProcess
+,insertProcess,updateProcess,insertProject,insertSubsidyProject,insertHY_Department,updateProject,updateSubsidyProject
 }=require("./salaryService")
 // 查询所有
 
@@ -171,7 +171,7 @@ router.post("/insertProcess",async(req,resp)=>{
 })
 // 修改一条工序
 router.post("/updateProcess",async(req,resp)=>{
-    const {cj,Code,Name,UnitPrice,bm}=req.body
+    const {cj,Code,Name,UnitPrice,bm}=req.body 
 
     try{
         let result=await updateProcess(cj,Code,Name,UnitPrice,bm)
@@ -180,6 +180,94 @@ router.post("/updateProcess",async(req,resp)=>{
         resp.json({
             status:0,
             message:"修改工序失败！"
+        })
+    }
+
+
+})
+// --------------------------
+// 计时项目
+// 添加
+router.post("/insertProject",async(req,resp)=>{
+    const {ParentCode,ProjectName,Money,bm}=req.body
+
+    try{
+        let result=await insertProject(ParentCode,ProjectName,Money,bm)
+        resp.json(result)
+    }catch{
+        resp.json({
+            status:0,
+            message:"抱歉，修改失败！"
+        })
+    }
+
+
+})
+
+// 修改
+router.post("/updateProject",async(req,resp)=>{
+    const {ParentCode,ProjectCode,ProjectName,Money,bm}=req.body
+
+    try{
+        let resul=await updateProject(ParentCode,ProjectCode,ProjectName,Money,bm)
+        resp.json(resul)
+    }catch{
+        resp.json({
+            status:0,
+            message:"修改数据失败！"
+        })
+    }
+
+
+})
+
+// 补贴项目 
+// 添加
+router.post("/SubsidyProject",async(req,resp)=>{
+    const {SubsidyName,Price,bm}=req.body
+
+    try{
+        let result=await insertSubsidyProject(SubsidyName,Price,bm)
+        resp.json(result)
+    }catch{
+        resp.json({
+            status:0,
+            message:"抱歉，添加补贴项目失败！"
+        })
+    }
+
+
+})
+
+// 修改
+router.post("/updateSubsidyProject",async(req,resp)=>{
+    const {Id,SubsidyName,Price,bm}=req.body
+    try{
+        let result=await updateSubsidyProject(Id,SubsidyName,Price,bm)
+        resp.json(result)
+    }catch{
+        resp.json({
+            status:0,
+            message:"抱歉，修改补贴项目失败！"
+        })
+    }
+
+
+})
+
+// 请假类别
+// 添加
+
+router.post("/insertHY_Department",async(req,resp)=>{
+    const {d_Name,bm}=req.body
+
+    try{
+        let reuslt=await insertHY_Department(d_Name,bm)
+        resp.json(reuslt)
+    }catch{
+        resp.json({
+            status:0,
+            message:"抱歉，添加请假类别失败！"
         })
     }
 

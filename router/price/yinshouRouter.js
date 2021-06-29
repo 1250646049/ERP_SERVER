@@ -3,7 +3,7 @@ const router=express.Router()
 
 const {getYingshoukuan,searchYingshoukuan,searchYingshoukuan003,getYingshoukuan003}=require("./yinshouService")
 const {addYinshou,selectShoukuan2AutoId,alterYinshou,deleteOrder,alterJiean,select2autoId}=require("../../db/myService/yinshouServer")
-
+const {selectAllList}=require("../../db/sqlService/shoukuanSJ")
 // 删除订单
 
 router.get("/deleteOrder",async(req,resp)=>{
@@ -59,10 +59,13 @@ router.get("/select2autoId",async(req,resp)=>{
 
 
 router.get("/selectYsk",async(req,resp)=>{
-    const {number,type,search}=req.query
+ 
     
     try{
-        let result=await getYingshoukuan(number)
+        let result=await getYingshoukuan()
+        let data=await selectAllList()
+        result['shoukuan']=data['list']
+      
         resp.json(result)
     }catch{
         resp.json({

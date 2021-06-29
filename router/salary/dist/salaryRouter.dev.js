@@ -15,7 +15,12 @@ var _require = require("./salaryService"),
     updatePerson = _require.updatePerson,
     selectPerson = _require.selectPerson,
     insertProcess = _require.insertProcess,
-    updateProcess = _require.updateProcess; // 查询所有
+    updateProcess = _require.updateProcess,
+    insertProject = _require.insertProject,
+    insertSubsidyProject = _require.insertSubsidyProject,
+    insertHY_Department = _require.insertHY_Department,
+    updateProject = _require.updateProject,
+    updateSubsidyProject = _require.updateSubsidyProject; // 查询所有
 
 
 router.get("/selectAllNews", function _callee(req, resp) {
@@ -383,6 +388,180 @@ router.post("/updateProcess", function _callee11(req, resp) {
         case 11:
         case "end":
           return _context11.stop();
+      }
+    }
+  }, null, null, [[1, 8]]);
+}); // --------------------------
+// 计时项目
+// 添加
+
+router.post("/insertProject", function _callee12(req, resp) {
+  var _req$body9, ParentCode, ProjectName, Money, bm, result;
+
+  return regeneratorRuntime.async(function _callee12$(_context12) {
+    while (1) {
+      switch (_context12.prev = _context12.next) {
+        case 0:
+          _req$body9 = req.body, ParentCode = _req$body9.ParentCode, ProjectName = _req$body9.ProjectName, Money = _req$body9.Money, bm = _req$body9.bm;
+          _context12.prev = 1;
+          _context12.next = 4;
+          return regeneratorRuntime.awrap(insertProject(ParentCode, ProjectName, Money, bm));
+
+        case 4:
+          result = _context12.sent;
+          resp.json(result);
+          _context12.next = 11;
+          break;
+
+        case 8:
+          _context12.prev = 8;
+          _context12.t0 = _context12["catch"](1);
+          resp.json({
+            status: 0,
+            message: "抱歉，修改失败！"
+          });
+
+        case 11:
+        case "end":
+          return _context12.stop();
+      }
+    }
+  }, null, null, [[1, 8]]);
+}); // 修改
+
+router.post("/updateProject", function _callee13(req, resp) {
+  var _req$body10, ParentCode, ProjectCode, ProjectName, Money, bm, resul;
+
+  return regeneratorRuntime.async(function _callee13$(_context13) {
+    while (1) {
+      switch (_context13.prev = _context13.next) {
+        case 0:
+          _req$body10 = req.body, ParentCode = _req$body10.ParentCode, ProjectCode = _req$body10.ProjectCode, ProjectName = _req$body10.ProjectName, Money = _req$body10.Money, bm = _req$body10.bm;
+          _context13.prev = 1;
+          _context13.next = 4;
+          return regeneratorRuntime.awrap(updateProject(ParentCode, ProjectCode, ProjectName, Money, bm));
+
+        case 4:
+          resul = _context13.sent;
+          resp.json(resul);
+          _context13.next = 11;
+          break;
+
+        case 8:
+          _context13.prev = 8;
+          _context13.t0 = _context13["catch"](1);
+          resp.json({
+            status: 0,
+            message: "修改数据失败！"
+          });
+
+        case 11:
+        case "end":
+          return _context13.stop();
+      }
+    }
+  }, null, null, [[1, 8]]);
+}); // 补贴项目 
+// 添加
+
+router.post("/SubsidyProject", function _callee14(req, resp) {
+  var _req$body11, SubsidyName, Price, bm, result;
+
+  return regeneratorRuntime.async(function _callee14$(_context14) {
+    while (1) {
+      switch (_context14.prev = _context14.next) {
+        case 0:
+          _req$body11 = req.body, SubsidyName = _req$body11.SubsidyName, Price = _req$body11.Price, bm = _req$body11.bm;
+          _context14.prev = 1;
+          _context14.next = 4;
+          return regeneratorRuntime.awrap(insertSubsidyProject(SubsidyName, Price, bm));
+
+        case 4:
+          result = _context14.sent;
+          resp.json(result);
+          _context14.next = 11;
+          break;
+
+        case 8:
+          _context14.prev = 8;
+          _context14.t0 = _context14["catch"](1);
+          resp.json({
+            status: 0,
+            message: "抱歉，添加补贴项目失败！"
+          });
+
+        case 11:
+        case "end":
+          return _context14.stop();
+      }
+    }
+  }, null, null, [[1, 8]]);
+}); // 修改
+
+router.post("/updateSubsidyProject", function _callee15(req, resp) {
+  var _req$body12, Id, SubsidyName, Price, bm, result;
+
+  return regeneratorRuntime.async(function _callee15$(_context15) {
+    while (1) {
+      switch (_context15.prev = _context15.next) {
+        case 0:
+          _req$body12 = req.body, Id = _req$body12.Id, SubsidyName = _req$body12.SubsidyName, Price = _req$body12.Price, bm = _req$body12.bm;
+          _context15.prev = 1;
+          _context15.next = 4;
+          return regeneratorRuntime.awrap(updateSubsidyProject(Id, SubsidyName, Price, bm));
+
+        case 4:
+          result = _context15.sent;
+          resp.json(result);
+          _context15.next = 11;
+          break;
+
+        case 8:
+          _context15.prev = 8;
+          _context15.t0 = _context15["catch"](1);
+          resp.json({
+            status: 0,
+            message: "抱歉，修改补贴项目失败！"
+          });
+
+        case 11:
+        case "end":
+          return _context15.stop();
+      }
+    }
+  }, null, null, [[1, 8]]);
+}); // 请假类别
+// 添加
+
+router.post("/insertHY_Department", function _callee16(req, resp) {
+  var _req$body13, d_Name, bm, reuslt;
+
+  return regeneratorRuntime.async(function _callee16$(_context16) {
+    while (1) {
+      switch (_context16.prev = _context16.next) {
+        case 0:
+          _req$body13 = req.body, d_Name = _req$body13.d_Name, bm = _req$body13.bm;
+          _context16.prev = 1;
+          _context16.next = 4;
+          return regeneratorRuntime.awrap(insertHY_Department(d_Name, bm));
+
+        case 4:
+          reuslt = _context16.sent;
+          resp.json(reuslt);
+          _context16.next = 11;
+          break;
+
+        case 8:
+          _context16.prev = 8;
+          _context16.t0 = _context16["catch"](1);
+          resp.json({
+            status: 0,
+            message: "抱歉，添加请假类别失败！"
+          });
+
+        case 11:
+        case "end":
+          return _context16.stop();
       }
     }
   }, null, null, [[1, 8]]);

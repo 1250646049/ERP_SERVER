@@ -11,8 +11,6 @@ const Myconnect = require("../mysqlDb")
 
 function selectOrders(number) {
     if (!number) number = 10 
-
-
     return new Promise((reslove, reject) => {
         connect.then(async (resp) => { 
             // 查询总个数
@@ -23,54 +21,46 @@ function selectOrders(number) {
          right join dbo.SaleBillVouchs zi on zhu.SBVID=zi.SBVID
          left join dbo.Person per on zhu.cPersonCode=per.cPersonCode
          left join dbo.Customer cu on cu.cCusCode=zhu.cCusCode 
-         order by dDate desc`) 
+
+         order by dDate desc `) 
                 .then(r => {
                     var data = r['recordset']
-                    // reslove({
-                    //     status: 1,
-                    //     message: "查询成功！",
-                    //     list: data.map((item,index)=>{
-                    //         item['key']=index;    
-                    //         return {...item};
-                    //     }),
-                    //     size: data.length, 
-                    //     total: count.data
-                    // }) 
                     data.forEach((item,index)=>{
-                       (function(item){
-                        Myconnect.query("select * from w_yinshou where AutoId=? order by number asc",[item['AutoID']],(err,d)=>{
-                            if(!err){ 
-                                
-                                item['mysql']=d.map((items,indexs)=>{
-                                    items['key']=indexs;
-                                    items['keys']=index
-                                    return {...items};
-                                })
-
-                                item['key']=item['AutoID']
-                                if(data.length-1==index) {
-                                   reslove({
-                                       status:1,
-                                       message:"查询成功！",
-                                       list:data,
-                                       size:data.length,
-                                       total:count.data
-                                   })
+                        (function(item){
+                            Myconnect.query("select * from w_yinshou where AutoId=? order by number asc",[item['AutoID']],(err,d)=>{
+                                if(!err){ 
+                                    
+                                    item['mysql']=d.map((items,indexs)=>{
+                                        items['key']=indexs;
+                                        items['keys']=index
+                                        return {...items};
+                                    })
+    
+                                    item['key']=item['AutoID']
+                                    if(data.length-1==index) {
+                                       reslove({
+                                           status:1,
+                                           message:"查询成功！",
+                                           list:data,
+                                           size:data.length,
+                                           total:count.data
+                                       })
+                                    }
+                                }else {
+                                    reject({
+                                        status:0,
+                                        message:"抱歉，查询失败！",
+                                        list:[],
+                                    })
                                 }
-                            }else {
-                                reject({
-                                    status:0,
-                                    message:"抱歉，查询失败！",
-                                    list:[],
-                                })
-                            }
-                        })
-                       }(item))
+                            })
+                           }(item))
                     })
 
 
                 })
                 .catch(e => {
+                    console.log(e);
                     reject({
                         status: 0,
                         message: "抱歉，查询失败！",
@@ -81,6 +71,96 @@ function selectOrders(number) {
     })
 }
 
+// 2021-06-29更新查询
+// 查询主索引客户
+function selectcNewsOrders(){
+    
+    return new Promise((reslove,reject)=>{
+        connect.then(r=>{
+            r.query(`select  zi.AutoID ,zi.SBVID,zi.cbdlcode,per.cPersonName,cu.cCusAbbName,zhu.cSOCode,zhu.cPersonCode,zhu.dDate,zhu.cChecker,zi.iQuantity,zi.iTaxUnitPrice,zi.iSum,zi.iMoney,zhu.cCusName,zhu.cCusCode
+            from dbo.SaleBillVouch zhu
+            right join dbo.SaleBillVouchs zi on zhu.SBVID=zi.SBVID
+            left join dbo.Person per on zhu.cPersonCode=per.cPersonCode
+            left join dbo.Customer cu on cu.cCusCode=zhu.cCusCode 
+            order by dDate desc ` ).then(d=>{
+                    let data=d['recordset'].reduce((reduce,item,index)=>{
+                        let cCusAbbName=item['cCusAbbName']
+                        let cSOCode=item['cSOCode']
+                        let cPersonCode=item['cPersonCode']
+                        let cChecker=item['cChecker']
+                        let iQuantity=item['iQuantity']?Number(item['iQuantity']):0
+                        let iTaxUnitPrice=item['iTaxUnitPrice']
+                        let iSum=item['iSum']?Number(item['iSum']):0
+                        let iMoney=item['iMoney']
+                        let cCusName=item['cCusName']
+                        let cPersonName=item['cPersonName']
+                        let key=item['AutoID']
+                        if(reduce[cCusAbbName]){
+                            let price=Number(reduce[cCusAbbName]['iSum'])
+                            let sum=Number(reduce[cCusAbbName]['iQuantity'])
+                            reduce[cCusName]={
+                                key,cPersonName,cCusAbbName,cSOCode,cPersonCode,cChecker,iQuantity:(sum+iQuantity).toFixed(4),iTaxUnitPrice,iSum:(price+iSum).toFixed(2),iMoney,cCusName
+                            } 
+                        }else {
+                            reduce[cCusName]={
+                                cCusAbbName,cSOCode,cPersonCode,cChecker,iQuantity,iTaxUnitPrice,iSum,iMoney,cCusName,cPersonName,key
+                            }
+                        }
+                        return reduce;
+                    },{})
+                    let keys=Object.keys(data)
+                     keys.forEach((item,index)=>{
+                        (function(item){
+                           
+                            Myconnect.query("select * from w_yinshou where cCusName=? order by number asc",[item['cCusName'].trim()],(err,d)=>{
+                                if(!err){ 
+                                      
+                                    item['mysql']=d.map((items,indexs)=>{
+                                        items['key']=indexs;
+                                        items['keys']=index
+                                       
+                                        return {...items};
+                                    })
+                                   
+                                    if(keys.length-1==index) { 
+                                       reslove({
+                                           status:1,
+                                           message:"查询数据成功",
+                                           list:Object.values(data),
+                                           total:keys.length
+                                       })
+                                    }
+                                }else {
+                                  
+                                    reject({
+                                        status:0,
+                                        message:"抱歉，查询失败！",
+                                        list:[],
+                                    })
+                                }
+                            })
+                           }(data[item]))
+
+                        
+                     })
+                    
+                  
+            }).catch(e=>{
+                reject({
+                    status:0,
+                    message:"分组查询客户失败！",
+                    customer:[]
+                })
+            })
+        })
+
+
+    })
+}
+
+
+
+// 统计
 /**
  * 查询总数
  */
@@ -202,5 +282,6 @@ function selectCount() {
 
 module.exports = {
     selectOrders,
-    selectOrdersLike
+    selectOrdersLike,
+    selectcNewsOrders
 }

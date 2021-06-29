@@ -29,18 +29,8 @@ function selectOrders(number) {
 
             case 2:
               count = _context.sent;
-              resp.query("select top ".concat(number, " zi.AutoID ,zi.SBVID,zi.cbdlcode,per.cPersonName,cu.cCusAbbName,zhu.cSOCode,zhu.cPersonCode,zhu.dDate,zhu.cChecker,zi.iQuantity,zi.iTaxUnitPrice,zi.iSum,zi.iMoney,zhu.cCusName,zhu.cCusCode\n         from dbo.SaleBillVouch zhu\n         right join dbo.SaleBillVouchs zi on zhu.SBVID=zi.SBVID\n         left join dbo.Person per on zhu.cPersonCode=per.cPersonCode\n         left join dbo.Customer cu on cu.cCusCode=zhu.cCusCode \n         order by dDate desc")).then(function (r) {
-                var data = r['recordset']; // reslove({
-                //     status: 1,
-                //     message: "查询成功！",
-                //     list: data.map((item,index)=>{
-                //         item['key']=index;    
-                //         return {...item};
-                //     }),
-                //     size: data.length, 
-                //     total: count.data
-                // }) 
-
+              resp.query("select top ".concat(number, " zi.AutoID ,zi.SBVID,zi.cbdlcode,per.cPersonName,cu.cCusAbbName,zhu.cSOCode,zhu.cPersonCode,zhu.dDate,zhu.cChecker,zi.iQuantity,zi.iTaxUnitPrice,zi.iSum,zi.iMoney,zhu.cCusName,zhu.cCusCode\n         from dbo.SaleBillVouch zhu\n         right join dbo.SaleBillVouchs zi on zhu.SBVID=zi.SBVID\n         left join dbo.Person per on zhu.cPersonCode=per.cPersonCode\n         left join dbo.Customer cu on cu.cCusCode=zhu.cCusCode \n\n         order by dDate desc ")).then(function (r) {
+                var data = r['recordset'];
                 data.forEach(function (item, index) {
                   (function (item) {
                     Myconnect.query("select * from w_yinshou where AutoId=? order by number asc", [item['AutoID']], function (err, d) {
@@ -72,6 +62,7 @@ function selectOrders(number) {
                   })(item);
                 });
               })["catch"](function (e) {
+                console.log(e);
                 reject({
                   status: 0,
                   message: "抱歉，查询失败！",
@@ -87,7 +78,101 @@ function selectOrders(number) {
       });
     });
   });
-}
+} // 2021-06-29更新查询
+// 查询主索引客户
+
+
+function selectcNewsOrders() {
+  return new Promise(function (reslove, reject) {
+    connect.then(function (r) {
+      r.query("select  zi.AutoID ,zi.SBVID,zi.cbdlcode,per.cPersonName,cu.cCusAbbName,zhu.cSOCode,zhu.cPersonCode,zhu.dDate,zhu.cChecker,zi.iQuantity,zi.iTaxUnitPrice,zi.iSum,zi.iMoney,zhu.cCusName,zhu.cCusCode\n            from dbo.SaleBillVouch zhu\n            right join dbo.SaleBillVouchs zi on zhu.SBVID=zi.SBVID\n            left join dbo.Person per on zhu.cPersonCode=per.cPersonCode\n            left join dbo.Customer cu on cu.cCusCode=zhu.cCusCode \n            order by dDate desc ").then(function (d) {
+        var data = d['recordset'].reduce(function (reduce, item, index) {
+          var cCusAbbName = item['cCusAbbName'];
+          var cSOCode = item['cSOCode'];
+          var cPersonCode = item['cPersonCode'];
+          var cChecker = item['cChecker'];
+          var iQuantity = item['iQuantity'] ? Number(item['iQuantity']) : 0;
+          var iTaxUnitPrice = item['iTaxUnitPrice'];
+          var iSum = item['iSum'] ? Number(item['iSum']) : 0;
+          var iMoney = item['iMoney'];
+          var cCusName = item['cCusName'];
+          var cPersonName = item['cPersonName'];
+          var key = item['AutoID'];
+
+          if (reduce[cCusAbbName]) {
+            var price = Number(reduce[cCusAbbName]['iSum']);
+            var sum = Number(reduce[cCusAbbName]['iQuantity']);
+            reduce[cCusName] = {
+              key: key,
+              cPersonName: cPersonName,
+              cCusAbbName: cCusAbbName,
+              cSOCode: cSOCode,
+              cPersonCode: cPersonCode,
+              cChecker: cChecker,
+              iQuantity: (sum + iQuantity).toFixed(4),
+              iTaxUnitPrice: iTaxUnitPrice,
+              iSum: (price + iSum).toFixed(2),
+              iMoney: iMoney,
+              cCusName: cCusName
+            };
+          } else {
+            reduce[cCusName] = {
+              cCusAbbName: cCusAbbName,
+              cSOCode: cSOCode,
+              cPersonCode: cPersonCode,
+              cChecker: cChecker,
+              iQuantity: iQuantity,
+              iTaxUnitPrice: iTaxUnitPrice,
+              iSum: iSum,
+              iMoney: iMoney,
+              cCusName: cCusName,
+              cPersonName: cPersonName,
+              key: key
+            };
+          }
+
+          return reduce;
+        }, {});
+        var keys = Object.keys(data);
+        keys.forEach(function (item, index) {
+          (function (item) {
+            Myconnect.query("select * from w_yinshou where cCusName=? order by number asc", [item['cCusName'].trim()], function (err, d) {
+              if (!err) {
+                item['mysql'] = d.map(function (items, indexs) {
+                  items['key'] = indexs;
+                  items['keys'] = index;
+                  return _objectSpread({}, items);
+                });
+
+                if (keys.length - 1 == index) {
+                  reslove({
+                    status: 1,
+                    message: "查询数据成功",
+                    list: Object.values(data),
+                    total: keys.length
+                  });
+                }
+              } else {
+                reject({
+                  status: 0,
+                  message: "抱歉，查询失败！",
+                  list: []
+                });
+              }
+            });
+          })(data[item]);
+        });
+      })["catch"](function (e) {
+        reject({
+          status: 0,
+          message: "分组查询客户失败！",
+          customer: []
+        });
+      });
+    });
+  });
+} // 统计
+
 /**
  * 查询总数
  */
@@ -203,5 +288,6 @@ function selectOrdersLike(type, search) {
 
 module.exports = {
   selectOrders: selectOrders,
-  selectOrdersLike: selectOrdersLike
+  selectOrdersLike: selectOrdersLike,
+  selectcNewsOrders: selectcNewsOrders
 };

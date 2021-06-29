@@ -210,6 +210,87 @@ function updateProcess(cj, Code, Name, UnitPrice, bm) {
       reject(_objectSpread({}, e.data));
     });
   });
+} // 计时项目
+// 添加
+
+
+function insertProject(ParentCode, ProjectName, Money, bm) {
+  return new Promise(function (reslove, reject) {
+    instance.post(Wage + "/salary/insertProject", {
+      ParentCode: ParentCode,
+      ProjectName: ProjectName,
+      Money: Money,
+      bm: bm
+    }).then(function (r) {
+      reslove(_objectSpread({}, r.data));
+    })["catch"](function (e) {
+      reject(_objectSpread({}, e.data));
+    });
+  });
+} // 修改
+
+
+function updateProject(ParentCode, ProjectCode, ProjectName, Money, bm) {
+  return new Promise(function (reslove, reject) {
+    instance.post(Wage + "/salary/updateProject", {
+      ParentCode: ParentCode,
+      ProjectCode: ProjectCode,
+      ProjectName: ProjectName,
+      Money: Money,
+      bm: bm
+    }).then(function (r) {
+      reslove(_objectSpread({}, r.data));
+    })["catch"](function (e) {
+      reject(_objectSpread({}, e.data));
+    });
+  });
+} // 补贴项目
+// 添加
+
+
+function insertSubsidyProject(SubsidyName, Price, bm) {
+  return new Promise(function (reslove, reject) {
+    instance.post(Wage + "/salary/SubsidyProject", {
+      SubsidyName: SubsidyName,
+      Price: Price,
+      bm: bm
+    }).then(function (r) {
+      reslove(_objectSpread({}, r.data));
+    })["catch"](function (e) {
+      reject(_objectSpread({}, e.data));
+    });
+  });
+} // 修改
+
+
+function updateSubsidyProject(Id, SubsidyName, Price, bm) {
+  return new Promise(function (reslove, reject) {
+    instance.post(Wage + "/salary/updateSubsidyProject", {
+      Id: Id,
+      SubsidyName: SubsidyName,
+      Price: Price,
+      bm: bm
+    }).then(function (r) {
+      reslove(_objectSpread({}, r.data));
+    })["catch"](function (e) {
+      reject(_objectSpread({}, e.data));
+    });
+  });
+} // 请假类别
+// 添加
+
+
+function insertHY_Department(d_Name, bm) {
+  return new Promise(function (reslove, reject) {
+    instance.post(Wage + "/salary/insertHY_Department", {
+      d_Name: d_Name,
+      bm: bm
+    }).then(function (r) {
+      reslove(_objectSpread({}, r.data));
+    })["catch"](function (e) {
+      reject(_objectSpread({}, e.data));
+    });
+  });
 }
 
 module.exports = {
@@ -223,5 +304,10 @@ module.exports = {
   updatePerson: updatePerson,
   selectPerson: selectPerson,
   insertProcess: insertProcess,
-  updateProcess: updateProcess
+  updateProcess: updateProcess,
+  insertProject: insertProject,
+  insertSubsidyProject: insertSubsidyProject,
+  insertHY_Department: insertHY_Department,
+  updateSubsidyProject: updateSubsidyProject,
+  updateProject: updateProject
 };
