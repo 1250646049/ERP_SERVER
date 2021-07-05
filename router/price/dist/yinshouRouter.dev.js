@@ -19,7 +19,8 @@ var _require2 = require("../../db/myService/yinshouServer"),
     select2autoId = _require2.select2autoId;
 
 var _require3 = require("../../db/sqlService/shoukuanSJ"),
-    selectAllList = _require3.selectAllList; // 删除订单
+    selectAllList = _require3.selectAllList,
+    selectAllList003 = _require3.selectAllList003; // 删除订单
 
 
 router.get("/deleteOrder", function _callee(req, resp) {
@@ -161,47 +162,51 @@ router.get("/selectYsk", function _callee4(req, resp) {
 }); // 远程调用查询应收款到期 查询所有分页查询 003
 
 router.get("/selectYsk003", function _callee5(req, resp) {
-  var _req$query2, number, type, search, result;
-
+  var result, data;
   return regeneratorRuntime.async(function _callee5$(_context5) {
     while (1) {
       switch (_context5.prev = _context5.next) {
         case 0:
-          _req$query2 = req.query, number = _req$query2.number, type = _req$query2.type, search = _req$query2.search;
-          _context5.prev = 1;
-          _context5.next = 4;
-          return regeneratorRuntime.awrap(getYingshoukuan003(number));
+          _context5.prev = 0;
+          _context5.next = 3;
+          return regeneratorRuntime.awrap(getYingshoukuan003());
 
-        case 4:
+        case 3:
           result = _context5.sent;
+          _context5.next = 6;
+          return regeneratorRuntime.awrap(selectAllList003());
+
+        case 6:
+          data = _context5.sent;
+          result['shoukuan'] = data['list'];
           resp.json(result);
-          _context5.next = 11;
+          _context5.next = 14;
           break;
 
-        case 8:
-          _context5.prev = 8;
-          _context5.t0 = _context5["catch"](1);
+        case 11:
+          _context5.prev = 11;
+          _context5.t0 = _context5["catch"](0);
           resp.json({
             status: 0,
             message: "抱歉，查询失败！"
           });
 
-        case 11:
+        case 14:
         case "end":
           return _context5.stop();
       }
     }
-  }, null, null, [[1, 8]]);
+  }, null, null, [[0, 11]]);
 }); // 远程调用搜索收款到期 017
 
 router.get("/searchYsk", function _callee6(req, resp) {
-  var _req$query3, type, search, result;
+  var _req$query2, type, search, result;
 
   return regeneratorRuntime.async(function _callee6$(_context6) {
     while (1) {
       switch (_context6.prev = _context6.next) {
         case 0:
-          _req$query3 = req.query, type = _req$query3.type, search = _req$query3.search;
+          _req$query2 = req.query, type = _req$query2.type, search = _req$query2.search;
           _context6.prev = 1;
           _context6.next = 4;
           return regeneratorRuntime.awrap(searchYingshoukuan(type, search));
@@ -229,13 +234,13 @@ router.get("/searchYsk", function _callee6(req, resp) {
 }); // 远程调用搜索收款到期 003
 
 router.get("/searchYsk003", function _callee7(req, resp) {
-  var _req$query4, type, search, result;
+  var _req$query3, type, search, result;
 
   return regeneratorRuntime.async(function _callee7$(_context7) {
     while (1) {
       switch (_context7.prev = _context7.next) {
         case 0:
-          _req$query4 = req.query, type = _req$query4.type, search = _req$query4.search;
+          _req$query3 = req.query, type = _req$query3.type, search = _req$query3.search;
           _context7.prev = 1;
           _context7.next = 4;
           return regeneratorRuntime.awrap(searchYingshoukuan003(type, search));

@@ -64,16 +64,16 @@ function altersYinshou(data){
 // 添加一条收款项
 
 function addYinshou(data){
-    const {AutoId,email,type,jiean,jilu,riqi,price,beizhu,status,shoujianren,jiedian,edu,quyu,username,name}=data
+    const {AutoId,email,type,jiean,jilu,riqi,price,beizhu,status,shoujianren,jiedian,edu,quyu,username,name,cCusName,chae,totalprice,personemail,iQuantity,iSum}=data
         
     return new Promise((reslove,reject)=>{
-        select2AutoId(AutoId)
+        select2cCusName(cCusName)
         .then(d=>{
             const {data}=d
             if(JSON.stringify(data)==='{}'){
                 // 为空 要添加number
-                connect.query("insert into w_yinshou(email,type,jiean,jilu,riqi,price,beizhu,status,shoujianren,jiedian,edu,quyu,AutoId,number,uptime,name,username) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-                [email,type,jiean,jilu,riqi,price,beizhu,status,shoujianren,jiedian,edu,quyu,AutoId,1,getCurrentTimes(),name,username],(err,data)=>{
+                connect.query("insert into w_yinshou(email,type,jiean,jilu,riqi,price,beizhu,status,shoujianren,jiedian,edu,quyu,AutoId,number,uptime,name,username,cCusName,chae,totalprice,ku,personemail,iQuantity,iSum) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                [email,type,jiean,jilu,riqi,price,beizhu,status,shoujianren,jiedian,edu,quyu,AutoId,1,getCurrentTimes(),name,username,cCusName,chae,totalprice,1,personemail,iQuantity,iSum],(err,data)=>{
                     if(!err){
                         reslove({
                             status:1,
@@ -90,8 +90,8 @@ function addYinshou(data){
             }else {
                 // 不为空 获取number
                 const {number}=data
-                connect.query("insert into w_yinshou(email,type,jiean,jilu,riqi,price,beizhu,status,shoujianren,jiedian,edu,quyu,AutoId,number,uptime,name,username) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-                [email,type,jiean,jilu,riqi,price,beizhu,status,shoujianren,jiedian,edu,quyu,AutoId,number+1,getCurrentTimes(),name,username],(err,data)=>{
+                connect.query("insert into w_yinshou(email,type,jiean,jilu,riqi,price,beizhu,status,shoujianren,jiedian,edu,quyu,AutoId,number,uptime,name,username,cCusName,chae,totalprice,ku,personemail,iQuantity,iSum) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                [email,type,jiean,jilu,riqi,price,beizhu,status,shoujianren,jiedian,edu,quyu,AutoId,number+1,getCurrentTimes(),name,username,cCusName,chae,totalprice,1,personemail,iQuantity,iSum],(err,data)=>{
                     if(!err){
                         reslove({
                             status:1,
@@ -122,12 +122,12 @@ function addYinshou(data){
 
 }
 
-// 根据AutoId查询任意一条记录 判断次数
+// 根据客户名称查询任意一条记录 判断次数
 
-function select2AutoId(id){
+function select2cCusName(cCusName){
 
     return new Promise((reslove,reject)=>{
-        connect.query("select * from w_yinshou where AutoId=? order by number desc limit 1",[id],(err,data)=>{
+        connect.query("select * from w_yinshou where cCusName=? and ku=1 order by number desc limit 1",[cCusName],(err,data)=>{
             if(!err){
                 reslove({
                     status:1,
@@ -181,10 +181,10 @@ function selectShoukuan2AutoId(id){
 
 // 修改一条收款项 mysql
 function alterYinshou(data){
-    const {email,type,jilu,riqi,price,beizhu,status,shoujianren,jiedian,edu,quyu,id,name,username}=data
+    const {email,type,jilu,riqi,price,beizhu,status,shoujianren,jiedian,edu,quyu,id,name,username,iQuantity,iSum}=data
     return new Promise((reslove,reject)=>{
-        connect.query("update w_yinshou set email=?,type=?,jilu=?,riqi=?,price=?,beizhu=?,status=?,shoujianren=?,jiedian=?,edu=?,quyu=?,name=?,username=? where id=?",
-        [email,type,jilu,riqi,price,beizhu,status,shoujianren,jiedian,edu,quyu,name,username,id],(err,data)=>{
+        connect.query("update w_yinshou set email=?,type=?,jilu=?,riqi=?,price=?,beizhu=?,status=?,shoujianren=?,jiedian=?,edu=?,quyu=?,name=?,username=?,iQuantity=?,iSum=? where id=?",
+        [email,type,jilu,riqi,price,beizhu,status,shoujianren,jiedian,edu,quyu,name,username,iQuantity,iSum,id],(err,data)=>{
             if(!err){
                 reslove({
                     status:1,

@@ -85,9 +85,10 @@ function selectOrders(number) {
 function selectcNewsOrders() {
   return new Promise(function (reslove, reject) {
     connect.then(function (r) {
-      r.query("select  zi.AutoID ,zi.SBVID,zi.cbdlcode,per.cPersonName,cu.cCusAbbName,zhu.cSOCode,zhu.cPersonCode,zhu.dDate,zhu.cChecker,zi.iQuantity,zi.iTaxUnitPrice,zi.iSum,zi.iMoney,zhu.cCusName,zhu.cCusCode\n            from dbo.SaleBillVouch zhu\n            right join dbo.SaleBillVouchs zi on zhu.SBVID=zi.SBVID\n            left join dbo.Person per on zhu.cPersonCode=per.cPersonCode\n            left join dbo.Customer cu on cu.cCusCode=zhu.cCusCode \n            order by dDate desc ").then(function (d) {
+      r.query("select  zi.AutoID ,zi.SBVID,zi.cbdlcode,per.cPersonName,cu.cCusAbbName,per.cPersonEmail,zhu.cSOCode,zhu.cPersonCode,zhu.dDate,zhu.cChecker,zi.iQuantity,zi.iTaxUnitPrice,zi.iSum,zi.iMoney,zhu.cCusName,zhu.cCusCode\n            from dbo.SaleBillVouch zhu\n            right join dbo.SaleBillVouchs zi on zhu.SBVID=zi.SBVID\n            left join dbo.Person per on zhu.cPersonCode=per.cPersonCode\n            left join dbo.Customer cu on cu.cCusCode=zhu.cCusCode \n            order by dDate desc ").then(function (d) {
         var data = d['recordset'].reduce(function (reduce, item, index) {
           var cCusAbbName = item['cCusAbbName'];
+          var AutoID = item['AutoID'];
           var cSOCode = item['cSOCode'];
           var cPersonCode = item['cPersonCode'];
           var cChecker = item['cChecker'];
@@ -98,11 +99,14 @@ function selectcNewsOrders() {
           var cCusName = item['cCusName'];
           var cPersonName = item['cPersonName'];
           var key = item['AutoID'];
+          var cPersonEmail = item['cPersonEmail'];
 
           if (reduce[cCusAbbName]) {
             var price = Number(reduce[cCusAbbName]['iSum']);
             var sum = Number(reduce[cCusAbbName]['iQuantity']);
             reduce[cCusName] = {
+              cPersonEmail: cPersonEmail,
+              AutoID: AutoID,
               key: key,
               cPersonName: cPersonName,
               cCusAbbName: cCusAbbName,
@@ -117,6 +121,8 @@ function selectcNewsOrders() {
             };
           } else {
             reduce[cCusName] = {
+              cPersonEmail: cPersonEmail,
+              AutoID: AutoID,
               cCusAbbName: cCusAbbName,
               cSOCode: cSOCode,
               cPersonCode: cPersonCode,
@@ -136,7 +142,7 @@ function selectcNewsOrders() {
         var keys = Object.keys(data);
         keys.forEach(function (item, index) {
           (function (item) {
-            Myconnect.query("select * from w_yinshou where cCusName=? order by number asc", [item['cCusName'].trim()], function (err, d) {
+            Myconnect.query("select * from w_yinshou where cCusName=? and ku=1 order by number asc", [item['cCusName'].trim()], function (err, d) {
               if (!err) {
                 item['mysql'] = d.map(function (items, indexs) {
                   items['key'] = indexs;
@@ -149,7 +155,8 @@ function selectcNewsOrders() {
                     status: 1,
                     message: "查询数据成功",
                     list: Object.values(data),
-                    total: keys.length
+                    total: keys.length,
+                    data: data
                   });
                 }
               } else {

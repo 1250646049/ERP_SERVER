@@ -11,7 +11,9 @@ var axios = require("axios");
 var _require = require("../../utils/serverConfig"),
     Wage = _require.Wage;
 
-var qs = require("qs"); // 用axios实例化的方式更新post请求
+var qs = require("qs");
+
+var connect = require("../../db/mysqlDb"); // 用axios实例化的方式更新post请求
 
 
 var instance = axios.create({});
@@ -291,6 +293,70 @@ function insertHY_Department(d_Name, bm) {
       reject(_objectSpread({}, e.data));
     });
   });
+} // 查询总工序
+
+
+function selectSalary_Main(number) {
+  return new Promise(function (reslove, reject) {
+    instance.get(Wage + "/salary/selectSalary_Main", {
+      params: {
+        number: number
+      }
+    }).then(function (r) {
+      reslove(_objectSpread({}, r.data));
+    })["catch"](function (e) {
+      reject(_objectSpread({}, r.error));
+    });
+  });
+} // 根据工序id查询工序
+
+
+function selectSalary_code(kqcode) {
+  return new Promise(function (reslove, reject) {
+    instance.get(Wage + "/salary/selectSalary_code", {
+      params: {
+        kqcode: kqcode
+      }
+    }).then(function (r) {
+      reslove(_objectSpread({}, r.data));
+    })["catch"](function (e) {
+      reject(function (e) {
+        e.data;
+      });
+    });
+  });
+} // 搜索所有工序
+// 查询所有结果
+
+
+function select_contents() {
+  return new Promise(function (reslove, reject) {
+    instance.get(Wage + "/selectSalary_code").then(function (r) {
+      reslove(_objectSpread({}, r.data));
+    })["catch"](function (e) {
+      reject(_objectSpread({}, r.error));
+    });
+  });
+} // search内容
+
+
+function search_content(yibu, erbu, type, content, startTime, endTime) {
+  return new Promise(function (reslove, reject) {
+    instance.get(Wage + "/salary/select_contents", {
+      params: {
+        yibu: yibu,
+        erbu: erbu,
+        type: type,
+        content: content,
+        startTime: startTime,
+        endTime: endTime
+      }
+    }).then(function (r) {
+      reslove(_objectSpread({}, r.data));
+    })["catch"](function (e) {
+      reject(_objectSpread({}, e.data));
+    });
+  });
 }
 
 module.exports = {
@@ -309,5 +375,9 @@ module.exports = {
   insertSubsidyProject: insertSubsidyProject,
   insertHY_Department: insertHY_Department,
   updateSubsidyProject: updateSubsidyProject,
-  updateProject: updateProject
+  updateProject: updateProject,
+  selectSalary_Main: selectSalary_Main,
+  selectSalary_code: selectSalary_code,
+  select_contents: select_contents,
+  search_content: search_content
 };

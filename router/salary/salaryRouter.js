@@ -1,7 +1,8 @@
 const express = require("express")
 const router = express.Router()
 const {selectAllNews,deleteContent,updateWorkshop,insertWorkshop,insertTeam, alterTeam,insertPerson,updatePerson,selectPerson
-,insertProcess,updateProcess,insertProject,insertSubsidyProject,insertHY_Department,updateProject,updateSubsidyProject
+,insertProcess,updateProcess,insertProject,insertSubsidyProject,insertHY_Department,updateProject,updateSubsidyProject,
+selectSalary_Main,selectSalary_code,select_contents,search_content
 }=require("./salaryService")
 // 查询所有
 
@@ -272,5 +273,54 @@ router.post("/insertHY_Department",async(req,resp)=>{
     }
 
 
+})
+
+// 查询所有工序
+
+router.get("/selectSalary_Main",async(req,resp)=>{
+    const {number}=req.query
+    try{
+        let result=await selectSalary_Main(number)
+        resp.json(result)
+    }catch{
+        resp.json({
+            status:0,
+            message:"查询失败！" 
+        })
+    }
+
+
+})
+
+// 根据keycode查询工序
+
+router.get("/selectSalary_code",async(req,resp)=>{
+    const {keycode}=req.query
+   
+    try{
+        let result=await selectSalary_code(keycode)
+        resp.json(result)
+    }catch{
+        resp.json({
+            status:0,
+            message:"查询失败！"
+        })
+    }
+
+
+})
+
+// 条件赛选
+router.get("/search_content",async(req,resp)=>{
+    const {yibu, erbu, type, content, startTime, endTime}=req.query
+    try{
+        let result=await search_content(yibu, erbu, type, content, startTime, endTime)
+        resp.json(result)
+    }catch{
+        resp.json({
+            status:0,
+            message:"查询失败！"
+        })
+    }
 })
 module.exports=router

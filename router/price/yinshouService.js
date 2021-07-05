@@ -66,10 +66,10 @@ function searchYingshoukuan003(type,search){
 }
 
 // 远程调用获取资源 搜索 查询账套
-function getYingshoukuan003(number){
+function getYingshoukuan003(){
 
     return new Promise((reslove,reject)=>{
-        axios.get(sql003+"/selectYinshou",{params:{number}})
+        axios.get(sql003+"/selectYinshou",{})
         .then(r=>reslove({
             ...r.data
         }))
@@ -83,6 +83,7 @@ function getYingshoukuan003(number){
 
 
 }
+
 
 module.exports={
     getYingshoukuan,

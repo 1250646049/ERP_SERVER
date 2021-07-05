@@ -8,7 +8,8 @@ var cors = require("cors");
 
 var _require = require("./db/sqlService/yinshoukuan003"),
     selectOrders = _require.selectOrders,
-    selectOrdersLike = _require.selectOrdersLike; // app.all("*", function(req, res, next) {
+    selectOrdersLike = _require.selectOrdersLike,
+    selectcNewsOrders = _require.selectcNewsOrders; // app.all("*", function(req, res, next) {
 //     if (!req.get("Origin")) return next();
 //      // use "*" here to accept any origin
 //      res.set("Access-Control-Allow-Origin",req.headers.origin);  
@@ -23,46 +24,44 @@ var _require = require("./db/sqlService/yinshoukuan003"),
 
 
 app.get("/selectYinshou", function _callee(req, resp) {
-  var _req$query, number, type, search, result;
-
+  var result;
   return regeneratorRuntime.async(function _callee$(_context) {
     while (1) {
       switch (_context.prev = _context.next) {
         case 0:
-          _req$query = req.query, number = _req$query.number, type = _req$query.type, search = _req$query.search;
-          _context.prev = 1;
-          _context.next = 4;
-          return regeneratorRuntime.awrap(selectOrders(number, type, search));
+          _context.prev = 0;
+          _context.next = 3;
+          return regeneratorRuntime.awrap(selectcNewsOrders());
 
-        case 4:
+        case 3:
           result = _context.sent;
           resp.json(result);
-          _context.next = 11;
+          _context.next = 10;
           break;
 
-        case 8:
-          _context.prev = 8;
-          _context.t0 = _context["catch"](1);
+        case 7:
+          _context.prev = 7;
+          _context.t0 = _context["catch"](0);
           resp.json({
             status: 0,
             message: "抱歉，查询失败！"
           });
 
-        case 11:
+        case 10:
         case "end":
           return _context.stop();
       }
     }
-  }, null, null, [[1, 8]]);
+  }, null, null, [[0, 7]]);
 });
 app.get("/searchYinshou", function _callee2(req, resp) {
-  var _req$query2, type, search, result;
+  var _req$query, type, search, result;
 
   return regeneratorRuntime.async(function _callee2$(_context2) {
     while (1) {
       switch (_context2.prev = _context2.next) {
         case 0:
-          _req$query2 = req.query, type = _req$query2.type, search = _req$query2.search;
+          _req$query = req.query, type = _req$query.type, search = _req$query.search;
           _context2.prev = 1;
           _context2.next = 4;
           return regeneratorRuntime.awrap(selectOrdersLike(type, search));

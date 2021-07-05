@@ -566,6 +566,162 @@ function DeleteContent(data, type, code) {
       });
     });
   });
+} // 信息查询 Salary_Main
+
+
+function selectSalary_Main(number) {
+  var _ref3, total;
+
+  return regeneratorRuntime.async(function selectSalary_Main$(_context4) {
+    while (1) {
+      switch (_context4.prev = _context4.next) {
+        case 0:
+          if (!number) number = 10;
+          _context4.next = 3;
+          return regeneratorRuntime.awrap(selectSalary_count());
+
+        case 3:
+          _ref3 = _context4.sent;
+          total = _ref3.total;
+          return _context4.abrupt("return", new Promise(function (reslove, reject) {
+            connect.then(function (r) {
+              r.query("select top ".concat(number, " main.Kqcode,main.Data,main.WorkshopName,main.TeamName,main.Number,main.Class,main.glyn,main.rsyn,main.cwyn,main.bm,sum(s.Wages) as wages\n            from Salary_Main main \n            left join Salarys s on s.Kqcode=main.Kqcode\n        \n            group by main.Kqcode,main.Data,main.WorkshopName,main.TeamName,main.Number,main.Class,main.glyn,main.rsyn,main.cwyn,main.bm\n          \n            order by main.Data desc  \n          \n            ")).then(function (r) {
+                var data = r.recordset;
+                reslove({
+                  status: 1,
+                  message: "查询成功！",
+                  list: data.length ? data.map(function (item, index) {
+                    item['key'] = index;
+                    return item;
+                  }) : [],
+                  total: total[0]['']
+                });
+              });
+            })["catch"](function (e) {
+              reject({
+                status: 0,
+                message: "抱歉，查询失败！"
+              });
+            });
+          }));
+
+        case 6:
+        case "end":
+          return _context4.stop();
+      }
+    }
+  });
+} // 查询总条数
+
+
+function selectSalary_count() {
+  return new Promise(function (reslove, reject) {
+    connect.then(function (r) {
+      r.query("select count(*) from Salary_Main").then(function (d) {
+        reslove({
+          status: 1,
+          message: "查询成功",
+          total: d['recordset']
+        });
+      })["catch"](function () {
+        reject({
+          status: 0,
+          message: "查询失败！"
+        });
+      });
+    });
+  });
+} // 根据考勤单号整理数据返回
+
+
+function selectSalary_code(Kqcode) {
+  return new Promise(function (reslove, reject) {
+    connect.then(function (r) {
+      r.query("select top 1 Code1,Code2,Code3,Code4,Code5,Code6,Code7,Code8,Code9,Code10,\n            Output1,Output2,Output3,Output4,Output5,Output6,Output7,Output8,Output9,Output10,\n            Name1,Name2,Name3,Name4,Name5,Name6,Name7,Name8,Name9,Name10,jh\n            \n            from Salary_Middle where Kqcode='".concat(Kqcode, "'")).then(function (r) {
+        var data = r['recordset'][0];
+        var arr = [];
+        var values = Object.keys(data);
+        var Code = values.filter(function (item, index) {
+          return item.indexOf("Code") !== -1;
+        });
+        var Output = values.filter(function (item, index) {
+          return item.indexOf("Output") !== -1;
+        });
+        var Name = values.filter(function (item, index) {
+          return item.indexOf("Name") !== -1;
+        });
+
+        for (var i = 0; i < Code.length; i++) {
+          var obj = {};
+          obj['code'] = data[Code[i]];
+          obj['output'] = data[Output[i]];
+          obj['name'] = data[Name[i]];
+          obj['jh'] = data['jh'];
+          obj['key'] = i;
+          arr.push(obj);
+        }
+
+        reslove({
+          status: 1,
+          message: "查询成功！",
+          list: arr
+        });
+      })["catch"](function (e) {
+        reject({
+          status: 0,
+          message: "查询失败！",
+          list: []
+        });
+      });
+    });
+  });
+} // 拼接字符串进行查询
+
+
+function select_contents(yibu, erbu, type, content, startTime, endTime) {
+  var searchSql = "";
+  yibu = Boolean(yibu);
+  erbu = Boolean(erbu);
+
+  if (yibu && !erbu) {
+    searchSql = "where main.bm='一部'";
+  } else if (!yibu && erbu) {
+    searchSql = "where main.bm='二部'";
+  } else {
+    searchSql = "where 1=1";
+  }
+
+  if (startTime && !endTime) {
+    searchSql += " and main.Data>='".concat(startTime, "'");
+  } else if (!startTime && endTime) {
+    searchSql += " and main.Data<='".concat(endTime, "'");
+  } else if (startTime && endTime) {
+    searchSql += " and main.Data >='".concat(startTime, "' and main.Data <= '").concat(endTime, "'");
+  }
+
+  searchSql += " and  main.".concat(type, "='").concat(content, "'");
+  console.log(searchSql);
+  return new Promise(function (reslove, reject) {
+    connect.then(function (r) {
+      r.query("select  main.Kqcode,main.Data,main.WorkshopName,main.TeamName,main.Number,main.Class,main.glyn,main.rsyn,main.cwyn,main.bm,sum(s.Wages) as wages\n            from Salary_Main main \n            left join Salarys s on s.Kqcode=main.Kqcode\n            ".concat(searchSql, " \n            group by main.Kqcode,main.Data,main.WorkshopName,main.TeamName,main.Number,main.Class,main.glyn,main.rsyn,main.cwyn,main.bm\n          \n            order by main.Data desc  \n          \n            ")).then(function (r) {
+        var data = r.recordset;
+        reslove({
+          status: 1,
+          message: "查询成功！",
+          list: data.length ? data.map(function (item, index) {
+            item['key'] = index;
+            return item;
+          }) : []
+        });
+      });
+    })["catch"](function (e) {
+      console.log(e);
+      reject({
+        status: 0,
+        message: "抱歉，查询失败！"
+      });
+    });
+  });
 }
 
 module.exports = {
@@ -584,5 +740,8 @@ module.exports = {
   insertProject: insertProject,
   updateProject: updateProject,
   insertSubsidyProject: insertSubsidyProject,
-  updateSubsidyProject: updateSubsidyProject
+  updateSubsidyProject: updateSubsidyProject,
+  selectSalary_Main: selectSalary_Main,
+  selectSalary_code: selectSalary_code,
+  select_contents: select_contents
 };

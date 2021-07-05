@@ -6,7 +6,10 @@ var router = express.Router();
 
 var _require = require("../../db/myService/examService"),
     selectExam = _require.selectExam,
-    selectCount = _require.selectCount; // 模糊匹配查询结果
+    selectCount = _require.selectCount;
+
+var _require2 = require("../../spider/spider_dindin"),
+    getAllFukuanData = _require2.getAllFukuanData; // 模糊匹配查询结果
 
 
 router.get("/selectExamLike", function _callee(req, resp) {
@@ -72,5 +75,39 @@ router.get("/selectCount", function _callee2(req, resp) {
       }
     }
   }, null, null, [[0, 7]]);
+}); // 获取所有付款单
+
+router.get("/getAllFukuanData", function _callee3(req, resp) {
+  var _req$query2, createFrom, createTo, result;
+
+  return regeneratorRuntime.async(function _callee3$(_context3) {
+    while (1) {
+      switch (_context3.prev = _context3.next) {
+        case 0:
+          _req$query2 = req.query, createFrom = _req$query2.createFrom, createTo = _req$query2.createTo;
+          _context3.prev = 1;
+          _context3.next = 4;
+          return regeneratorRuntime.awrap(getAllFukuanData(createFrom, createTo));
+
+        case 4:
+          result = _context3.sent;
+          resp.json(result);
+          _context3.next = 11;
+          break;
+
+        case 8:
+          _context3.prev = 8;
+          _context3.t0 = _context3["catch"](1);
+          resp.json({
+            status: 0,
+            message: "查询失败！"
+          });
+
+        case 11:
+        case "end":
+          return _context3.stop();
+      }
+    }
+  }, null, null, [[1, 8]]);
 });
 module.exports = router;

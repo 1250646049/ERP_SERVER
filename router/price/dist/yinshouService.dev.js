@@ -69,13 +69,9 @@ function searchYingshoukuan003(type, search) {
 } // 远程调用获取资源 搜索 查询账套
 
 
-function getYingshoukuan003(number) {
+function getYingshoukuan003() {
   return new Promise(function (reslove, reject) {
-    axios.get(sql003 + "/selectYinshou", {
-      params: {
-        number: number
-      }
-    }).then(function (r) {
+    axios.get(sql003 + "/selectYinshou", {}).then(function (r) {
       return reslove(_objectSpread({}, r.data));
     })["catch"](function (e) {
       return reject({

@@ -1,7 +1,7 @@
 const express=require("express")
 const app=express()
 const cors=require("cors")
-const {selectOrders,selectOrdersLike}=require("./db/sqlService/yinshoukuan003")
+const {selectOrders,selectOrdersLike,selectcNewsOrders}=require("./db/sqlService/yinshoukuan003")
 
 
 
@@ -20,12 +20,10 @@ const {selectOrders,selectOrdersLike}=require("./db/sqlService/yinshoukuan003")
 // 查询订单数量 应收账款超期自动提醒
 
 app.get("/selectYinshou", async (req, resp) => {
-    const {
-        number,type,search
-    } = req.query
-
+ 
+  
     try {
-        let result = await selectOrders(number,type,search)
+        let result = await selectcNewsOrders()
         resp.json(result)
     } catch {
         resp.json({

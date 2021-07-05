@@ -20,7 +20,11 @@ var _require = require("./salaryService"),
     insertSubsidyProject = _require.insertSubsidyProject,
     insertHY_Department = _require.insertHY_Department,
     updateProject = _require.updateProject,
-    updateSubsidyProject = _require.updateSubsidyProject; // 查询所有
+    updateSubsidyProject = _require.updateSubsidyProject,
+    selectSalary_Main = _require.selectSalary_Main,
+    selectSalary_code = _require.selectSalary_code,
+    select_contents = _require.select_contents,
+    search_content = _require.search_content; // 查询所有
 
 
 router.get("/selectAllNews", function _callee(req, resp) {
@@ -562,6 +566,106 @@ router.post("/insertHY_Department", function _callee16(req, resp) {
         case 11:
         case "end":
           return _context16.stop();
+      }
+    }
+  }, null, null, [[1, 8]]);
+}); // 查询所有工序
+
+router.get("/selectSalary_Main", function _callee17(req, resp) {
+  var number, result;
+  return regeneratorRuntime.async(function _callee17$(_context17) {
+    while (1) {
+      switch (_context17.prev = _context17.next) {
+        case 0:
+          number = req.query.number;
+          _context17.prev = 1;
+          _context17.next = 4;
+          return regeneratorRuntime.awrap(selectSalary_Main(number));
+
+        case 4:
+          result = _context17.sent;
+          resp.json(result);
+          _context17.next = 11;
+          break;
+
+        case 8:
+          _context17.prev = 8;
+          _context17.t0 = _context17["catch"](1);
+          resp.json({
+            status: 0,
+            message: "查询失败！"
+          });
+
+        case 11:
+        case "end":
+          return _context17.stop();
+      }
+    }
+  }, null, null, [[1, 8]]);
+}); // 根据keycode查询工序
+
+router.get("/selectSalary_code", function _callee18(req, resp) {
+  var keycode, result;
+  return regeneratorRuntime.async(function _callee18$(_context18) {
+    while (1) {
+      switch (_context18.prev = _context18.next) {
+        case 0:
+          keycode = req.query.keycode;
+          _context18.prev = 1;
+          _context18.next = 4;
+          return regeneratorRuntime.awrap(selectSalary_code(keycode));
+
+        case 4:
+          result = _context18.sent;
+          resp.json(result);
+          _context18.next = 11;
+          break;
+
+        case 8:
+          _context18.prev = 8;
+          _context18.t0 = _context18["catch"](1);
+          resp.json({
+            status: 0,
+            message: "查询失败！"
+          });
+
+        case 11:
+        case "end":
+          return _context18.stop();
+      }
+    }
+  }, null, null, [[1, 8]]);
+}); // 条件赛选
+
+router.get("/search_content", function _callee19(req, resp) {
+  var _req$query2, yibu, erbu, type, content, startTime, endTime, result;
+
+  return regeneratorRuntime.async(function _callee19$(_context19) {
+    while (1) {
+      switch (_context19.prev = _context19.next) {
+        case 0:
+          _req$query2 = req.query, yibu = _req$query2.yibu, erbu = _req$query2.erbu, type = _req$query2.type, content = _req$query2.content, startTime = _req$query2.startTime, endTime = _req$query2.endTime;
+          _context19.prev = 1;
+          _context19.next = 4;
+          return regeneratorRuntime.awrap(search_content(yibu, erbu, type, content, startTime, endTime));
+
+        case 4:
+          result = _context19.sent;
+          resp.json(result);
+          _context19.next = 11;
+          break;
+
+        case 8:
+          _context19.prev = 8;
+          _context19.t0 = _context19["catch"](1);
+          resp.json({
+            status: 0,
+            message: "查询失败！"
+          });
+
+        case 11:
+        case "end":
+          return _context19.stop();
       }
     }
   }, null, null, [[1, 8]]);

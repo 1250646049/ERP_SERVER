@@ -3,7 +3,7 @@ const app = express()
 // 导入操作数据库资源
 const {selectAllNews,DeleteContent,updateWorkshop,addWorkshop, addTeam, alterTeam
 ,insertPerson,updatePersonById,selectPerson,insertProcess,alterProcess,insertHY_Department,insertProject,insertSubsidyProject,
-updateProject,updateSubsidyProject
+updateProject,updateSubsidyProject,selectSalary_Main,select_contents,selectSalary_code
 }=require("./db/sqlService/salaryService")
 
 
@@ -278,6 +278,55 @@ app.post("/salary/insertHY_Department",async(req,resp)=>{
         resp.json({
             status:0,
             message:"抱歉，添加请假类别失败！"
+        })
+    }
+
+
+})
+
+// 查询工序
+app.get("/salary/selectSalary_Main",async(req,resp)=>{
+    const {number}=req.query
+    try{
+        let result=await selectSalary_Main(number)
+        resp.json(result)
+    }catch{
+        resp.json({
+            status:0,
+            message:"查询失败！"
+        })
+    }
+
+
+})
+
+// 查询code
+app.get("/salary/selectSalary_code",async(req,resp)=>{
+    const {kqcode}=req.query
+   
+    try{
+        let result=await selectSalary_code(kqcode)
+        resp.json(result)
+    }catch{
+        resp.json({
+            status:0,
+            message:"查询失败！"
+        })
+    }
+
+
+})
+
+//筛选工序
+app.get("/salary/select_contents",async(req,resp)=>{
+    const {yibu, erbu, type, content, startTime, endTime}=req.query
+    try{
+        let result=await select_contents(yibu, erbu, type, content, startTime, endTime)
+        resp.json(result)
+    }catch{
+        resp.json({
+            status:0,
+            message:"查询失败！"
         })
     }
 

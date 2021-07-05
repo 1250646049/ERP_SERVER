@@ -85,14 +85,20 @@ function addYinshou(data) {
       edu = data.edu,
       quyu = data.quyu,
       username = data.username,
-      name = data.name;
+      name = data.name,
+      cCusName = data.cCusName,
+      chae = data.chae,
+      totalprice = data.totalprice,
+      personemail = data.personemail,
+      iQuantity = data.iQuantity,
+      iSum = data.iSum;
   return new Promise(function (reslove, reject) {
-    select2AutoId(AutoId).then(function (d) {
+    select2cCusName(cCusName).then(function (d) {
       var data = d.data;
 
       if (JSON.stringify(data) === '{}') {
         // 为空 要添加number
-        connect.query("insert into w_yinshou(email,type,jiean,jilu,riqi,price,beizhu,status,shoujianren,jiedian,edu,quyu,AutoId,number,uptime,name,username) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", [email, type, jiean, jilu, riqi, price, beizhu, status, shoujianren, jiedian, edu, quyu, AutoId, 1, getCurrentTimes(), name, username], function (err, data) {
+        connect.query("insert into w_yinshou(email,type,jiean,jilu,riqi,price,beizhu,status,shoujianren,jiedian,edu,quyu,AutoId,number,uptime,name,username,cCusName,chae,totalprice,ku,personemail,iQuantity,iSum) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", [email, type, jiean, jilu, riqi, price, beizhu, status, shoujianren, jiedian, edu, quyu, AutoId, 1, getCurrentTimes(), name, username, cCusName, chae, totalprice, 1, personemail, iQuantity, iSum], function (err, data) {
           if (!err) {
             reslove({
               status: 1,
@@ -108,7 +114,7 @@ function addYinshou(data) {
       } else {
         // 不为空 获取number
         var number = data.number;
-        connect.query("insert into w_yinshou(email,type,jiean,jilu,riqi,price,beizhu,status,shoujianren,jiedian,edu,quyu,AutoId,number,uptime,name,username) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", [email, type, jiean, jilu, riqi, price, beizhu, status, shoujianren, jiedian, edu, quyu, AutoId, number + 1, getCurrentTimes(), name, username], function (err, data) {
+        connect.query("insert into w_yinshou(email,type,jiean,jilu,riqi,price,beizhu,status,shoujianren,jiedian,edu,quyu,AutoId,number,uptime,name,username,cCusName,chae,totalprice,ku,personemail,iQuantity,iSum) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", [email, type, jiean, jilu, riqi, price, beizhu, status, shoujianren, jiedian, edu, quyu, AutoId, number + 1, getCurrentTimes(), name, username, cCusName, chae, totalprice, 1, personemail, iQuantity, iSum], function (err, data) {
           if (!err) {
             reslove({
               status: 1,
@@ -126,12 +132,12 @@ function addYinshou(data) {
       reject(r);
     });
   });
-} // 根据AutoId查询任意一条记录 判断次数
+} // 根据客户名称查询任意一条记录 判断次数
 
 
-function select2AutoId(id) {
+function select2cCusName(cCusName) {
   return new Promise(function (reslove, reject) {
-    connect.query("select * from w_yinshou where AutoId=? order by number desc limit 1", [id], function (err, data) {
+    connect.query("select * from w_yinshou where cCusName=? and ku=1 order by number desc limit 1", [cCusName], function (err, data) {
       if (!err) {
         reslove({
           status: 1,
@@ -186,9 +192,11 @@ function alterYinshou(data) {
       quyu = data.quyu,
       id = data.id,
       name = data.name,
-      username = data.username;
+      username = data.username,
+      iQuantity = data.iQuantity,
+      iSum = data.iSum;
   return new Promise(function (reslove, reject) {
-    connect.query("update w_yinshou set email=?,type=?,jilu=?,riqi=?,price=?,beizhu=?,status=?,shoujianren=?,jiedian=?,edu=?,quyu=?,name=?,username=? where id=?", [email, type, jilu, riqi, price, beizhu, status, shoujianren, jiedian, edu, quyu, name, username, id], function (err, data) {
+    connect.query("update w_yinshou set email=?,type=?,jilu=?,riqi=?,price=?,beizhu=?,status=?,shoujianren=?,jiedian=?,edu=?,quyu=?,name=?,username=?,iQuantity=?,iSum=? where id=?", [email, type, jilu, riqi, price, beizhu, status, shoujianren, jiedian, edu, quyu, name, username, iQuantity, iSum, id], function (err, data) {
       if (!err) {
         reslove({
           status: 1,

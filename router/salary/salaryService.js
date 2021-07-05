@@ -1,6 +1,7 @@
 const axios=require("axios")
 const {Wage}=require("../../utils/serverConfig")
 const qs=require("qs")
+const connect = require("../../db/mysqlDb")
 // 用axios实例化的方式更新post请求
 const instance=axios.create({
 
@@ -326,6 +327,74 @@ function insertHY_Department(d_Name,bm){
 
 
 }
+
+// 查询总工序
+function selectSalary_Main(number){
+    return new Promise((reslove,reject)=>{
+        instance.get(Wage+"/salary/selectSalary_Main",{params:{number}})
+        .then(r=>{
+            reslove({...r.data})
+        })
+        .catch(e=>{
+            reject({...r.error})
+        })
+
+
+    })
+
+
+}
+// 根据工序id查询工序
+function selectSalary_code(kqcode){
+  
+    return new Promise((reslove,reject)=>{
+        instance.get(Wage+"/salary/selectSalary_code",{params:{kqcode}})
+        .then(r=>{
+            reslove({...r.data})
+        })
+        .catch(e=>{
+            reject(e=>{e.data})
+        })
+    })
+
+}
+
+// 搜索所有工序
+// 查询所有结果
+function select_contents(){
+    return new Promise((reslove,reject)=>{
+            instance.get(Wage+"/selectSalary_code")
+            .then(r=>{
+               reslove({...r.data})
+
+            })
+            .catch(e=>{
+                reject({...r.error})
+            })
+
+
+    })
+}
+
+// search内容
+function search_content(yibu, erbu, type, content, startTime, endTime){
+    
+    return new Promise((reslove,reject)=>{
+        instance.get(Wage+"/salary/select_contents",{params:{yibu, erbu, type, content, startTime, endTime}})
+        .then(r=>{
+            reslove({...r.data})
+        })
+        .catch(e=>{
+            reject({...e.data})
+        })
+
+
+    })
+
+
+}
+
+
 module.exports={
     selectAllNews,
     deleteContent,
@@ -342,5 +411,10 @@ module.exports={
     insertSubsidyProject,
     insertHY_Department,
     updateSubsidyProject,
-    updateProject
+    updateProject,
+    selectSalary_Main,
+    selectSalary_code,
+    select_contents,
+    search_content
+    
 }
