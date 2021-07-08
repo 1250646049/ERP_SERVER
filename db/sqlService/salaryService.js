@@ -785,24 +785,30 @@ function selectSalary_code(Kqcode) {
 function select_contents(yibu, erbu, type, content, startTime, endTime) {
    
     let searchSql = ""
-    yibu=Boolean(yibu)
-    erbu=Boolean(erbu)
+    yibu=Number(yibu)
+    erbu=Number(erbu)
+
     if (yibu && !erbu) {
         searchSql = "where main.bm='一部'"
+        console.log(6666);
     } else if (!yibu && erbu) {
         searchSql = "where main.bm='二部'"
+      
     }else {
         searchSql="where 1=1"
     }
     if (startTime && !endTime) {
         searchSql += ` and main.Data>='${startTime}'`
-    } else if (!startTime && endTime) {
+    } else if (!startTime && endTime) { 
         searchSql += ` and main.Data<='${endTime}'`
     } else if (startTime && endTime) {
         searchSql += ` and main.Data >='${startTime}' and main.Data <= '${endTime}'`
     }
-    searchSql+=` and  main.${type}='${content}'`
-    console.log(searchSql);
+    if(content.trim()){
+        searchSql+=` and  main.${type}='${content}'`
+    }
+    
+    
     return new Promise((reslove,reject)=>{
         connect.then(r => {
             r.query(`select  main.Kqcode,main.Data,main.WorkshopName,main.TeamName,main.Number,main.Class,main.glyn,main.rsyn,main.cwyn,main.bm,sum(s.Wages) as wages
@@ -839,6 +845,214 @@ function select_contents(yibu, erbu, type, content, startTime, endTime) {
     })
 }
 
+// 人事查询
+
+// 考勤明细管理查询
+function select_kaoqing(number,yibu,erbu,startTime,endTime,personCode){
+   
+    yibu=Number(yibu)
+    erbu=Number(erbu)
+    let sql=""
+    let limit=""
+    if(yibu && !erbu){
+        sql="where main.bm='一部'"
+    }else if(!yibu && erbu){
+        sql="where main.bm='二部'"
+    }else {
+        sql="where 1=1"
+    }
+    if (startTime && !endTime) {
+        sql += ` and main.Data>='${startTime}'`
+    } else if (!startTime && endTime) { 
+        sql += ` and main.Data<='${endTime}'`
+    } else if (startTime && endTime) {
+        sql += ` and main.Data >='${startTime}' and main.Data <= '${endTime}'`
+    }
+    if(personCode){
+        sql+=` and p.PersonCode='${personCode}'`
+    }
+    // if(number&&number>0){
+    //     limit=` top ${number}`
+    // }else {
+    //     limit="top 1000"
+    // }
+  
+    return new Promise((reslove,reject)=>{ 
+        connect.then(r=>{
+            r.query(`select top 10000 s.PersonCode,main.Data,p.PersonName,p.cdepname,p.cdutycode,main.TeamName,s.Wages,s.AttendanceRecord,s.bs,s.Entry_Person
+             from Salarys s 
+            left join Person p on s.PersonCode=p.PersonCode
+            left join Salary_Main main on main.Kqcode=s.Kqcode
+            ${sql}
+            order by main.Data desc
+            `) .then(r=>{
+                let data=r['recordset']
+                reslove({
+                    status:1,
+                    message:"查询成功！",
+                    list:data.map((item,index)=>{
+                        item['key']=index
+                        return item;
+                    })
+                })
+            })
+            .catch(e=>{
+                console.log(e);
+            })
+    
+        })
+       
+
+
+    })
+
+
+}
+// 请假查询查询
+function select_qingjia(number,yibu,erbu,startTime,endTime,personCode){
+   
+    yibu=Number(yibu)
+    erbu=Number(erbu)
+    let sql=""
+    let limit=""
+    if(yibu && !erbu){
+        sql="where main.bm='一部'"
+    }else if(!yibu && erbu){
+        sql="where main.bm='二部'"
+    }else {
+        sql="where 1=1"
+    }
+    if (startTime && !endTime) {
+        sql += ` and main.Data>='${startTime}'`
+    } else if (!startTime && endTime) { 
+        sql += ` and main.Data<='${endTime}'`
+    } else if (startTime && endTime) {
+        sql += ` and main.Data >='${startTime}' and main.Data <= '${endTime}'`
+    }
+    if(personCode){
+        sql+=` and p.PersonCode='${personCode}'`
+    }
+    if(sql && sql.indexOf("where") !==-1){
+        sql+=" and s.qjsj<>''"
+    }else {
+        sql+="where s.qjsj<>''"
+    }
+
+    return new Promise((reslove,reject)=>{ 
+        connect.then(r=>{
+            r.query(`select top 10000 main.Data,s.PersonCode,p.PersonName,main.WorkshopName,main.TeamName,s.qjlb,s.qjsj from Salarys s 
+            left join Salary_Main main on main.Kqcode=s.Kqcode
+            left join Person p on p.PersonCode=s.PersonCode
+            ${sql}
+            order by main.Data desc
+            `) .then(r=>{
+                let data=r['recordset']
+                reslove({
+                    status:1,
+                    message:"查询成功！",
+                    list:data.map((item,index)=>{
+                        item['key']=index
+                        return item;
+                    })
+                })
+            })
+            .catch(e=>{
+                console.log(e);
+            })
+    
+        })
+       
+
+
+    })
+
+
+}
+// 查询薪资信息总计
+function selectSalayTotal(yibu,erbu,startTime,endTime,personCode){
+    yibu=Number(yibu)
+    erbu=Number(erbu)
+    let sql=""
+    if(yibu && !erbu){
+        sql=" and a.bm='一部'"
+    }else if(!yibu && erbu){
+        sql=" and a.bm='二部'"
+    }
+    if (startTime && !endTime) {
+        sql += ` and a.Data>='${startTime}'`
+    } else if (!startTime && endTime) { 
+        sql += ` and a.Data<='${endTime}'`
+    } else if (startTime && endTime) {
+        sql += ` and a.Data between  '${startTime}' and '${endTime}'`
+    }
+    if(personCode){
+        sql+=` and c.PersonCode='${personCode}'`
+    }
+    
+    return new Promise((reslove,reject)=>{
+        connect.then(r=>{
+            r.query(`select 工号,姓名,部门,职务,sum(总计) 总计,sum(工作日) 工作日 from(
+                select c.PersonCode '工号',b.PersonName'姓名',b.cdepname'部门',b.cdutycode'职务',sum(Wages)'总计',case when sum(AttendanceRecord)>=8 then 1 when sum(AttendanceRecord)<8 then sum(AttendanceRecord)/8 end '工作日' 
+                from Salary_Main a,Person b,Salarys c where a.kqcode=c.kqcode and c.PersonCode=b.PersonCode 
+                ${sql}
+                group by a.data,c.PersonCode,b.PersonName,b.cdepname,b.cdutycode,a.Entry_Person,c.id)aa  group by 工号,姓名,部门,职务`)
+            .then(r=>{
+                
+               reslove({
+                   status:1,
+                   message:"查询成功！",
+                   list:r['recordset'].map((item,index)=>{
+                    item['key']=index;
+                    return item;
+                   })
+               }) 
+            })
+            .then(e=>{
+                reject({
+                    status:0,
+                    message:"查询失败！"
+                })
+            })
+        })
+
+    })
+
+
+}
+
+// 查询车间产量汇总表
+function selectWorkNumbers(WorkshopName){
+    return new Promise((reslove,reject)=>{
+        connect.then(r=>{
+            r.query(`
+            select top 10000 WorkshopName'车间',code1 '工序编码',name1'工序名称',sum(output1) '工序产量',sum(f.je)'金额'from Salary_Main a,v_middle c,
+            (select b.kqcode,Jjaverage,bz1,sum(case when bz1='计件薪资1' then b.PieceworkWage1  when bz1='计件薪资2' then b.PieceworkWage2  when bz1='计件薪资3'
+             then b.PieceworkWage3 when bz1='计件薪资4' then b.PieceworkWage4  when bz1='计件薪资5' 
+             then b.PieceworkWage5  when bz1='计件薪资6' then b.PieceworkWage6  when bz1='计件薪资7' 
+             then b.PieceworkWage7  when bz1='计件薪资8' then b.PieceworkWage8  when bz1='计件薪资9' 
+             then b.PieceworkWage9   when bz1='计件薪资10' then b.PieceworkWage10   when bz1='计件薪资11' 
+             then b.PieceworkWage11   when bz1='计件薪资12' then b.PieceworkWage12 when bz1='计件薪资13' 
+             then b.PieceworkWage13  when bz1='计件薪资14' then b.PieceworkWage14  when bz1='计件薪资15' 
+             then b.PieceworkWage15 end *b.bs) je from Salarys b,v_middle d where b.kqcode=d.kqcode and jh=Jjaverage and len(Jjaverage)<11 and output1>0  
+             and b.kqcode in(select kqcode from Salary_Main where WorkshopName ='${WorkshopName}'
+              and bm ='一部') 
+             group by b.kqcode,Jjaverage,bz1)f 
+             where a.kqcode=c.kqcode and f.kqcode=a.kqcode and jh=Jjaverage and f.bz1=c.bz1 and WorkshopName='${WorkshopName}'
+             and output1>0 and  len(Jjaverage)<11 
+             group by WorkshopName,code1 ,name1
+            `).then((r)=>{
+                console.log(r);
+            })
+            .catch(e=>{
+                console.log(e);
+            })
+        })
+
+
+
+    })
+}
+selectWorkNumbers('强化压贴车间')
 module.exports = {
     selectAllNews,
     DeleteContent,
@@ -858,5 +1072,8 @@ module.exports = {
     updateSubsidyProject,
     selectSalary_Main,
     selectSalary_code,
-    select_contents
+    select_contents,
+    select_kaoqing,
+    select_qingjia,
+    selectSalayTotal
 }

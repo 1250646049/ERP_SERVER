@@ -77,6 +77,12 @@ function setMoban(moban){
 
     })
 }
+
+// 查询所有预测信息
+
+
+
+
 module.exports={
     getEmail,
     setEmail,

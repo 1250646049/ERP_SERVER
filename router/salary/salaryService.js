@@ -336,7 +336,7 @@ function selectSalary_Main(number){
             reslove({...r.data})
         })
         .catch(e=>{
-            reject({...r.error})
+            reject({...e.error})
         })
 
 
@@ -394,7 +394,60 @@ function search_content(yibu, erbu, type, content, startTime, endTime){
 
 }
 
+// 查询考勤信息
+function select_kaoqing(number,yibu,erbu,startTime,endTime,personCode){
+    
+    return new Promise((reslove,reject)=>{
+        instance.get(Wage+"/salary/select_kaoqing",{params:{number,yibu,erbu,startTime,endTime,personCode}})
+        .then(r=>{
+            reslove({...r.data})
+        })
+        .catch(e=>{
+            reject({...e.data})
+        })
 
+
+
+    })
+
+}
+// 查询请假信息
+function select_qingjia(number,yibu,erbu,startTime,endTime,personCode){
+
+    return new Promise((reslove,reject)=>{
+        instance.get(Wage+"/salary/select_qingjia",{params:{number,yibu,erbu,startTime,endTime,personCode}})
+        .then(r=>{
+            reslove({...r.data})
+        })
+        .catch(e=>{
+            reject({...e.data})
+        })
+
+
+
+    })
+
+}
+// 查询薪资汇总
+
+function select_salary_total(yibu,erbu,startTime,endTime,personCode){
+    
+    return new Promise((reslove,reject)=>{
+        instance.get(Wage+"/salary/selectSalayTotal",{params:{yibu,erbu,startTime,endTime,personCode}})
+        .then(r=>{
+            reslove({...r.data})
+        })
+        .catch(e=>{
+            reject({...e.data})
+        })
+
+
+
+
+    })
+
+
+}
 module.exports={
     selectAllNews,
     deleteContent,
@@ -415,6 +468,9 @@ module.exports={
     selectSalary_Main,
     selectSalary_code,
     select_contents,
-    search_content
+    search_content,
+    select_kaoqing,
+    select_qingjia,
+    select_salary_total
     
 }

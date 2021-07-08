@@ -1,8 +1,10 @@
+
 const express = require("express")
+
 const router = express.Router()
 const {selectAllNews,deleteContent,updateWorkshop,insertWorkshop,insertTeam, alterTeam,insertPerson,updatePerson,selectPerson
 ,insertProcess,updateProcess,insertProject,insertSubsidyProject,insertHY_Department,updateProject,updateSubsidyProject,
-selectSalary_Main,selectSalary_code,select_contents,search_content
+selectSalary_Main,selectSalary_code,select_contents,search_content,select_kaoqing,select_qingjia,select_salary_total
 }=require("./salaryService")
 // 查询所有
 
@@ -323,4 +325,59 @@ router.get("/search_content",async(req,resp)=>{
         })
     }
 })
+
+// 查询考勤信息
+router.get("/select_kaoqing",async(req,resp)=>{
+    
+    const {number,yibu,erbu,startTime,endTime,content}=req.query
+    try{
+        let result=await select_kaoqing(number,yibu,erbu,startTime,endTime,content)
+        resp.json(result)
+    }catch{  
+        resp.json({
+            status:0,
+            message:"查询失败！"
+        })
+    }
+
+
+})
+// 查询请假信息
+
+router.get("/select_qingjia",async(req,resp)=>{
+    const {number,yibu,erbu,startTime,endTime,content}=req.query
+    
+
+    try{
+        let result=await select_qingjia(number,yibu,erbu,startTime,endTime,content)
+        resp.json(result)
+    }catch{
+        resp.json({
+            status:0,
+            message:"查询失败！"
+        })
+    }
+
+})
+
+// 查询薪资汇总
+
+router.get("/select_salary_total",async(req,resp)=>{
+      const {yibu,erbu,startTime,endTime,personCode}=req.query
+
+      try{
+          let result=await select_salary_total(yibu,erbu,startTime,endTime,personCode)
+          resp.json(result)
+      }catch{
+            resp.json({
+                status:0,
+                message:"查询失败！"
+            })
+      }
+
+
+
+})
+
+
 module.exports=router

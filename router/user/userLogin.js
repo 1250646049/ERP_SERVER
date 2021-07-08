@@ -25,12 +25,14 @@ const {
     selectTixing,
     selectTodayBobao,
     addBobao
+    
 } = require("../../db/myService/userService")
 const {
     devjwt
 } = require("../../utils/jwt")
 const path = require("path")
-
+// 物流信息
+const {selectAllWuliu}=require("../../db/sqlService/userService")
 // 引入爬虫程序
 const {UserPosition}=require("../../spider/spider_index")
 // 生成验证码
@@ -404,6 +406,21 @@ router.post("/addBobao",async(req,resp)=>{
         resp.json(result)
     }catch{
         resp.json({status:0,message:"抱歉，查询失败！"})
+    }
+
+
+})
+
+// 物料到货预测临时
+router.get("/selectAllWuliu",async(req,resp)=>{
+    try{
+        let result=await selectAllWuliu()
+        resp.json(result)
+    }catch{
+        resp.json({
+            status:0,
+            message:"查询失败！"
+        })
     }
 
 

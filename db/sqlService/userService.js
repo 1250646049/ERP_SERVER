@@ -55,8 +55,40 @@ function getAllUser(){
         })
     })
 }
+function selectAllWuliu(){
+
+    return new Promise((reslove,reject)=>{
+        sqlDb.then(r=>{
+            r.query(`select * from 物料到货预测主表 order by Item_ID asc`)
+            .then(r=>{
+                let data=r['recordset']
+                 reslove({
+                     status:1,
+                     message:"查询成功",
+                     list:data.map((item,index)=>{
+                        item['key']=index;
+                        return item
+                     })
+                 })   
+            })
+            .catch(e=>{
+                reject({
+                    status:0,
+                    message:"查询失败！"
+                })
+            })
+
+
+        })
+
+
+    })
+
+
+}
 
 module.exports={
     getAllUser,
-    getAllDepart
+    getAllDepart,
+    selectAllWuliu
 }

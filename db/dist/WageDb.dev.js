@@ -7,7 +7,8 @@ var config = {
   user: 'sa',
   password: 'Cfl2828',
   server: '192.168.0.252',
-  database: 'Lihuaiyuan'
+  database: 'Lihuaiyuan',
+  requestTimeout: -1
 }; // 返回连接对象
 
 function connect_sql() {

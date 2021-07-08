@@ -680,11 +680,12 @@ function selectSalary_code(Kqcode) {
 
 function select_contents(yibu, erbu, type, content, startTime, endTime) {
   var searchSql = "";
-  yibu = Boolean(yibu);
-  erbu = Boolean(erbu);
+  yibu = Number(yibu);
+  erbu = Number(erbu);
 
   if (yibu && !erbu) {
     searchSql = "where main.bm='一部'";
+    console.log(6666);
   } else if (!yibu && erbu) {
     searchSql = "where main.bm='二部'";
   } else {
@@ -699,8 +700,10 @@ function select_contents(yibu, erbu, type, content, startTime, endTime) {
     searchSql += " and main.Data >='".concat(startTime, "' and main.Data <= '").concat(endTime, "'");
   }
 
-  searchSql += " and  main.".concat(type, "='").concat(content, "'");
-  console.log(searchSql);
+  if (content.trim()) {
+    searchSql += " and  main.".concat(type, "='").concat(content, "'");
+  }
+
   return new Promise(function (reslove, reject) {
     connect.then(function (r) {
       r.query("select  main.Kqcode,main.Data,main.WorkshopName,main.TeamName,main.Number,main.Class,main.glyn,main.rsyn,main.cwyn,main.bm,sum(s.Wages) as wages\n            from Salary_Main main \n            left join Salarys s on s.Kqcode=main.Kqcode\n            ".concat(searchSql, " \n            group by main.Kqcode,main.Data,main.WorkshopName,main.TeamName,main.Number,main.Class,main.glyn,main.rsyn,main.cwyn,main.bm\n          \n            order by main.Data desc  \n          \n            ")).then(function (r) {
@@ -722,8 +725,171 @@ function select_contents(yibu, erbu, type, content, startTime, endTime) {
       });
     });
   });
+} // 人事查询
+// 考勤明细管理查询
+
+
+function select_kaoqing(number, yibu, erbu, startTime, endTime, personCode) {
+  yibu = Number(yibu);
+  erbu = Number(erbu);
+  var sql = "";
+  var limit = "";
+
+  if (yibu && !erbu) {
+    sql = "where main.bm='一部'";
+  } else if (!yibu && erbu) {
+    sql = "where main.bm='二部'";
+  } else {
+    sql = "where 1=1";
+  }
+
+  if (startTime && !endTime) {
+    sql += " and main.Data>='".concat(startTime, "'");
+  } else if (!startTime && endTime) {
+    sql += " and main.Data<='".concat(endTime, "'");
+  } else if (startTime && endTime) {
+    sql += " and main.Data >='".concat(startTime, "' and main.Data <= '").concat(endTime, "'");
+  }
+
+  if (personCode) {
+    sql += " and p.PersonCode='".concat(personCode, "'");
+  } // if(number&&number>0){
+  //     limit=` top ${number}`
+  // }else {
+  //     limit="top 1000"
+  // }
+
+
+  return new Promise(function (reslove, reject) {
+    connect.then(function (r) {
+      r.query("select top 10000 s.PersonCode,main.Data,p.PersonName,p.cdepname,p.cdutycode,main.TeamName,s.Wages,s.AttendanceRecord,s.bs,s.Entry_Person\n             from Salarys s \n            left join Person p on s.PersonCode=p.PersonCode\n            left join Salary_Main main on main.Kqcode=s.Kqcode\n            ".concat(sql, "\n            order by main.Data desc\n            ")).then(function (r) {
+        var data = r['recordset'];
+        reslove({
+          status: 1,
+          message: "查询成功！",
+          list: data.map(function (item, index) {
+            item['key'] = index;
+            return item;
+          })
+        });
+      })["catch"](function (e) {
+        console.log(e);
+      });
+    });
+  });
+} // 请假查询查询
+
+
+function select_qingjia(number, yibu, erbu, startTime, endTime, personCode) {
+  yibu = Number(yibu);
+  erbu = Number(erbu);
+  var sql = "";
+  var limit = "";
+
+  if (yibu && !erbu) {
+    sql = "where main.bm='一部'";
+  } else if (!yibu && erbu) {
+    sql = "where main.bm='二部'";
+  } else {
+    sql = "where 1=1";
+  }
+
+  if (startTime && !endTime) {
+    sql += " and main.Data>='".concat(startTime, "'");
+  } else if (!startTime && endTime) {
+    sql += " and main.Data<='".concat(endTime, "'");
+  } else if (startTime && endTime) {
+    sql += " and main.Data >='".concat(startTime, "' and main.Data <= '").concat(endTime, "'");
+  }
+
+  if (personCode) {
+    sql += " and p.PersonCode='".concat(personCode, "'");
+  }
+
+  if (sql && sql.indexOf("where") !== -1) {
+    sql += " and s.qjsj<>''";
+  } else {
+    sql += "where s.qjsj<>''";
+  }
+
+  return new Promise(function (reslove, reject) {
+    connect.then(function (r) {
+      r.query("select top 10000 main.Data,s.PersonCode,p.PersonName,main.WorkshopName,main.TeamName,s.qjlb,s.qjsj from Salarys s \n            left join Salary_Main main on main.Kqcode=s.Kqcode\n            left join Person p on p.PersonCode=s.PersonCode\n            ".concat(sql, "\n            order by main.Data desc\n            ")).then(function (r) {
+        var data = r['recordset'];
+        reslove({
+          status: 1,
+          message: "查询成功！",
+          list: data.map(function (item, index) {
+            item['key'] = index;
+            return item;
+          })
+        });
+      })["catch"](function (e) {
+        console.log(e);
+      });
+    });
+  });
+} // 查询薪资信息总计
+
+
+function selectSalayTotal(yibu, erbu, startTime, endTime, personCode) {
+  yibu = Number(yibu);
+  erbu = Number(erbu);
+  var sql = "";
+
+  if (yibu && !erbu) {
+    sql = " and a.bm='一部'";
+  } else if (!yibu && erbu) {
+    sql = " and a.bm='二部'";
+  }
+
+  if (startTime && !endTime) {
+    sql += " and a.Data>='".concat(startTime, "'");
+  } else if (!startTime && endTime) {
+    sql += " and a.Data<='".concat(endTime, "'");
+  } else if (startTime && endTime) {
+    sql += " and a.Data between  '".concat(startTime, "' and '").concat(endTime, "'");
+  }
+
+  if (personCode) {
+    sql += " and c.PersonCode='".concat(personCode, "'");
+  }
+
+  return new Promise(function (reslove, reject) {
+    connect.then(function (r) {
+      r.query("select \u5DE5\u53F7,\u59D3\u540D,\u90E8\u95E8,\u804C\u52A1,sum(\u603B\u8BA1) \u603B\u8BA1,sum(\u5DE5\u4F5C\u65E5) \u5DE5\u4F5C\u65E5 from(\n                select c.PersonCode '\u5DE5\u53F7',b.PersonName'\u59D3\u540D',b.cdepname'\u90E8\u95E8',b.cdutycode'\u804C\u52A1',sum(Wages)'\u603B\u8BA1',case when sum(AttendanceRecord)>=8 then 1 when sum(AttendanceRecord)<8 then sum(AttendanceRecord)/8 end '\u5DE5\u4F5C\u65E5' \n                from Salary_Main a,Person b,Salarys c where a.kqcode=c.kqcode and c.PersonCode=b.PersonCode \n                ".concat(sql, "\n                group by a.data,c.PersonCode,b.PersonName,b.cdepname,b.cdutycode,a.Entry_Person,c.id)aa  group by \u5DE5\u53F7,\u59D3\u540D,\u90E8\u95E8,\u804C\u52A1")).then(function (r) {
+        reslove({
+          status: 1,
+          message: "查询成功！",
+          list: r['recordset'].map(function (item, index) {
+            item['key'] = index;
+            return item;
+          })
+        });
+      }).then(function (e) {
+        reject({
+          status: 0,
+          message: "查询失败！"
+        });
+      });
+    });
+  });
+} // 查询车间产量汇总表
+
+
+function selectWorkNumbers(WorkshopName) {
+  return new Promise(function (reslove, reject) {
+    connect.then(function (r) {
+      r.query("\n            select top 10000 WorkshopName'\u8F66\u95F4',code1 '\u5DE5\u5E8F\u7F16\u7801',name1'\u5DE5\u5E8F\u540D\u79F0',sum(output1) '\u5DE5\u5E8F\u4EA7\u91CF',sum(f.je)'\u91D1\u989D'from Salary_Main a,v_middle c,\n            (select b.kqcode,Jjaverage,bz1,sum(case when bz1='\u8BA1\u4EF6\u85AA\u8D441' then b.PieceworkWage1  when bz1='\u8BA1\u4EF6\u85AA\u8D442' then b.PieceworkWage2  when bz1='\u8BA1\u4EF6\u85AA\u8D443'\n             then b.PieceworkWage3 when bz1='\u8BA1\u4EF6\u85AA\u8D444' then b.PieceworkWage4  when bz1='\u8BA1\u4EF6\u85AA\u8D445' \n             then b.PieceworkWage5  when bz1='\u8BA1\u4EF6\u85AA\u8D446' then b.PieceworkWage6  when bz1='\u8BA1\u4EF6\u85AA\u8D447' \n             then b.PieceworkWage7  when bz1='\u8BA1\u4EF6\u85AA\u8D448' then b.PieceworkWage8  when bz1='\u8BA1\u4EF6\u85AA\u8D449' \n             then b.PieceworkWage9   when bz1='\u8BA1\u4EF6\u85AA\u8D4410' then b.PieceworkWage10   when bz1='\u8BA1\u4EF6\u85AA\u8D4411' \n             then b.PieceworkWage11   when bz1='\u8BA1\u4EF6\u85AA\u8D4412' then b.PieceworkWage12 when bz1='\u8BA1\u4EF6\u85AA\u8D4413' \n             then b.PieceworkWage13  when bz1='\u8BA1\u4EF6\u85AA\u8D4414' then b.PieceworkWage14  when bz1='\u8BA1\u4EF6\u85AA\u8D4415' \n             then b.PieceworkWage15 end *b.bs) je from Salarys b,v_middle d where b.kqcode=d.kqcode and jh=Jjaverage and len(Jjaverage)<11 and output1>0  \n             and b.kqcode in(select kqcode from Salary_Main where WorkshopName ='".concat(WorkshopName, "'\n              and bm ='\u4E00\u90E8') \n             group by b.kqcode,Jjaverage,bz1)f \n             where a.kqcode=c.kqcode and f.kqcode=a.kqcode and jh=Jjaverage and f.bz1=c.bz1 and WorkshopName='").concat(WorkshopName, "'\n             and output1>0 and  len(Jjaverage)<11 \n             group by WorkshopName,code1 ,name1\n            ")).then(function (r) {
+        console.log(r);
+      })["catch"](function (e) {
+        console.log(e);
+      });
+    });
+  });
 }
 
+selectWorkNumbers('强化压贴车间');
 module.exports = {
   selectAllNews: selectAllNews,
   DeleteContent: DeleteContent,
@@ -743,5 +909,8 @@ module.exports = {
   updateSubsidyProject: updateSubsidyProject,
   selectSalary_Main: selectSalary_Main,
   selectSalary_code: selectSalary_code,
-  select_contents: select_contents
+  select_contents: select_contents,
+  select_kaoqing: select_kaoqing,
+  select_qingjia: select_qingjia,
+  selectSalayTotal: selectSalayTotal
 };

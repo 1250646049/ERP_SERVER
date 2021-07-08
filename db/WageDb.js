@@ -6,7 +6,7 @@ var config = {
   password: 'Cfl2828',
   server: '192.168.0.252',
   database: 'Lihuaiyuan',
-
+  requestTimeout: -1
 }
 
 

@@ -39,11 +39,15 @@ var _require2 = require("../../db/myService/userService"),
 var _require3 = require("../../utils/jwt"),
     devjwt = _require3.devjwt;
 
-var path = require("path"); // 引入爬虫程序
+var path = require("path"); // 物流信息
 
 
-var _require4 = require("../../spider/spider_index"),
-    UserPosition = _require4.UserPosition; // 生成验证码
+var _require4 = require("../../db/sqlService/userService"),
+    selectAllWuliu = _require4.selectAllWuliu; // 引入爬虫程序
+
+
+var _require5 = require("../../spider/spider_index"),
+    UserPosition = _require5.UserPosition; // 生成验证码
 
 
 router.get("/yzm", function (req, resp) {
@@ -713,5 +717,37 @@ router.post("/addBobao", function _callee20(req, resp) {
       }
     }
   }, null, null, [[1, 8]]);
+}); // 物料到货预测临时
+
+router.get("/selectAllWuliu", function _callee21(req, resp) {
+  var result;
+  return regeneratorRuntime.async(function _callee21$(_context21) {
+    while (1) {
+      switch (_context21.prev = _context21.next) {
+        case 0:
+          _context21.prev = 0;
+          _context21.next = 3;
+          return regeneratorRuntime.awrap(selectAllWuliu());
+
+        case 3:
+          result = _context21.sent;
+          resp.json(result);
+          _context21.next = 10;
+          break;
+
+        case 7:
+          _context21.prev = 7;
+          _context21.t0 = _context21["catch"](0);
+          resp.json({
+            status: 0,
+            message: "查询失败！"
+          });
+
+        case 10:
+        case "end":
+          return _context21.stop();
+      }
+    }
+  }, null, null, [[0, 7]]);
 });
 module.exports = router;

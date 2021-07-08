@@ -24,7 +24,10 @@ var _require = require("./salaryService"),
     selectSalary_Main = _require.selectSalary_Main,
     selectSalary_code = _require.selectSalary_code,
     select_contents = _require.select_contents,
-    search_content = _require.search_content; // 查询所有
+    search_content = _require.search_content,
+    select_kaoqing = _require.select_kaoqing,
+    select_qingjia = _require.select_qingjia,
+    select_salary_total = _require.select_salary_total; // 查询所有
 
 
 router.get("/selectAllNews", function _callee(req, resp) {
@@ -666,6 +669,108 @@ router.get("/search_content", function _callee19(req, resp) {
         case 11:
         case "end":
           return _context19.stop();
+      }
+    }
+  }, null, null, [[1, 8]]);
+}); // 查询考勤信息
+
+router.get("/select_kaoqing", function _callee20(req, resp) {
+  var _req$query3, number, yibu, erbu, startTime, endTime, content, result;
+
+  return regeneratorRuntime.async(function _callee20$(_context20) {
+    while (1) {
+      switch (_context20.prev = _context20.next) {
+        case 0:
+          _req$query3 = req.query, number = _req$query3.number, yibu = _req$query3.yibu, erbu = _req$query3.erbu, startTime = _req$query3.startTime, endTime = _req$query3.endTime, content = _req$query3.content;
+          _context20.prev = 1;
+          _context20.next = 4;
+          return regeneratorRuntime.awrap(select_kaoqing(number, yibu, erbu, startTime, endTime, content));
+
+        case 4:
+          result = _context20.sent;
+          resp.json(result);
+          _context20.next = 11;
+          break;
+
+        case 8:
+          _context20.prev = 8;
+          _context20.t0 = _context20["catch"](1);
+          resp.json({
+            status: 0,
+            message: "查询失败！"
+          });
+
+        case 11:
+        case "end":
+          return _context20.stop();
+      }
+    }
+  }, null, null, [[1, 8]]);
+}); // 查询请假信息
+
+router.get("/select_qingjia", function _callee21(req, resp) {
+  var _req$query4, number, yibu, erbu, startTime, endTime, content, result;
+
+  return regeneratorRuntime.async(function _callee21$(_context21) {
+    while (1) {
+      switch (_context21.prev = _context21.next) {
+        case 0:
+          _req$query4 = req.query, number = _req$query4.number, yibu = _req$query4.yibu, erbu = _req$query4.erbu, startTime = _req$query4.startTime, endTime = _req$query4.endTime, content = _req$query4.content;
+          _context21.prev = 1;
+          _context21.next = 4;
+          return regeneratorRuntime.awrap(select_qingjia(number, yibu, erbu, startTime, endTime, content));
+
+        case 4:
+          result = _context21.sent;
+          resp.json(result);
+          _context21.next = 11;
+          break;
+
+        case 8:
+          _context21.prev = 8;
+          _context21.t0 = _context21["catch"](1);
+          resp.json({
+            status: 0,
+            message: "查询失败！"
+          });
+
+        case 11:
+        case "end":
+          return _context21.stop();
+      }
+    }
+  }, null, null, [[1, 8]]);
+}); // 查询薪资汇总
+
+router.get("/select_salary_total", function _callee22(req, resp) {
+  var _req$query5, yibu, erbu, startTime, endTime, personCode, result;
+
+  return regeneratorRuntime.async(function _callee22$(_context22) {
+    while (1) {
+      switch (_context22.prev = _context22.next) {
+        case 0:
+          _req$query5 = req.query, yibu = _req$query5.yibu, erbu = _req$query5.erbu, startTime = _req$query5.startTime, endTime = _req$query5.endTime, personCode = _req$query5.personCode;
+          _context22.prev = 1;
+          _context22.next = 4;
+          return regeneratorRuntime.awrap(select_salary_total(yibu, erbu, startTime, endTime, personCode));
+
+        case 4:
+          result = _context22.sent;
+          resp.json(result);
+          _context22.next = 11;
+          break;
+
+        case 8:
+          _context22.prev = 8;
+          _context22.t0 = _context22["catch"](1);
+          resp.json({
+            status: 0,
+            message: "查询失败！"
+          });
+
+        case 11:
+        case "end":
+          return _context22.stop();
       }
     }
   }, null, null, [[1, 8]]);

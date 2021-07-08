@@ -305,7 +305,7 @@ function selectSalary_Main(number) {
     }).then(function (r) {
       reslove(_objectSpread({}, r.data));
     })["catch"](function (e) {
-      reject(_objectSpread({}, r.error));
+      reject(_objectSpread({}, e.error));
     });
   });
 } // 根据工序id查询工序
@@ -357,6 +357,65 @@ function search_content(yibu, erbu, type, content, startTime, endTime) {
       reject(_objectSpread({}, e.data));
     });
   });
+} // 查询考勤信息
+
+
+function select_kaoqing(number, yibu, erbu, startTime, endTime, personCode) {
+  return new Promise(function (reslove, reject) {
+    instance.get(Wage + "/salary/select_kaoqing", {
+      params: {
+        number: number,
+        yibu: yibu,
+        erbu: erbu,
+        startTime: startTime,
+        endTime: endTime,
+        personCode: personCode
+      }
+    }).then(function (r) {
+      reslove(_objectSpread({}, r.data));
+    })["catch"](function (e) {
+      reject(_objectSpread({}, e.data));
+    });
+  });
+} // 查询请假信息
+
+
+function select_qingjia(number, yibu, erbu, startTime, endTime, personCode) {
+  return new Promise(function (reslove, reject) {
+    instance.get(Wage + "/salary/select_qingjia", {
+      params: {
+        number: number,
+        yibu: yibu,
+        erbu: erbu,
+        startTime: startTime,
+        endTime: endTime,
+        personCode: personCode
+      }
+    }).then(function (r) {
+      reslove(_objectSpread({}, r.data));
+    })["catch"](function (e) {
+      reject(_objectSpread({}, e.data));
+    });
+  });
+} // 查询薪资汇总
+
+
+function select_salary_total(yibu, erbu, startTime, endTime, personCode) {
+  return new Promise(function (reslove, reject) {
+    instance.get(Wage + "/salary/selectSalayTotal", {
+      params: {
+        yibu: yibu,
+        erbu: erbu,
+        startTime: startTime,
+        endTime: endTime,
+        personCode: personCode
+      }
+    }).then(function (r) {
+      reslove(_objectSpread({}, r.data));
+    })["catch"](function (e) {
+      reject(_objectSpread({}, e.data));
+    });
+  });
 }
 
 module.exports = {
@@ -379,5 +438,8 @@ module.exports = {
   selectSalary_Main: selectSalary_Main,
   selectSalary_code: selectSalary_code,
   select_contents: select_contents,
-  search_content: search_content
+  search_content: search_content,
+  select_kaoqing: select_kaoqing,
+  select_qingjia: select_qingjia,
+  select_salary_total: select_salary_total
 };

@@ -3,7 +3,7 @@ const app = express()
 // 导入操作数据库资源
 const {selectAllNews,DeleteContent,updateWorkshop,addWorkshop, addTeam, alterTeam
 ,insertPerson,updatePersonById,selectPerson,insertProcess,alterProcess,insertHY_Department,insertProject,insertSubsidyProject,
-updateProject,updateSubsidyProject,selectSalary_Main,select_contents,selectSalary_code
+updateProject,updateSubsidyProject,selectSalary_Main,select_contents,selectSalary_code,select_kaoqing,select_qingjia,selectSalayTotal
 }=require("./db/sqlService/salaryService")
 
 
@@ -322,6 +322,57 @@ app.get("/salary/select_contents",async(req,resp)=>{
     const {yibu, erbu, type, content, startTime, endTime}=req.query
     try{
         let result=await select_contents(yibu, erbu, type, content, startTime, endTime)
+        resp.json(result)
+    }catch{
+        resp.json({
+            status:0,
+            message:"查询失败！"
+        })
+    }
+
+
+})
+
+// 查询考勤信息
+app.get("/salary/select_kaoqing",async(req,resp)=>{
+    const {number,yibu,erbu,startTime,endTime,personCode}=req.query
+   
+        try{
+            let result=await select_kaoqing(number,yibu,erbu,startTime,endTime,personCode)
+            resp.json(result)
+        }catch{
+            resp.json({
+                status:1,
+                message:"查询失败！"
+            })
+        }
+
+})
+// 查询请假信息
+// 查询请假类别
+app.get("/salary/select_qingjia",async(req,resp)=>{
+    
+    const {number,yibu,erbu,startTime,endTime,personCode}=req.query
+    
+    try{
+        let result=await select_qingjia(number,yibu,erbu,startTime,endTime,personCode)
+        resp.json(result)
+    }catch{  
+        resp.json({
+            status:0,
+            message:"查询失败！"
+        })
+    }
+
+
+})
+
+// 查询薪资汇总
+app.get("/salary/selectSalayTotal",async(req,resp)=>{
+    const {yibu,erbu,startTime,endTime,personCode}=req.query
+
+    try{
+        let result=await selectSalayTotal(yibu,erbu,startTime,endTime,personCode)
         resp.json(result)
     }catch{
         resp.json({
