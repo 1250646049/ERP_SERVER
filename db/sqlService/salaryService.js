@@ -1021,8 +1021,21 @@ function selectSalayTotal(yibu,erbu,startTime,endTime,personCode){
 }
 
 // 查询车间产量汇总表
-function selectWorkNumbers(WorkshopName){
-    return new Promise((reslove,reject)=>{
+function selectWorkNumbers(WorkshopName,bm,startTime,endTime){
+    let sql=""    
+    if (bm){
+        bm=` and bm='${bm}'`
+    }else {
+        bm=''
+    }
+    if (startTime && !endTime) {
+        sql += ` and Data>='${startTime}'`
+    } else if (!startTime && endTime) { 
+        sql += ` and Data<='${endTime}'`
+    } else if (startTime && endTime) {
+        sql += ` and Data >='${startTime}' and Data <= '${endTime}'`
+    }
+    return new Promise((reslove,reject)=>{ 
         connect.then(r=>{
             r.query(`
             select top 10000 WorkshopName'车间',code1 '工序编码',name1'工序名称',sum(output1) '工序产量',sum(f.je)'金额'from Salary_Main a,v_middle c,
@@ -1034,17 +1047,27 @@ function selectWorkNumbers(WorkshopName){
              then b.PieceworkWage11   when bz1='计件薪资12' then b.PieceworkWage12 when bz1='计件薪资13' 
              then b.PieceworkWage13  when bz1='计件薪资14' then b.PieceworkWage14  when bz1='计件薪资15' 
              then b.PieceworkWage15 end *b.bs) je from Salarys b,v_middle d where b.kqcode=d.kqcode and jh=Jjaverage and len(Jjaverage)<11 and output1>0  
-             and b.kqcode in(select kqcode from Salary_Main where WorkshopName ='${WorkshopName}'
-              and bm ='一部') 
+             and b.kqcode in(select kqcode from Salary_Main where  WorkshopName ='${WorkshopName}'
+              ${bm}  ${sql}) 
              group by b.kqcode,Jjaverage,bz1)f 
-             where a.kqcode=c.kqcode and f.kqcode=a.kqcode and jh=Jjaverage and f.bz1=c.bz1 and WorkshopName='${WorkshopName}'
+             where a.kqcode=c.kqcode and f.kqcode=a.kqcode and jh=Jjaverage and f.bz1=c.bz1 and WorkshopName = '${WorkshopName}'
              and output1>0 and  len(Jjaverage)<11 
              group by WorkshopName,code1 ,name1
             `).then((r)=>{
-                console.log(r);
+                reslove({
+                    status:1,
+                    message:"查询成功！",
+                    list:r['recordset'].map((item,index)=>{
+                        item['key']=index
+                        return item;
+                    })
+                })
             })
             .catch(e=>{
-                console.log(e);
+                reject({
+                    status:0,
+                    message:"查询失败！"
+                })
             })
         })
 
@@ -1052,7 +1075,140 @@ function selectWorkNumbers(WorkshopName){
 
     })
 }
-selectWorkNumbers('强化压贴车间')
+
+// 查询问题处理单
+function selectProblem(startTime,endTime){
+    let sql=""
+    if (startTime && !endTime) {
+        sql += ` and data>='${startTime}'`
+    } else if (!startTime && endTime) { 
+        sql += ` and data<='${endTime}'`
+    } else if (startTime && endTime) {
+        sql += ` and data >='${startTime}' and data <= '${endTime}'`
+    }
+    return new Promise((reslove,reject)=>{
+        connect.then(r=>{
+            r.query(`select  data'日期', supplier '供应商',Reason '不良原因',sum(hourlywage*bs)'金额'
+            from  v_supplier where projectname ='问题处理单'  ${sql}
+            
+            group by data,supplier,Reason
+            order by data desc
+            `)
+            .then(d=>{
+               reslove({
+                   status:1,
+                   message:"恭喜你，查询成功！",
+                   list:d['recordset'].map((item,index)=>{
+                    item['key']=index
+                    return item;
+                   })
+               })
+            })
+            .catch(e=>{
+                console.log(e);
+               reject({
+                   status:0,
+                   message:"查询失败！"
+               })
+            })
+        })
+
+
+        
+    })
+
+
+
+}
+// 查询财务考勤表
+function selectCaiwu(yibu,erbu,startTime,endTime){
+    let searchSql = ""
+    yibu=Number(yibu)
+    erbu=Number(erbu)
+
+    if (yibu && !erbu) {
+        searchSql = "  and Salary_Main.bm='一部'"
+        console.log(6666);
+    } else if (!yibu && erbu) {
+        searchSql = "  and Salary_Main.bm='二部'"
+      
+    }else {
+        searchSql="where 1=1"
+    }
+    if (startTime && !endTime) {
+        searchSql += ` and Data>='${startTime}'`
+    } else if (!startTime && endTime) { 
+        searchSql += ` and Data<='${endTime}'`
+    } else if (startTime && endTime) {
+        searchSql += ` and Data>='${startTime}' and Data<= '${endTime}'`
+    }
+    console.log(searchSql);
+    return new Promise((reslove,reject)=>{
+        connect.then(r=>{
+            r.query(`
+            SELECT  distinct top 10000    Salary_Main.Kqcode '考勤单号', Data '日期',Salarys.personCode '工号',personName '员工姓名', WorkshopName 车间名称, TeamName 班组, bzNumber 编制人数, Number 实到人数, AttendanceRecord 出勤情况,bs 倍数,ProjectName 计时项目1,Hours 计时小时数1,HourlyWage 计时薪资1,ProjectName2 计时项目2,Hours2 计时小时数2, HourlyWage2 计时薪资2,ProjectName3 计时项目3, 
+            Hours3 计时小时数3,HourlyWage3 计时薪资3, jsxj 计时薪资,Class 班别,Salary_Middle.code1 工序编码1,name1 工序名称1,Unitprice1 单价1,
+            PieceworkWage1 计件薪资1,Salary_Middle.Output1 产量1,Salary_Middle.code2 工序编码2,name2 工序名称2,Unitprice2 单价2,
+            PieceworkWage2 计件薪资2,Salary_Middle.Output2 产量2,Salary_Middle.code3 工序编码3,name3 工序名称3,Unitprice3 单价3,
+            PieceworkWage3 计件薪资3,Salary_Middle.Output3 产量3,Salary_Middle.code4 工序编码4,name4 工序名称4,Unitprice4 单价4,PieceworkWage4 计件薪资4,Salary_Middle.Output4 产量4,Salary_Middle.code5 工序编码5,name5 工序名称5,
+            Unitprice5 单价5,PieceworkWage5 计件薪资5,Salary_Middle.Output5 产量5,Salary_Middle.code6 工序编码6,name6 工序名称6,Unitprice6 单价6,PieceworkWage6 计件薪资6,Salary_Middle.Output6 产量6,Salary_Middle.code7 工序编码7,name7 工序名称7,Unitprice7 单价7,PieceworkWage7 计件薪资7,Salary_Middle.Output7 产量7,Salary_Middle.code8 工序编码8,name8 工序名称8,Unitprice8 单价8,PieceworkWage8 计件薪资8,Salary_Middle.Output8 产量8,Salary_Middle.code9 工序编码9,name9 工序名称9,Unitprice9 单价9,PieceworkWage9 计件薪资9,Salary_Middle.Output9 产量9,Salary_Middle.code10 工序编码10,
+            name10 工序名称10,Unitprice10 单价10,PieceworkWage10 计件薪资10,Salary_Middle.Output10 产量10,Salary_Middle.code11 工序编码11,name11 工序名称11,Unitprice11 单价11,PieceworkWage11 计件薪资11,Salary_Middle.Output11 产量11,Salary_Middle.code12 工序编码12,name12 工序名称12,Unitprice12 单价12,PieceworkWage12 计件薪资12,Salary_Middle.Output12 产量12,Salary_Middle.code13 工序编码13,name13 工序名称13,Unitprice13 单价13,PieceworkWage13 计件薪资13,Salary_Middle.Output13 产量13,Salary_Middle.code14 工序编码14,name14 工序名称14,Unitprice14 单价14,PieceworkWage14 计件薪资14,Salary_Middle.Output14 产量14,Salary_Middle.code15 工序编码15,name15 工序名称15,Unitprice15 单价15,PieceworkWage15 计件薪资15,Salary_Middle.Output15 产量15,jjxz 计件薪资,Jjaverage 备注,SubsidyProject 补贴项目1,Subsidy 补贴金额1, SubsidyProject2 补贴项目2, Subsidy2 补贴金额2,SubsidyProject3 补贴项目3,Subsidy3 补贴金额3, btxz 补贴薪资,Wages 当日薪资,qtbs 其它倍数,qjlb 请假类别,qjsj 请假时间,bs_x 倍数明细,yn_qj 是否请假 FROM  Salary_Main inner join  Salarys ON (Salary_Main.Kqcode=Salarys.Kqcode)  
+             left outer join Person ON Person.personCode= Salarys.personCode  left outer join Salary_Middle ON Salarys.Kqcode=Salary_Middle.Kqcode and isnull(Salary_Middle.jh,'')=(case when isnull(Jjaverage,'')='' then isnull(Salary_Middle.jh,'') else Jjaverage end) 
+               ${searchSql}  order by Data desc
+            `).then(d=>{
+                reslove({
+                    status:1,
+                    message:"查询成功！",
+                    list:d['recordset']?.map((item,index)=>{
+                        item['key']=index
+                        return item;
+                    })
+                })
+            })
+            .catch(e=>{
+                reject({
+                    status:0,
+                    message:"查询失败！",
+                    list:[]
+                })
+            })
+        })
+
+
+    })
+}
+// 查询订单表
+function selectOrders(){
+
+    return new Promise((reslove,reject)=>{
+        connect.then(r=>{
+            r.query(`select ordercode,num,hj,bm  from Budget`)
+            .then(d=>{
+                reslove({
+                    status:1,
+                    message:"查询成功！",
+                    list:d['recordset'].map((item,index)=>{
+                        item['key']=index;
+                        return item;
+                    })
+                })
+            })
+            .catch(e=>{
+              
+                reject({
+                    status:0,
+                    message:"查询失败！",
+                    list:[]
+                })
+            })
+        })
+
+
+    })
+
+
+}
+
 module.exports = {
     selectAllNews,
     DeleteContent,
@@ -1075,5 +1231,9 @@ module.exports = {
     select_contents,
     select_kaoqing,
     select_qingjia,
-    selectSalayTotal
+    selectSalayTotal,
+    selectWorkNumbers,
+    selectProblem,
+    selectCaiwu,
+    selectOrders
 }

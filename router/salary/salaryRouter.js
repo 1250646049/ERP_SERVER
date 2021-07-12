@@ -1,10 +1,12 @@
 
 const express = require("express")
 
+
 const router = express.Router()
 const {selectAllNews,deleteContent,updateWorkshop,insertWorkshop,insertTeam, alterTeam,insertPerson,updatePerson,selectPerson
 ,insertProcess,updateProcess,insertProject,insertSubsidyProject,insertHY_Department,updateProject,updateSubsidyProject,
-selectSalary_Main,selectSalary_code,select_contents,search_content,select_kaoqing,select_qingjia,select_salary_total
+selectSalary_Main,selectSalary_code,select_contents,search_content,select_kaoqing,select_qingjia,select_salary_total,select_depart_salary,
+select_problem,select_caiwu_kaoqing,selectAllOrders
 }=require("./salaryService")
 // 查询所有
 
@@ -343,7 +345,7 @@ router.get("/select_kaoqing",async(req,resp)=>{
 
 })
 // 查询请假信息
-
+ 
 router.get("/select_qingjia",async(req,resp)=>{
     const {number,yibu,erbu,startTime,endTime,content}=req.query
     
@@ -358,7 +360,7 @@ router.get("/select_qingjia",async(req,resp)=>{
         })
     }
 
-})
+}) 
 
 // 查询薪资汇总
 
@@ -379,5 +381,69 @@ router.get("/select_salary_total",async(req,resp)=>{
 
 })
 
+// 查询部门薪资汇总
+router.get("/select_depart_salary",async(req,resp)=>{
 
+    const {WorkshopName,bm,startTime,endTime}=req.query
+
+    try{
+        let result=await select_depart_salary(WorkshopName,bm,startTime,endTime)
+        resp.json(result)
+    }catch{
+        resp.json({
+            status:0,
+            message:"查询失败！"
+        })
+    }
+
+
+})
+// 查询问题处理单
+router.get("/select_problem",async(req,resp)=>{
+    const {startTime,endTime}=req.query
+    try{
+        let result=await select_problem(startTime,endTime)
+        resp.json(result)
+    }catch{
+        resp.json({
+            status:0,
+            message:"抱歉，查询失败！"
+        })
+    }
+
+
+})
+// 查询财务考勤表
+router.get("/select_caiwu_kaoqing",async(req,resp)=>{
+
+    const {yibu,erbu,startTime,endTime}= req.query
+
+    try{
+        let result=await select_caiwu_kaoqing(yibu,erbu,startTime,endTime)
+        resp.json(result)
+    }catch{
+        resp.json({
+            status:0,
+            message:"查询失败！" 
+        })
+    }
+
+
+
+})
+
+// 查询所有订单信息
+router.get("/selectAllOrders",async(req,resp)=>{
+    try{
+        let result=await selectAllOrders()
+        resp.json(result)
+    }catch{
+        resp.json({
+            status:0,
+            message:"查询失败！"
+        })
+    }
+
+
+})
 module.exports=router

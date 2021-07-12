@@ -27,7 +27,11 @@ var _require = require("./salaryService"),
     search_content = _require.search_content,
     select_kaoqing = _require.select_kaoqing,
     select_qingjia = _require.select_qingjia,
-    select_salary_total = _require.select_salary_total; // 查询所有
+    select_salary_total = _require.select_salary_total,
+    select_depart_salary = _require.select_depart_salary,
+    select_problem = _require.select_problem,
+    select_caiwu_kaoqing = _require.select_caiwu_kaoqing,
+    selectAllOrders = _require.selectAllOrders; // 查询所有
 
 
 router.get("/selectAllNews", function _callee(req, resp) {
@@ -774,5 +778,139 @@ router.get("/select_salary_total", function _callee22(req, resp) {
       }
     }
   }, null, null, [[1, 8]]);
+}); // 查询部门薪资汇总
+
+router.get("/select_depart_salary", function _callee23(req, resp) {
+  var _req$query6, WorkshopName, bm, startTime, endTime, result;
+
+  return regeneratorRuntime.async(function _callee23$(_context23) {
+    while (1) {
+      switch (_context23.prev = _context23.next) {
+        case 0:
+          _req$query6 = req.query, WorkshopName = _req$query6.WorkshopName, bm = _req$query6.bm, startTime = _req$query6.startTime, endTime = _req$query6.endTime;
+          _context23.prev = 1;
+          _context23.next = 4;
+          return regeneratorRuntime.awrap(select_depart_salary(WorkshopName, bm, startTime, endTime));
+
+        case 4:
+          result = _context23.sent;
+          resp.json(result);
+          _context23.next = 11;
+          break;
+
+        case 8:
+          _context23.prev = 8;
+          _context23.t0 = _context23["catch"](1);
+          resp.json({
+            status: 0,
+            message: "查询失败！"
+          });
+
+        case 11:
+        case "end":
+          return _context23.stop();
+      }
+    }
+  }, null, null, [[1, 8]]);
+}); // 查询问题处理单
+
+router.get("/select_problem", function _callee24(req, resp) {
+  var _req$query7, startTime, endTime, result;
+
+  return regeneratorRuntime.async(function _callee24$(_context24) {
+    while (1) {
+      switch (_context24.prev = _context24.next) {
+        case 0:
+          _req$query7 = req.query, startTime = _req$query7.startTime, endTime = _req$query7.endTime;
+          _context24.prev = 1;
+          _context24.next = 4;
+          return regeneratorRuntime.awrap(select_problem(startTime, endTime));
+
+        case 4:
+          result = _context24.sent;
+          resp.json(result);
+          _context24.next = 11;
+          break;
+
+        case 8:
+          _context24.prev = 8;
+          _context24.t0 = _context24["catch"](1);
+          resp.json({
+            status: 0,
+            message: "抱歉，查询失败！"
+          });
+
+        case 11:
+        case "end":
+          return _context24.stop();
+      }
+    }
+  }, null, null, [[1, 8]]);
+}); // 查询财务考勤表
+
+router.get("/select_caiwu_kaoqing", function _callee25(req, resp) {
+  var _req$query8, yibu, erbu, startTime, endTime, result;
+
+  return regeneratorRuntime.async(function _callee25$(_context25) {
+    while (1) {
+      switch (_context25.prev = _context25.next) {
+        case 0:
+          _req$query8 = req.query, yibu = _req$query8.yibu, erbu = _req$query8.erbu, startTime = _req$query8.startTime, endTime = _req$query8.endTime;
+          _context25.prev = 1;
+          _context25.next = 4;
+          return regeneratorRuntime.awrap(select_caiwu_kaoqing(yibu, erbu, startTime, endTime));
+
+        case 4:
+          result = _context25.sent;
+          resp.json(result);
+          _context25.next = 11;
+          break;
+
+        case 8:
+          _context25.prev = 8;
+          _context25.t0 = _context25["catch"](1);
+          resp.json({
+            status: 0,
+            message: "查询失败！"
+          });
+
+        case 11:
+        case "end":
+          return _context25.stop();
+      }
+    }
+  }, null, null, [[1, 8]]);
+}); // 查询所有订单信息
+
+router.get("/selectAllOrders", function _callee26(req, resp) {
+  var result;
+  return regeneratorRuntime.async(function _callee26$(_context26) {
+    while (1) {
+      switch (_context26.prev = _context26.next) {
+        case 0:
+          _context26.prev = 0;
+          _context26.next = 3;
+          return regeneratorRuntime.awrap(selectAllOrders());
+
+        case 3:
+          result = _context26.sent;
+          resp.json(result);
+          _context26.next = 10;
+          break;
+
+        case 7:
+          _context26.prev = 7;
+          _context26.t0 = _context26["catch"](0);
+          resp.json({
+            status: 0,
+            message: "查询失败！"
+          });
+
+        case 10:
+        case "end":
+          return _context26.stop();
+      }
+    }
+  }, null, null, [[0, 7]]);
 });
 module.exports = router;

@@ -3,7 +3,8 @@ const app = express()
 // 导入操作数据库资源
 const {selectAllNews,DeleteContent,updateWorkshop,addWorkshop, addTeam, alterTeam
 ,insertPerson,updatePersonById,selectPerson,insertProcess,alterProcess,insertHY_Department,insertProject,insertSubsidyProject,
-updateProject,updateSubsidyProject,selectSalary_Main,select_contents,selectSalary_code,select_kaoqing,select_qingjia,selectSalayTotal
+updateProject,updateSubsidyProject,selectSalary_Main,select_contents,selectSalary_code,select_kaoqing,select_qingjia,selectSalayTotal,
+selectWorkNumbers,selectProblem, selectCaiwu, selectOrders
 }=require("./db/sqlService/salaryService")
 
 
@@ -380,6 +381,74 @@ app.get("/salary/selectSalayTotal",async(req,resp)=>{
             message:"查询失败！"
         })
     }
+
+
+})
+// 查询部门薪资汇总
+app.get("/salary/selectWorkNumbers",async(req,resp)=>{
+
+    const {WorkshopName,bm,startTime,endTime}=req.query
+
+    try{
+        let result=await selectWorkNumbers(WorkshopName,bm,startTime,endTime)
+        resp.json(result)
+    }catch{
+        resp.json({
+            status:0,
+            message:"查询失败！"
+        })
+    }
+
+
+
+})
+
+// 查询问题处理单
+app.get("/salary/selectProblem",async(req,resp)=>{
+    const {startTime,endTime}=req.query
+    try{
+        let result=await selectProblem(startTime,endTime)
+        resp.json(result)
+    }catch{
+        resp.json({
+            status:0,
+            message:"查询失败！"
+        })
+    }
+
+
+})
+
+// 查询财务考勤单
+app.get("/salary/selectCaiwu",async(req,resp)=>{
+    const {yibu,erbu,startTime,endTime}=req.query
+    try{
+        let result=await selectCaiwu(yibu,erbu,startTime,endTime)
+        resp.json(result)
+    }catch{
+        resp.json({
+            status:0,
+            message:"查询失败！"
+        })
+    }
+
+
+
+})
+
+// 查询所有订单
+app.get("/salary/selectOrders",async(req,resp)=>{
+  
+    try{
+        let result=await selectOrders()
+        resp.json(result)
+    }catch{
+        resp.json({
+            status:0,
+            message:"查询失败！"
+        })
+    }
+
 
 
 })

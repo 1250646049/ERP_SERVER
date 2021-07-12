@@ -877,11 +877,86 @@ function selectSalayTotal(yibu, erbu, startTime, endTime, personCode) {
 } // 查询车间产量汇总表
 
 
-function selectWorkNumbers(WorkshopName) {
+function selectWorkNumbers(WorkshopName, bm, startTime, endTime) {
+  var sql = "";
+
+  if (bm) {
+    bm = " and bm='".concat(bm, "'");
+  } else {
+    bm = '';
+  }
+
+  if (startTime && !endTime) {
+    sql += " and Data>='".concat(startTime, "'");
+  } else if (!startTime && endTime) {
+    sql += " and Data<='".concat(endTime, "'");
+  } else if (startTime && endTime) {
+    sql += " and Data >='".concat(startTime, "' and Data <= '").concat(endTime, "'");
+  }
+
   return new Promise(function (reslove, reject) {
     connect.then(function (r) {
-      r.query("\n            select top 10000 WorkshopName'\u8F66\u95F4',code1 '\u5DE5\u5E8F\u7F16\u7801',name1'\u5DE5\u5E8F\u540D\u79F0',sum(output1) '\u5DE5\u5E8F\u4EA7\u91CF',sum(f.je)'\u91D1\u989D'from Salary_Main a,v_middle c,\n            (select b.kqcode,Jjaverage,bz1,sum(case when bz1='\u8BA1\u4EF6\u85AA\u8D441' then b.PieceworkWage1  when bz1='\u8BA1\u4EF6\u85AA\u8D442' then b.PieceworkWage2  when bz1='\u8BA1\u4EF6\u85AA\u8D443'\n             then b.PieceworkWage3 when bz1='\u8BA1\u4EF6\u85AA\u8D444' then b.PieceworkWage4  when bz1='\u8BA1\u4EF6\u85AA\u8D445' \n             then b.PieceworkWage5  when bz1='\u8BA1\u4EF6\u85AA\u8D446' then b.PieceworkWage6  when bz1='\u8BA1\u4EF6\u85AA\u8D447' \n             then b.PieceworkWage7  when bz1='\u8BA1\u4EF6\u85AA\u8D448' then b.PieceworkWage8  when bz1='\u8BA1\u4EF6\u85AA\u8D449' \n             then b.PieceworkWage9   when bz1='\u8BA1\u4EF6\u85AA\u8D4410' then b.PieceworkWage10   when bz1='\u8BA1\u4EF6\u85AA\u8D4411' \n             then b.PieceworkWage11   when bz1='\u8BA1\u4EF6\u85AA\u8D4412' then b.PieceworkWage12 when bz1='\u8BA1\u4EF6\u85AA\u8D4413' \n             then b.PieceworkWage13  when bz1='\u8BA1\u4EF6\u85AA\u8D4414' then b.PieceworkWage14  when bz1='\u8BA1\u4EF6\u85AA\u8D4415' \n             then b.PieceworkWage15 end *b.bs) je from Salarys b,v_middle d where b.kqcode=d.kqcode and jh=Jjaverage and len(Jjaverage)<11 and output1>0  \n             and b.kqcode in(select kqcode from Salary_Main where WorkshopName ='".concat(WorkshopName, "'\n              and bm ='\u4E00\u90E8') \n             group by b.kqcode,Jjaverage,bz1)f \n             where a.kqcode=c.kqcode and f.kqcode=a.kqcode and jh=Jjaverage and f.bz1=c.bz1 and WorkshopName='").concat(WorkshopName, "'\n             and output1>0 and  len(Jjaverage)<11 \n             group by WorkshopName,code1 ,name1\n            ")).then(function (r) {
-        console.log(r);
+      r.query("\n            select top 10000 WorkshopName'\u8F66\u95F4',code1 '\u5DE5\u5E8F\u7F16\u7801',name1'\u5DE5\u5E8F\u540D\u79F0',sum(output1) '\u5DE5\u5E8F\u4EA7\u91CF',sum(f.je)'\u91D1\u989D'from Salary_Main a,v_middle c,\n            (select b.kqcode,Jjaverage,bz1,sum(case when bz1='\u8BA1\u4EF6\u85AA\u8D441' then b.PieceworkWage1  when bz1='\u8BA1\u4EF6\u85AA\u8D442' then b.PieceworkWage2  when bz1='\u8BA1\u4EF6\u85AA\u8D443'\n             then b.PieceworkWage3 when bz1='\u8BA1\u4EF6\u85AA\u8D444' then b.PieceworkWage4  when bz1='\u8BA1\u4EF6\u85AA\u8D445' \n             then b.PieceworkWage5  when bz1='\u8BA1\u4EF6\u85AA\u8D446' then b.PieceworkWage6  when bz1='\u8BA1\u4EF6\u85AA\u8D447' \n             then b.PieceworkWage7  when bz1='\u8BA1\u4EF6\u85AA\u8D448' then b.PieceworkWage8  when bz1='\u8BA1\u4EF6\u85AA\u8D449' \n             then b.PieceworkWage9   when bz1='\u8BA1\u4EF6\u85AA\u8D4410' then b.PieceworkWage10   when bz1='\u8BA1\u4EF6\u85AA\u8D4411' \n             then b.PieceworkWage11   when bz1='\u8BA1\u4EF6\u85AA\u8D4412' then b.PieceworkWage12 when bz1='\u8BA1\u4EF6\u85AA\u8D4413' \n             then b.PieceworkWage13  when bz1='\u8BA1\u4EF6\u85AA\u8D4414' then b.PieceworkWage14  when bz1='\u8BA1\u4EF6\u85AA\u8D4415' \n             then b.PieceworkWage15 end *b.bs) je from Salarys b,v_middle d where b.kqcode=d.kqcode and jh=Jjaverage and len(Jjaverage)<11 and output1>0  \n             and b.kqcode in(select kqcode from Salary_Main where  WorkshopName ='".concat(WorkshopName, "'\n              ").concat(bm, "  ").concat(sql, ") \n             group by b.kqcode,Jjaverage,bz1)f \n             where a.kqcode=c.kqcode and f.kqcode=a.kqcode and jh=Jjaverage and f.bz1=c.bz1 and WorkshopName = '").concat(WorkshopName, "'\n             and output1>0 and  len(Jjaverage)<11 \n             group by WorkshopName,code1 ,name1\n            ")).then(function (r) {
+        reslove({
+          status: 1,
+          message: "查询成功！",
+          list: r['recordset'].map(function (item, index) {
+            item['key'] = index;
+            return item;
+          })
+        });
+      })["catch"](function (e) {
+        reject({
+          status: 0,
+          message: "查询失败！"
+        });
+      });
+    });
+  });
+} // 查询问题处理单
+
+
+function selectProblem(startTime, endTime) {
+  var sql = "";
+
+  if (startTime && !endTime) {
+    sql += " and data>='".concat(startTime, "'");
+  } else if (!startTime && endTime) {
+    sql += " and data<='".concat(endTime, "'");
+  } else if (startTime && endTime) {
+    sql += " and data >='".concat(startTime, "' and data <= '").concat(endTime, "'");
+  }
+
+  return new Promise(function (reslove, reject) {
+    connect.then(function (r) {
+      r.query("select  data'\u65E5\u671F', supplier '\u4F9B\u5E94\u5546',Reason '\u4E0D\u826F\u539F\u56E0',sum(hourlywage*bs)'\u91D1\u989D'\n            from  v_supplier where projectname ='\u95EE\u9898\u5904\u7406\u5355'  ".concat(sql, "\n            \n            group by data,supplier,Reason\n            order by data desc\n            ")).then(function (d) {
+        reslove({
+          status: 1,
+          message: "恭喜你，查询成功！",
+          list: d['recordset'].map(function (item, index) {
+            item['key'] = index;
+            return item;
+          })
+        });
+      })["catch"](function (e) {
+        console.log(e);
+        reject({
+          status: 0,
+          message: "查询失败！"
+        });
+      });
+    });
+  });
+} // 查询财务考勤表
+
+
+function selectCaiwu() {
+  return new Promise(function (reslove, reject) {
+    connect.then(function (r) {
+      r.query("\n            SELECT  distinct top 10000    Salary_Main.Kqcode '\u8003\u52E4\u5355\u53F7', Data '\u65E5\u671F',Salarys.personCode '\u5DE5\u53F7',personName '\u5458\u5DE5\u59D3\u540D', WorkshopName \u8F66\u95F4\u540D\u79F0, TeamName \u73ED\u7EC4, bzNumber \u7F16\u5236\u4EBA\u6570, Number \u5B9E\u5230\u4EBA\u6570, AttendanceRecord \u51FA\u52E4\u60C5\u51B5,bs \u500D\u6570,ProjectName \u8BA1\u65F6\u9879\u76EE1,Hours \u8BA1\u65F6\u5C0F\u65F6\u65701,HourlyWage \u8BA1\u65F6\u85AA\u8D441,ProjectName2 \u8BA1\u65F6\u9879\u76EE2,Hours2 \u8BA1\u65F6\u5C0F\u65F6\u65702, HourlyWage2 \u8BA1\u65F6\u85AA\u8D442,ProjectName3 \u8BA1\u65F6\u9879\u76EE3, \n            Hours3 \u8BA1\u65F6\u5C0F\u65F6\u65703,HourlyWage3 \u8BA1\u65F6\u85AA\u8D443, jsxj \u8BA1\u65F6\u85AA\u8D44,Class \u73ED\u522B,Salary_Middle.code1 \u5DE5\u5E8F\u7F16\u78011,name1 \u5DE5\u5E8F\u540D\u79F01,Unitprice1 \u5355\u4EF71,\n            PieceworkWage1 \u8BA1\u4EF6\u85AA\u8D441,Salary_Middle.Output1 \u4EA7\u91CF1,Salary_Middle.code2 \u5DE5\u5E8F\u7F16\u78012,name2 \u5DE5\u5E8F\u540D\u79F02,Unitprice2 \u5355\u4EF72,\n            PieceworkWage2 \u8BA1\u4EF6\u85AA\u8D442,Salary_Middle.Output2 \u4EA7\u91CF2,Salary_Middle.code3 \u5DE5\u5E8F\u7F16\u78013,name3 \u5DE5\u5E8F\u540D\u79F03,Unitprice3 \u5355\u4EF73,\n            PieceworkWage3 \u8BA1\u4EF6\u85AA\u8D443,Salary_Middle.Output3 \u4EA7\u91CF3,Salary_Middle.code4 \u5DE5\u5E8F\u7F16\u78014,name4 \u5DE5\u5E8F\u540D\u79F04,Unitprice4 \u5355\u4EF74,PieceworkWage4 \u8BA1\u4EF6\u85AA\u8D444,Salary_Middle.Output4 \u4EA7\u91CF4,Salary_Middle.code5 \u5DE5\u5E8F\u7F16\u78015,name5 \u5DE5\u5E8F\u540D\u79F05,\n            Unitprice5 \u5355\u4EF75,PieceworkWage5 \u8BA1\u4EF6\u85AA\u8D445,Salary_Middle.Output5 \u4EA7\u91CF5,Salary_Middle.code6 \u5DE5\u5E8F\u7F16\u78016,name6 \u5DE5\u5E8F\u540D\u79F06,Unitprice6 \u5355\u4EF76,PieceworkWage6 \u8BA1\u4EF6\u85AA\u8D446,Salary_Middle.Output6 \u4EA7\u91CF6,Salary_Middle.code7 \u5DE5\u5E8F\u7F16\u78017,name7 \u5DE5\u5E8F\u540D\u79F07,Unitprice7 \u5355\u4EF77,PieceworkWage7 \u8BA1\u4EF6\u85AA\u8D447,Salary_Middle.Output7 \u4EA7\u91CF7,Salary_Middle.code8 \u5DE5\u5E8F\u7F16\u78018,name8 \u5DE5\u5E8F\u540D\u79F08,Unitprice8 \u5355\u4EF78,PieceworkWage8 \u8BA1\u4EF6\u85AA\u8D448,Salary_Middle.Output8 \u4EA7\u91CF8,Salary_Middle.code9 \u5DE5\u5E8F\u7F16\u78019,name9 \u5DE5\u5E8F\u540D\u79F09,Unitprice9 \u5355\u4EF79,PieceworkWage9 \u8BA1\u4EF6\u85AA\u8D449,Salary_Middle.Output9 \u4EA7\u91CF9,Salary_Middle.code10 \u5DE5\u5E8F\u7F16\u780110,\n            name10 \u5DE5\u5E8F\u540D\u79F010,Unitprice10 \u5355\u4EF710,PieceworkWage10 \u8BA1\u4EF6\u85AA\u8D4410,Salary_Middle.Output10 \u4EA7\u91CF10,Salary_Middle.code11 \u5DE5\u5E8F\u7F16\u780111,name11 \u5DE5\u5E8F\u540D\u79F011,Unitprice11 \u5355\u4EF711,PieceworkWage11 \u8BA1\u4EF6\u85AA\u8D4411,Salary_Middle.Output11 \u4EA7\u91CF11,Salary_Middle.code12 \u5DE5\u5E8F\u7F16\u780112,name12 \u5DE5\u5E8F\u540D\u79F012,Unitprice12 \u5355\u4EF712,PieceworkWage12 \u8BA1\u4EF6\u85AA\u8D4412,Salary_Middle.Output12 \u4EA7\u91CF12,Salary_Middle.code13 \u5DE5\u5E8F\u7F16\u780113,name13 \u5DE5\u5E8F\u540D\u79F013,Unitprice13 \u5355\u4EF713,PieceworkWage13 \u8BA1\u4EF6\u85AA\u8D4413,Salary_Middle.Output13 \u4EA7\u91CF13,Salary_Middle.code14 \u5DE5\u5E8F\u7F16\u780114,name14 \u5DE5\u5E8F\u540D\u79F014,Unitprice14 \u5355\u4EF714,PieceworkWage14 \u8BA1\u4EF6\u85AA\u8D4414,Salary_Middle.Output14 \u4EA7\u91CF14,Salary_Middle.code15 \u5DE5\u5E8F\u7F16\u780115,name15 \u5DE5\u5E8F\u540D\u79F015,Unitprice15 \u5355\u4EF715,PieceworkWage15 \u8BA1\u4EF6\u85AA\u8D4415,Salary_Middle.Output15 \u4EA7\u91CF15,jjxz \u8BA1\u4EF6\u85AA\u8D44,Jjaverage \u5907\u6CE8,SubsidyProject \u8865\u8D34\u9879\u76EE1,Subsidy \u8865\u8D34\u91D1\u989D1, SubsidyProject2 \u8865\u8D34\u9879\u76EE2, Subsidy2 \u8865\u8D34\u91D1\u989D2,SubsidyProject3 \u8865\u8D34\u9879\u76EE3,Subsidy3 \u8865\u8D34\u91D1\u989D3, btxz \u8865\u8D34\u85AA\u8D44,Wages \u5F53\u65E5\u85AA\u8D44,qtbs \u5176\u5B83\u500D\u6570,qjlb \u8BF7\u5047\u7C7B\u522B,qjsj \u8BF7\u5047\u65F6\u95F4,bs_x \u500D\u6570\u660E\u7EC6,yn_qj \u662F\u5426\u8BF7\u5047 FROM  Salary_Main inner join  Salarys ON (Salary_Main.Kqcode=Salarys.Kqcode)  \n             left outer join Person ON Person.personCode= Salarys.personCode  left outer join Salary_Middle ON Salarys.Kqcode=Salary_Middle.Kqcode and isnull(Salary_Middle.jh,'')=(case when isnull(Jjaverage,'')='' then isnull(Salary_Middle.jh,'') else Jjaverage end) \n             WHERE    Salary_Main.bm = '\u4E00\u90E8' order by Data desc\n            ").then(function (d) {
+        reslove({
+          status: status
+        });
       })["catch"](function (e) {
         console.log(e);
       });
@@ -889,7 +964,7 @@ function selectWorkNumbers(WorkshopName) {
   });
 }
 
-selectWorkNumbers('强化压贴车间');
+selectCaiwu();
 module.exports = {
   selectAllNews: selectAllNews,
   DeleteContent: DeleteContent,
@@ -912,5 +987,7 @@ module.exports = {
   select_contents: select_contents,
   select_kaoqing: select_kaoqing,
   select_qingjia: select_qingjia,
-  selectSalayTotal: selectSalayTotal
+  selectSalayTotal: selectSalayTotal,
+  selectWorkNumbers: selectWorkNumbers,
+  selectProblem: selectProblem
 };

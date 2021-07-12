@@ -448,6 +448,73 @@ function select_salary_total(yibu,erbu,startTime,endTime,personCode){
 
 
 }
+
+// 远程查询部门薪资汇总
+function select_depart_salary(WorkshopName,bm,startTime,endTime){
+    return new Promise((reslove,reject)=>{
+        instance.get(Wage+"/salary/selectWorkNumbers",{params:{WorkshopName,bm,startTime,endTime}})
+        .then(r=>{
+            reslove({...r.data})
+        })
+        .catch(e=>{
+            reject({...e.data})
+        })
+
+
+
+    })
+
+
+
+}
+
+// 远程查询问题处理单
+function select_problem(startTime,endTime){
+    return new Promise((reslove,reject)=>{
+        instance.get(Wage+"/salary/selectProblem",{params:{startTime,endTime}})
+        .then(r=>{
+            reslove({...r.data})
+        })
+        .catch(e=>{
+            reject({...e.data})
+        })
+
+
+    })
+
+
+}
+
+// 远程查询财务考勤
+function select_caiwu_kaoqing(yibu,erbu,startTime,endTime){
+    return new Promise((reslove,reject)=>{
+        instance.get(Wage+"/salary/selectCaiwu",{params:{yibu,erbu,startTime,endTime}})
+        .then(r=>{
+            reslove({...r.data})
+        })
+        .catch(e=>{
+            reject({...e.data})
+        })
+
+
+
+    })
+}
+// 远程查询所有订单信息
+function selectAllOrders(){
+    return new Promise((reslove,reject)=>{
+        instance.get(Wage+"/salary/selectOrders")
+        .then(r=>{
+            reslove({...r.data})
+        })
+        .catch(e=>{
+            reject({...e.data})
+        })
+
+
+
+    })
+}
 module.exports={
     selectAllNews,
     deleteContent,
@@ -471,6 +538,10 @@ module.exports={
     search_content,
     select_kaoqing,
     select_qingjia,
-    select_salary_total
+    select_salary_total,
+    select_depart_salary,
+    select_problem,
+    select_caiwu_kaoqing,
+    selectAllOrders
     
 }

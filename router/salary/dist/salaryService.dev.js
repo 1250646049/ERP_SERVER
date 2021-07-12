@@ -416,6 +416,69 @@ function select_salary_total(yibu, erbu, startTime, endTime, personCode) {
       reject(_objectSpread({}, e.data));
     });
   });
+} // 远程查询部门薪资汇总
+
+
+function select_depart_salary(WorkshopName, bm, startTime, endTime) {
+  return new Promise(function (reslove, reject) {
+    instance.get(Wage + "/salary/selectWorkNumbers", {
+      params: {
+        WorkshopName: WorkshopName,
+        bm: bm,
+        startTime: startTime,
+        endTime: endTime
+      }
+    }).then(function (r) {
+      reslove(_objectSpread({}, r.data));
+    })["catch"](function (e) {
+      reject(_objectSpread({}, e.data));
+    });
+  });
+} // 远程查询问题处理单
+
+
+function select_problem(startTime, endTime) {
+  return new Promise(function (reslove, reject) {
+    instance.get(Wage + "/salary/selectProblem", {
+      params: {
+        startTime: startTime,
+        endTime: endTime
+      }
+    }).then(function (r) {
+      reslove(_objectSpread({}, r.data));
+    })["catch"](function (e) {
+      reject(_objectSpread({}, e.data));
+    });
+  });
+} // 远程查询财务考勤
+
+
+function select_caiwu_kaoqing(yibu, erbu, startTime, endTime) {
+  return new Promise(function (reslove, reject) {
+    instance.get(Wage + "/salary/selectCaiwu", {
+      params: {
+        yibu: yibu,
+        erbu: erbu,
+        startTime: startTime,
+        endTime: endTime
+      }
+    }).then(function (r) {
+      reslove(_objectSpread({}, r.data));
+    })["catch"](function (e) {
+      reject(_objectSpread({}, e.data));
+    });
+  });
+} // 远程查询所有订单信息
+
+
+function selectAllOrders() {
+  return new Promise(function (reslove, reject) {
+    instance.get(Wage + "/salary/selectOrders").then(function (r) {
+      reslove(_objectSpread({}, r.data));
+    })["catch"](function (e) {
+      reject(_objectSpread({}, e.data));
+    });
+  });
 }
 
 module.exports = {
@@ -441,5 +504,9 @@ module.exports = {
   search_content: search_content,
   select_kaoqing: select_kaoqing,
   select_qingjia: select_qingjia,
-  select_salary_total: select_salary_total
+  select_salary_total: select_salary_total,
+  select_depart_salary: select_depart_salary,
+  select_problem: select_problem,
+  select_caiwu_kaoqing: select_caiwu_kaoqing,
+  selectAllOrders: selectAllOrders
 };
