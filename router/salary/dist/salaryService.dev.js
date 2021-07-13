@@ -479,6 +479,32 @@ function selectAllOrders() {
       reject(_objectSpread({}, e.data));
     });
   });
+} // 远程查询所有车间预算
+
+
+function selectYusuan() {
+  return new Promise(function (reslove, reject) {
+    instance.get(Wage + "/salary/selectYusuan").then(function (r) {
+      reslove(_objectSpread({}, r.data));
+    })["catch"](function (e) {
+      reject(_objectSpread({}, e.data));
+    });
+  });
+} // 远程插入车间预算
+
+
+function insertYusuan(ordercode, code, yn) {
+  return new Promise(function (reslove, reject) {
+    instance.post(Wage + "/salary/insertYusuan", {
+      ordercode: ordercode,
+      code: code,
+      yn: yn
+    }).then(function (r) {
+      reslove(_objectSpread({}, r.data));
+    })["catch"](function (e) {
+      reject(_objectSpread({}, e.data));
+    });
+  });
 }
 
 module.exports = {
@@ -508,5 +534,7 @@ module.exports = {
   select_depart_salary: select_depart_salary,
   select_problem: select_problem,
   select_caiwu_kaoqing: select_caiwu_kaoqing,
-  selectAllOrders: selectAllOrders
+  selectAllOrders: selectAllOrders,
+  selectYusuan: selectYusuan,
+  insertYusuan: insertYusuan
 };

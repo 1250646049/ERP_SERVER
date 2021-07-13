@@ -30,7 +30,9 @@ var _require = require("./db/sqlService/salaryService"),
     selectWorkNumbers = _require.selectWorkNumbers,
     selectProblem = _require.selectProblem,
     selectCaiwu = _require.selectCaiwu,
-    selectOrders = _require.selectOrders; // 设置允许解析body
+    selectOrders = _require.selectOrders,
+    selectYusuan = _require.selectYusuan,
+    insertYusuan = _require.insertYusuan; // 设置允许解析body
 // 解析 body
 
 
@@ -916,6 +918,73 @@ app.get("/salary/selectOrders", function _callee26(req, resp) {
       }
     }
   }, null, null, [[0, 7]]);
+}); // 查询车间预算
+
+app.get("/salary/selectYusuan", function _callee27(req, resp) {
+  var result;
+  return regeneratorRuntime.async(function _callee27$(_context27) {
+    while (1) {
+      switch (_context27.prev = _context27.next) {
+        case 0:
+          _context27.prev = 0;
+          _context27.next = 3;
+          return regeneratorRuntime.awrap(selectYusuan());
+
+        case 3:
+          result = _context27.sent;
+          resp.json(result);
+          _context27.next = 10;
+          break;
+
+        case 7:
+          _context27.prev = 7;
+          _context27.t0 = _context27["catch"](0);
+          resp.json({
+            status: 0,
+            message: "抱歉,查询失败！"
+          });
+
+        case 10:
+        case "end":
+          return _context27.stop();
+      }
+    }
+  }, null, null, [[0, 7]]);
+}); //插入一条工资预算
+// 
+
+app.post("/salary/insertYusuan", function _callee28(req, resp) {
+  var _req$body14, ordercode, code, yn, result;
+
+  return regeneratorRuntime.async(function _callee28$(_context28) {
+    while (1) {
+      switch (_context28.prev = _context28.next) {
+        case 0:
+          _req$body14 = req.body, ordercode = _req$body14.ordercode, code = _req$body14.code, yn = _req$body14.yn;
+          _context28.prev = 1;
+          _context28.next = 4;
+          return regeneratorRuntime.awrap(insertYusuan(ordercode, code, yn));
+
+        case 4:
+          result = _context28.sent;
+          resp.json(result);
+          _context28.next = 11;
+          break;
+
+        case 8:
+          _context28.prev = 8;
+          _context28.t0 = _context28["catch"](1);
+          resp.json({
+            status: 1,
+            message: "插入失败！"
+          });
+
+        case 11:
+        case "end":
+          return _context28.stop();
+      }
+    }
+  }, null, null, [[1, 8]]);
 });
 app.listen(3099, function (err, data) {
   if (!err) {

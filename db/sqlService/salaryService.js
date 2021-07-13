@@ -1209,6 +1209,67 @@ function selectOrders(){
 
 }
 
+// 根据订单查询车间预算数据
+
+function selectYusuan(){
+
+    return new Promise((reslove,reject)=>{
+        connect.then(r=>{
+            r.query(`
+            select cj 车间,Process.Code 工序编码,Name 工序名称,UnitPrice 单价,bm 部门,ordercode from Process,Budgets where 
+            yn='1' and Budgets.code=Process.code 
+            `).then(d=>{
+                 reslove({
+                     status:1,
+                     message:"查询成功！",
+                     list:d['recordset'].map((item,index)=>{
+                        item['key']=index
+                        return item;
+                     })
+                 })
+            })
+            .catch(e=>{
+                reject({
+                    status:0,
+                    message:"查询失败！"
+                })
+            })
+        })
+
+    })
+
+
+}
+// 插入一条订单记录
+
+function insertYusuan(ordercode,code,yn){
+
+    return new Promise((reslove,reject)=>{
+        connect.then(r=>{
+            r.query(`insert into Budgets (ordercode,code,yn) values ('${ordercode}','${code}','${yn}')`)
+            .then(d=>{
+                reslove({
+                    status:1,
+                    message:"添加数据成功！"
+                })
+
+            })
+            .catch(e=>{
+                console.log(e);
+                reject({
+                    status:0,
+                    message:"添加数据失败！"
+                })
+            })
+        })
+
+
+    })
+
+
+}
+
+
 module.exports = {
     selectAllNews,
     DeleteContent,
@@ -1235,5 +1296,7 @@ module.exports = {
     selectWorkNumbers,
     selectProblem,
     selectCaiwu,
-    selectOrders
+    selectOrders,
+    selectYusuan,
+    insertYusuan
 }

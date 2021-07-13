@@ -515,6 +515,42 @@ function selectAllOrders(){
 
     })
 }
+
+// 远程查询所有车间预算
+function selectYusuan(){
+   
+    return new Promise((reslove,reject)=>{
+        instance.get(Wage+"/salary/selectYusuan")
+        .then(r=>{
+            reslove({...r.data})
+        })
+        .catch(e=>{
+            reject({...e.data})
+        })
+    })
+
+
+}
+
+// 远程插入车间预算
+
+function insertYusuan(ordercode,code,yn){
+
+    return new Promise((reslove,reject)=>{
+         instance.post(Wage+"/salary/insertYusuan",{ordercode,code,yn})
+         .then(r=>{
+             reslove({...r.data})
+         })
+         .catch(e=>{
+             reject({...e.data})
+         })
+
+
+
+    })
+
+
+}
 module.exports={
     selectAllNews,
     deleteContent,
@@ -542,6 +578,8 @@ module.exports={
     select_depart_salary,
     select_problem,
     select_caiwu_kaoqing,
-    selectAllOrders
+    selectAllOrders,
+    selectYusuan,
+    insertYusuan
     
 }

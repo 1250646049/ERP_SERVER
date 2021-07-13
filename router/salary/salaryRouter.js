@@ -6,7 +6,7 @@ const router = express.Router()
 const {selectAllNews,deleteContent,updateWorkshop,insertWorkshop,insertTeam, alterTeam,insertPerson,updatePerson,selectPerson
 ,insertProcess,updateProcess,insertProject,insertSubsidyProject,insertHY_Department,updateProject,updateSubsidyProject,
 selectSalary_Main,selectSalary_code,select_contents,search_content,select_kaoqing,select_qingjia,select_salary_total,select_depart_salary,
-select_problem,select_caiwu_kaoqing,selectAllOrders
+select_problem,select_caiwu_kaoqing,selectAllOrders,selectYusuan,insertYusuan
 }=require("./salaryService")
 // 查询所有
 
@@ -444,6 +444,40 @@ router.get("/selectAllOrders",async(req,resp)=>{
         })
     }
 
+
+})
+
+// 查询预算
+router.get("/selectYusuan",async(req,resp)=>{
+    try{
+        let result=await selectYusuan()
+        resp.json(
+            result
+        )
+    }catch{
+        resp.json({
+            status:0,
+            message:"查询失败！"
+        })
+    }
+
+
+
+})
+
+// 添加薪资预算
+router.post("/insertYusuan",async(req,resp)=>{
+    const {ordercode,code,yn}=req.body
+    try{
+        let result=await insertYusuan(ordercode,code,yn)
+        resp.json(result)
+
+    }catch{
+        resp.json({
+            status:0,
+            message:"查询失败！"
+        })
+    }
 
 })
 module.exports=router

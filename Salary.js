@@ -4,7 +4,7 @@ const app = express()
 const {selectAllNews,DeleteContent,updateWorkshop,addWorkshop, addTeam, alterTeam
 ,insertPerson,updatePersonById,selectPerson,insertProcess,alterProcess,insertHY_Department,insertProject,insertSubsidyProject,
 updateProject,updateSubsidyProject,selectSalary_Main,select_contents,selectSalary_code,select_kaoqing,select_qingjia,selectSalayTotal,
-selectWorkNumbers,selectProblem, selectCaiwu, selectOrders
+selectWorkNumbers,selectProblem, selectCaiwu, selectOrders, selectYusuan, insertYusuan
 }=require("./db/sqlService/salaryService")
 
 
@@ -446,6 +446,42 @@ app.get("/salary/selectOrders",async(req,resp)=>{
         resp.json({
             status:0,
             message:"查询失败！"
+        })
+    }
+
+
+
+})
+
+// 查询车间预算
+app.get("/salary/selectYusuan",async(req,resp)=>{
+
+    try{
+        let result=await selectYusuan()
+        resp.json(result)
+    }catch{
+        resp.json({
+            status:0,
+            message:"抱歉,查询失败！"
+        })
+    }
+
+
+
+})
+
+//插入一条工资预算
+// 
+app.post("/salary/insertYusuan",async(req,resp)=>{
+    const {ordercode,code,yn}=req.body
+    try{
+        let result=await insertYusuan(ordercode,code,yn)
+    
+        resp.json(result)
+    }catch{
+        resp.json({
+            status:1,
+            message:"插入失败！"
         })
     }
 
