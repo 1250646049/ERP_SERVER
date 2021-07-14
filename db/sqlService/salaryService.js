@@ -203,7 +203,7 @@ function selectPerson() {
 
     return new Promise((reslove, reject) => {
         connect.then(r => {
-            r.query(`select p.PersonCode,p.PersonName,w.WorkshopCode,w.WorkshopName,t.TeamCode,t.TeamName from Person p 
+            r.query(`select p.PersonCode,p.PersonName,w.WorkshopCode,w.WorkshopName,p.cdutycode,t.TeamCode,t.TeamName from Person p 
             left join Workshop w on p.WorkshopCode=w.WorkshopCode 
             left join Team t on t.TeamCode=p.TeamCode
             order by p.PersonCode asc 
