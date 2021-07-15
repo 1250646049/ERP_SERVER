@@ -1269,7 +1269,33 @@ function insertYusuan(ordercode,code,yn){
 
 }
 
+//查询逻辑
+/**1.select Money from Project where ProjectName= '多种花色'and bm='一部'
+ * Money: 10.34 
+ * 2.select Price from SubsidyProject where SubsidyName= '劳动强度补贴'and  bm='一部'
+ * { Price: 0 } 
+ * 
+ * 3.insert into Salary_Main (Kqcode,Data,WorkshopName,TeamName,Number,Class,bzNumber,Entry_Person,bm,yn_tx)
+ * values
+ * ('KQ-20210715110351','2021-07-15','强化压贴车间','9#压机,夜班管理人员','1','白班','27','52814','一部','')
+ */
+function selectContent(){
+    return new Promise(()=>{
+        connect.then(r=>{
+            r.query(`select sum(AttendanceRecord) from Salarys a ,Salary_Main b where personcode=right('000000'+ltrim('52814'),5) and Class='白班' and a.kqcode=b.kqcode and b.data='2021-07-15'and a.kqcode<>'KQ-20210715110351'`)
+            .then(d=>{
+                console.log(d)
+            })
+        }).catch(e=>{
+            console.log(e);
+        })
 
+
+    })
+
+
+}
+selectContent()
 module.exports = {
     selectAllNews,
     DeleteContent,
