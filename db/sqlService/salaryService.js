@@ -1278,7 +1278,21 @@ function insertYusuan(ordercode,code,yn){
  * 3.insert into Salary_Main (Kqcode,Data,WorkshopName,TeamName,Number,Class,bzNumber,Entry_Person,bm,yn_tx)
  * values
  * ('KQ-20210715110351','2021-07-15','强化压贴车间','9#压机,夜班管理人员','1','白班','27','52814','一部','')
+ * 
+ * 4.select sum(AttendanceRecord) from Salarys a ,Salary_Main b where personcode=right('000000'+ltrim('52814'),5) and Class='白班' 
+ * and a.kqcode=b.kqcode and b.data='2021-07-15'and a.kqcode<>'KQ-20210715110351'
+ * 
+ * 5. insert into Salarys
+ *  (Kqcode,PersonCode,AttendanceRecord,ProjectName,HourlyWage,Wages,SubsidyProject,Subsidy,PieceworkWage1,PieceworkWage2,PieceworkWage3,
+ * PieceworkWage4,PieceworkWage5,PieceworkWage6,PieceworkWage7,PieceworkWage8,PieceworkWage9,PieceworkWage10,Hours,Jjaverage,yn_qj,qtbs,
+ * qjlb,qjsj,Entry_Person,bs_x,ProjectName2,ProjectName3,HourlyWage3,HourlyWage2,SubsidyProject2,SubsidyProject3,Subsidy2,Subsidy3,Hours2,Hours3,
+ * jsxj,jjxz,btxz,bs,Supplier,Reason)
+ * values('KQ-20210715110351',right('000000'+ltrim('52814'),5),'10.88','多种花色','112.4','314.41','劳动强度补贴','55','23.94','37.43','6.01','1.87','47.44','0','0','0','0','0','10.87',
+ * '夜班管理人员','未请假','223','','','52814','','','','0','0','','','0','0','0','0','127.276470588235','132.13','55','1.13235294117647','','')
+ * 
  */
+
+
 function selectContent(){
     return new Promise(()=>{
         connect.then(r=>{
@@ -1288,7 +1302,7 @@ function selectContent(){
             })
         }).catch(e=>{
             console.log(e);
-        })
+        }) 
 
 
     })
