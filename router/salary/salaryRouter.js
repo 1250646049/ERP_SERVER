@@ -1,6 +1,8 @@
 
 const express = require("express")
 
+// redis
+const {get_person} =require("../../db/redis/RedisService")
 
 const router = express.Router()
 const {selectAllNews,deleteContent,updateWorkshop,insertWorkshop,insertTeam, alterTeam,insertPerson,updatePerson,selectPerson
@@ -478,6 +480,23 @@ router.post("/insertYusuan",async(req,resp)=>{
             message:"查询失败！"
         })
     }
+
+})
+
+// redis查询薪资系统的person
+
+router.get("/r_selectperon",async(req,resp)=>{
+
+    try{
+        let result=await get_person()
+        resp.json(result)
+    }catch{
+        resp.json({
+            status:0,
+            message:"查询失败！"
+        }) 
+    }
+
 
 })
 module.exports=router

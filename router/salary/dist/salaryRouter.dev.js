@@ -1,39 +1,43 @@
 "use strict";
 
-var express = require("express");
+var express = require("express"); // redis
+
+
+var _require = require("../../db/redis/RedisService"),
+    get_person = _require.get_person;
 
 var router = express.Router();
 
-var _require = require("./salaryService"),
-    selectAllNews = _require.selectAllNews,
-    deleteContent = _require.deleteContent,
-    updateWorkshop = _require.updateWorkshop,
-    insertWorkshop = _require.insertWorkshop,
-    insertTeam = _require.insertTeam,
-    alterTeam = _require.alterTeam,
-    insertPerson = _require.insertPerson,
-    updatePerson = _require.updatePerson,
-    selectPerson = _require.selectPerson,
-    insertProcess = _require.insertProcess,
-    updateProcess = _require.updateProcess,
-    insertProject = _require.insertProject,
-    insertSubsidyProject = _require.insertSubsidyProject,
-    insertHY_Department = _require.insertHY_Department,
-    updateProject = _require.updateProject,
-    updateSubsidyProject = _require.updateSubsidyProject,
-    selectSalary_Main = _require.selectSalary_Main,
-    selectSalary_code = _require.selectSalary_code,
-    select_contents = _require.select_contents,
-    search_content = _require.search_content,
-    select_kaoqing = _require.select_kaoqing,
-    select_qingjia = _require.select_qingjia,
-    select_salary_total = _require.select_salary_total,
-    select_depart_salary = _require.select_depart_salary,
-    select_problem = _require.select_problem,
-    select_caiwu_kaoqing = _require.select_caiwu_kaoqing,
-    selectAllOrders = _require.selectAllOrders,
-    selectYusuan = _require.selectYusuan,
-    insertYusuan = _require.insertYusuan; // 查询所有
+var _require2 = require("./salaryService"),
+    selectAllNews = _require2.selectAllNews,
+    deleteContent = _require2.deleteContent,
+    updateWorkshop = _require2.updateWorkshop,
+    insertWorkshop = _require2.insertWorkshop,
+    insertTeam = _require2.insertTeam,
+    alterTeam = _require2.alterTeam,
+    insertPerson = _require2.insertPerson,
+    updatePerson = _require2.updatePerson,
+    selectPerson = _require2.selectPerson,
+    insertProcess = _require2.insertProcess,
+    updateProcess = _require2.updateProcess,
+    insertProject = _require2.insertProject,
+    insertSubsidyProject = _require2.insertSubsidyProject,
+    insertHY_Department = _require2.insertHY_Department,
+    updateProject = _require2.updateProject,
+    updateSubsidyProject = _require2.updateSubsidyProject,
+    selectSalary_Main = _require2.selectSalary_Main,
+    selectSalary_code = _require2.selectSalary_code,
+    select_contents = _require2.select_contents,
+    search_content = _require2.search_content,
+    select_kaoqing = _require2.select_kaoqing,
+    select_qingjia = _require2.select_qingjia,
+    select_salary_total = _require2.select_salary_total,
+    select_depart_salary = _require2.select_depart_salary,
+    select_problem = _require2.select_problem,
+    select_caiwu_kaoqing = _require2.select_caiwu_kaoqing,
+    selectAllOrders = _require2.selectAllOrders,
+    selectYusuan = _require2.selectYusuan,
+    insertYusuan = _require2.insertYusuan; // 查询所有
 
 
 router.get("/selectAllNews", function _callee(req, resp) {
@@ -980,5 +984,37 @@ router.post("/insertYusuan", function _callee28(req, resp) {
       }
     }
   }, null, null, [[1, 8]]);
+}); // redis查询薪资系统的person
+
+router.get("/r_selectperon", function _callee29(req, resp) {
+  var result;
+  return regeneratorRuntime.async(function _callee29$(_context29) {
+    while (1) {
+      switch (_context29.prev = _context29.next) {
+        case 0:
+          _context29.prev = 0;
+          _context29.next = 3;
+          return regeneratorRuntime.awrap(get_person());
+
+        case 3:
+          result = _context29.sent;
+          resp.json(result);
+          _context29.next = 10;
+          break;
+
+        case 7:
+          _context29.prev = 7;
+          _context29.t0 = _context29["catch"](0);
+          resp.json({
+            status: 0,
+            message: "查询失败！"
+          });
+
+        case 10:
+        case "end":
+          return _context29.stop();
+      }
+    }
+  }, null, null, [[0, 7]]);
 });
 module.exports = router;
